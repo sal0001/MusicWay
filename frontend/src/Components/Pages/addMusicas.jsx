@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaUpload } from 'react-icons/fa'; 
 import Navbar3 from '../navbar/navbar3';
@@ -39,6 +39,20 @@ const Input = styled.input`
   width: 100%;
   padding: 1em;
   line-height: 1.4;
+  background-color: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 3px;
+  transition: 0.35s ease-in-out;
+
+  &:focus {
+    outline: 0;
+    border-color: #bd8200;
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 1em;
   background-color: #f9f9f9;
   border: 1px solid #e5e5e5;
   border-radius: 3px;
@@ -94,8 +108,24 @@ const FormComponent = () => {
   const [nomeMusica, setNomeMusica] = useState('');
   const [artista, setArtista] = useState('');
   const [file, setFile] = useState(null);
+  const [categoriaId, setCategoriaId] = useState('');
+  const [categories, setCategories] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:3001/getCategorias');
+        setCategories(response.data);  
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setErrorMessage('Erro ao carregar categorias');
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -105,34 +135,42 @@ const FormComponent = () => {
       setErrorMessage(''); 
     } else {
       setFile(null);
-      setErrorMessage('Por favor, selecione um arquivo wav.'); 
+      setErrorMessage('Por favor, selecione um arquivo WAV.');
     }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!file) {
-      setErrorMessage('Por favor, selecione um arquivo MP3 antes de publicar.'); 
+  
+    if (!nomeMusica || !artista || !file || !categoriaId) {
+      setErrorMessage('Por favor, preencha todos os campos: nome da música, artista, arquivo e categoria.');
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     const formData = new FormData();
     formData.append('nome', nomeMusica);
     formData.append('artista', artista);
-    formData.append('file', file);
-
+    formData.append('categoriaId', categoriaId);
+    formData.append('file', file); 
+  
     try {
       const response = await axios.post('http://127.0.0.1:3001/addMusicas', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      });
-
-      console.log(response.data);
+      }); 
+  
+      console.log('Música publicada com sucesso:', response.data);
       setErrorMessage('Música publicada com sucesso.');
+  
+      setNomeMusica('');
+      setArtista('');
+      setFile(null);
+      setCategoriaId('');
     } catch (error) {
+      console.error('Erro ao publicar música:', error);
       const errorResponse = error.response?.data?.error || 'Erro ao publicar a música';
       setErrorMessage(errorResponse);
     } finally {
@@ -177,6 +215,20 @@ const FormComponent = () => {
                   required
                   style={{ display: 'none' }} 
                 />
+              </InputGroup>
+              <InputGroup>
+                <Select 
+                  value={categoriaId}
+                  onChange={(e) => setCategoriaId(e.target.value)}
+                  required
+                >
+                  <option value="">Selecione uma categoria</option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id}>
+                      {category.nome}
+                    </option>
+                  ))}
+                </Select>
               </InputGroup>
             </Row>
 

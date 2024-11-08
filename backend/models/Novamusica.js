@@ -3,10 +3,19 @@ const Musicas = require('./musicas');
 const addMusic = async (musicData) => {
     console.log('Dados recebidos para adicionar música:', musicData);
 
+   
+    const { nome, ficheiro, artista, categoriaId } = musicData;
+
+
+    if (!categoriaId) {
+        throw new Error('Categoria é obrigatória para associar à música.');
+    }
+
     const newMusic = {
-        nome: musicData.nome,  
-        ficheiro: musicData.ficheiro, 
-        artista: musicData.artista 
+        nome: nome,  
+        ficheiro: ficheiro, 
+        artista: artista,
+        categoria: categoriaId 
     };
 
     try {
@@ -18,6 +27,5 @@ const addMusic = async (musicData) => {
         throw error; 
     }
 };
-
 
 module.exports = addMusic;

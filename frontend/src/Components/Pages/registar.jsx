@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import bcrypt from 'bcryptjs'; 
 import Navbar from '../navbar/navbar';
 import './registar.css';
 
@@ -15,17 +14,18 @@ const Register = () => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-    
+
+        // Validate input fields
         if (nome.trim() === '' || email.trim() === '' || password.trim() === '') {
             setErrorMessage('Por favor, preencha todos os campos.');
             return;
         }
-    
+
         try {
-           
             const response = await axios.post('http://127.0.0.1:3001/home/registar', { nome, email, password });
             console.log('Response:', response.data);
-            
+
+            // Navigate to login page after successful registration
             navigate('/home/login');
         } catch (error) {
             console.error('Error:', error);
@@ -36,10 +36,9 @@ const Register = () => {
             }
         }
     };
-    
 
     const handleLoginRedirect = () => {
-        navigate('/home/login'); 
+        navigate('/home/login');
     };
 
     const estiloCentralizado = {
@@ -53,38 +52,39 @@ const Register = () => {
     return (
         <div>
             <Navbar />
-            <body className="b1">
-                <div style={estiloCentralizado}>
-                    <form onSubmit={handleRegister} style={{ border: '1px solid black', padding: '20px', borderRadius: '10px' }}>
-                        <label>Nome</label>
-                        <input
-                            type="text"
-                            placeholder="Nome"
-                            value={nome}
-                            onChange={(e) => setNome(e.target.value)}
-                        />
-                        <label>Email</label>
-                        <input
-                            type="text"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <button type="submit">Registar</button>
-                        <p style={{ cursor: 'pointer', color: 'black' }} onClick={handleLoginRedirect}>
-                    Já se registou?
-                </p>
-                        {errorMessage && <p className="error">{errorMessage}</p>}
-                    </form>
-                </div>
-            </body>
+            <div style={estiloCentralizado}>
+                <form onSubmit={handleRegister} style={{ border: '1px solid black', padding: '20px', borderRadius: '10px' }}>
+                    <label>Nome</label>
+                    <input
+                        type="text"
+                        placeholder="Nome"
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                        required
+                    />
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <button type="submit">Registar</button>
+                    <p style={{ cursor: 'pointer', color: 'black' }} onClick={handleLoginRedirect}>
+                        Já se registou?
+                    </p>
+                    {errorMessage && <p className="error">{errorMessage}</p>}
+                </form>
+            </div>
         </div>
     );
 };

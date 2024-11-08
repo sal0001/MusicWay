@@ -3,7 +3,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import './navbar.css'
 import { useNavigate } from 'react-router-dom';
-import logo from '../Logo/MusicWayLogo.png';
+import logo from '../Logo/MusicWaveLogo.png';
 
 const Navbar1 = () => {
   const navigate = useNavigate();
@@ -13,8 +13,7 @@ const Navbar1 = () => {
 
   }
   return (
-
-    
+ 
     <header id="header" class="header d-flex align-items-center fixed-top">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet"></link>
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
@@ -24,7 +23,7 @@ const Navbar1 = () => {
                         style={{ cursor: 'pointer' }}
                     >
                         <img
-                            style={{ width: 200 }}
+                            style={{ width: "100px"}}
                             src={logo}
                     
                         />

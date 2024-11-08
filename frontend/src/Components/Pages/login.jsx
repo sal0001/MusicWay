@@ -6,50 +6,46 @@ import Navbar from '../navbar/navbar';
 
 const Login = () => {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState(''); 
+    const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setErrorMessage('');
-    
+
         const trimmedEmail = email.trim();
         const trimmedPassword = password.trim();
-    
+
+        // Basic validation for email and password
         if (!trimmedEmail || !trimmedPassword) {
             setErrorMessage('Email e Password são obrigatórios.');
             return;
         }
-    
+
         try {
             setLoading(true);
-    
             const response = await axios.post(
-                'http://127.0.0.1:3001/home/login', 
-                { email: trimmedEmail, password: trimmedPassword }, 
-                { headers: { 'Content-Type': 'application/json' } }
+                'http://127.0.0.1:3001/home/login',
+                { email: trimmedEmail, password: trimmedPassword },
+                { withCredentials: true } // Include credentials for session
             );
-    
+
             if (response.status === 200) {
-                
-                if (response.data.redirect) {
-                    
-                    navigate(response.data.redirect);
+                const { user } = response.data;
+                localStorage.setItem('user', JSON.stringify(user));
+
+                // Check for admin credentials and navigate accordingly
+                if (trimmedEmail === 'admin@gmail.com' && trimmedPassword === '123') {
+                    navigate('/admin'); // Redirect to admin page
                 } else {
-                    const { token, user } = response.data;
-    
-                 
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('user', JSON.stringify(user));
-    
-                  
-                    navigate('/main');
+                    navigate('/main'); // Redirect to main user page
                 }
             }
         } catch (error) {
             console.error('Erro no login:', error);
+
             if (error.response) {
                 const errorMessage = error.response.data.error || 'Email ou Password incorretos. Tente novamente.';
                 setErrorMessage(errorMessage);
@@ -62,12 +58,9 @@ const Login = () => {
             setLoading(false);
         }
     };
-    
-    
-    
+
     const handleRegisterRedirect = () => {
-        
-        navigate('/home/registar'); 
+        navigate('/home/registar');
     };
 
     const estiloCentralizado = {
@@ -80,7 +73,7 @@ const Login = () => {
 
     return (
         <div>
-            <Navbar /> 
+            <Navbar />
             <div style={estiloCentralizado}>
                 <form onSubmit={handleLogin} style={{ border: '1px solid black', padding: '20px', borderRadius: '20px' }}>
                     <div>
@@ -105,7 +98,7 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <button type="submit" disabled={loading}> 
+                    <button type="submit" disabled={loading}>
                         {loading ? 'A entrar...' : 'Entrar'}
                     </button>
                     <p style={{ cursor: 'pointer', color: 'black' }} onClick={handleRegisterRedirect}>

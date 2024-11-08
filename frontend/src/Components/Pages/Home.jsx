@@ -17,7 +17,7 @@ const Home = () => {
        <header id="h1" class="masthead text-white text-center">
         
             <div class="container d-flex align-items-center flex-column">
-            <h1 style={{color: 'black', fontWeight: 'bold'}} class="masthead-heading text-uppercase mb-0">Ouve qualquer musica em apenas um clique</h1>
+            <h1 style={{color: 'black', fontWeight: 'bold'}} class="masthead-heading text-uppercase mb-0">Ouve qualquer musica com apenas um clique</h1>
             <br />
             <a href="/home/login" id="bt1" style={{ fontWeight: 'bold' }} class="button">Ouve já</a>
            

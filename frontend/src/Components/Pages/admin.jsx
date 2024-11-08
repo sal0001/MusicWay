@@ -17,10 +17,13 @@ const UserList = styled.ul`
 
 const UserListItem = styled.li`
     background-color: #f8f9fa;
-    margin: 10px 0;
-    padding: 15px;
+    margin: 20px 0;
+    padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center items vertically */
 `;
 
 const GreyButton = styled.button`
@@ -33,6 +36,21 @@ const GreyButton = styled.button`
 
     &:hover {
         background-color: #5a6268; /* Darker shade on hover */
+    }
+`;
+
+const RemoveButton = styled(GreyButton)`
+    background-color: #dc3545; /* Bootstrap's danger color */
+    padding: 5px 10px; /* Smaller padding for a smaller button */
+    width: 80px; /* Fixed width for the button */
+    height: 30px; /* Fixed height for the button */
+    font-size: 14px; /* Adjust font size for better appearance */
+    display: flex; /* Flex to center text */
+    align-items: center; /* Center text vertically */
+    justify-content: center; /* Center text horizontally */
+
+    &:hover {
+        background-color: #c82333; /* Darker shade on hover */
     }
 `;
 
@@ -58,7 +76,6 @@ const Main = () => {
         fetchUsers();
     }, []);
 
-
     const handleSearch = async () => {
         if (!searchEmail) {
             setError('Por favor, insira um email.');
@@ -81,11 +98,19 @@ const Main = () => {
         }
     };
 
+    const handleRemoveUser = async (userId) => {
+        try {
+            await axios.delete(`http://127.0.0.1:3001/utilizadores/${userId}`); 
+            setUsers(users.filter(user => user._id !== userId)); 
+        } catch (err) {
+            setError('Erro ao remover o utilizador.');
+        }
+    };
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <Navbar3 />
             <UserListContainer>
-     
                 <div className="mb-4">
                     <input
                         type="email"
@@ -100,7 +125,6 @@ const Main = () => {
                 {loading && <p>Carregando...</p>}
                 {error && <p className="text-danger">{error}</p>}
                 
-    
                 {searchResult && (
                     <UserListItem>
                         <h5>{searchResult.nome}</h5>
@@ -108,12 +132,14 @@ const Main = () => {
                     </UserListItem>
                 )}
 
-        
                 <UserList>
                     {users.map(user => (
                         <UserListItem key={user._id}>
-                            <h5>{user.nome}</h5>
-                            <p>Email: {user.email}</p>
+                            <div>
+                                <h5>{user.nome}</h5>
+                                <p>Email: {user.email}</p>
+                            </div>
+                            <RemoveButton onClick={() => handleRemoveUser(user._id)}>Remover</RemoveButton>
                         </UserListItem>
                     ))}
                 </UserList>

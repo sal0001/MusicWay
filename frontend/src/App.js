@@ -7,6 +7,7 @@ import Perfil from './Components/Pages/Perfil';
 import AdicionarMusicas from './Components/Pages/addMusicas';
 import AdicionarPlaylists from './Components/Pages/addPlaylists';
 import Admin from './Components/Pages/admin';
+import AdicionarCategorias from './Components/Pages/addCategoria';
 
 import './App.css';
 
@@ -20,17 +21,14 @@ function App() {
             <Route path="/home/registar" element={<Registar />} />
             <Route path="/main" element={<Main />} />
             <Route path="/main/Perfil" element={<Perfil />} />
-            <Route path="/main/adicionarMusicas" element={<AdicionarMusicas />} />
+            <Route path="/adicionarMusicas" element={<AdicionarMusicas />} />
             <Route path="/main/addPlaylists" element={<AdicionarPlaylists />} />
+            <Route path="/addCategoria" element={<AdicionarCategorias />} />
             <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
     </div>
   );
 }
-
-
-
-
 
 export default App;

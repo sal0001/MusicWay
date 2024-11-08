@@ -54,27 +54,25 @@ const SearchContainer = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    margin-right: 80em;
+
 `;
 
 const SearchInput = styled.input`
 
     padding: 10px 15px;
     border-radius: 20px; /* Bordas arredondadas */
-    border: 1px solid #444; /* Bordas de um tom escuro */
-    background-color: #2e2e2e; /* Fundo escuro */
-    color: #ffffff; /* Texto branco */
+    background-color: transparent; /* Fundo escuro */
+    color: black; /* Texto branco */
     font-size: 16px; /* Tamanho de fonte */
     transition: border-color 0.3s, box-shadow 0.3s; /* Transição suave */
     
     &:focus {
         outline: none; /* Remove o contorno padrão */
-        border-color: #007bff; /* Cor da borda ao focar */
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra ao focar */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
     }
 
     &::placeholder {
-        color: #bbb; /* Cor do texto do placeholder */
+        color: black; /* Cor do texto do placeholder */
     }
 `;
 
@@ -213,6 +211,7 @@ const Main = () => {
             <div style={{ marginLeft: '0', padding: '20px', flex: 1, marginTop: '40px' }}>
                 <Navbar2 />
                 <MusicListContainer>
+                    <br />
                     <SearchContainer>
                         <SearchInput 
                             type="text" 

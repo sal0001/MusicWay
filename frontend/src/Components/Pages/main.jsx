@@ -1,78 +1,85 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import './main.css';
 import Navbar2 from '../navbar/navbar2';
 import styled from 'styled-components';
-import MiniPlayer from './MiniPlayer'; 
+import MiniPlayer from './MiniPlayer';
 
 const SidebarContainer = styled.div`
-    width: 250px;
-    height: calc(100vh - 60px);
+    width: 400px;
+    height: 100vh;
     background-color: #1c1c1c;
     color: white;
     padding: 20px;
     position: fixed;
-    top: 60px;
+    top: 70px;
     left: 0;
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 `;
 
 const SidebarTitle = styled.h2`
     font-size: 1.5em;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    color: #fff;
 `;
 
 const CreatePlaylistButton = styled.button`
-    background-color: grey; /* Cor de fundo do botão */
-    color: white; /* Texto branco */
-    border: none; /* Sem borda */
-    border-radius: 50%; /* Bordas arredondadas para formato circular */
-    width: 40px; /* Largura do botão */
-    height: 40px; /* Altura do botão */
-    font-size: 24px; /* Tamanho da fonte */
-    display: flex; /* Flex para centralizar o ícone */
-    align-items: center; /* Centralizar verticalmente */
-    justify-content: center; /* Centralizar horizontalmente */
-    cursor: pointer; /* Mudar o cursor ao passar por cima */
-    margin-top: 20px; /* Margem superior */
-    transition: background-color 0.3s; /* Transição suave ao passar o mouse */
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
 
     &:hover {
-        background-color: black; /* Cor de fundo ao passar o mouse */
+        background-color: #333;
     }
 `;
 
 const MusicListContainer = styled.div`
-    margin-left: 270px; /* Espaçamento da sidebar */
+    margin-left: 400px;
     padding: 20px;
+    flex: 1;
+    margin-top: 60px;
+    width: 100%;
 `;
 
 const SearchContainer = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 20px;
-
+    width: 100%;
 `;
 
 const SearchInput = styled.input`
-
-    padding: 10px 15px;
-    border-radius: 20px; /* Bordas arredondadas */
-    background-color: transparent; /* Fundo escuro */
-    color: black; /* Texto branco */
-    font-size: 16px; /* Tamanho de fonte */
-    transition: border-color 0.3s, box-shadow 0.3s; /* Transição suave */
-    
-    &:focus {
-        outline: none; /* Remove o contorno padrão */
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
-    }
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background-color: white;
+    color: black;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
 
     &::placeholder {
-        color: black; /* Cor do texto do placeholder */
+        color: black;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #007bff;
     }
 `;
 
@@ -80,25 +87,28 @@ const MusicItem = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 15px;
-    border-radius: 5px;
-    background-color: #282828;
-    margin-bottom: 10px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    background-color: #333;
+    margin-bottom: 15px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
 
     &:hover {
-        background-color: #3b3b3b;
+        background-color: #444;
+        transform: translateX(5px);
     }
 `;
 
 const MusicName = styled.span`
     font-weight: bold;
     color: #fff;
+    font-size: 18px;
 `;
 
 const MusicArtist = styled.span`
     color: #bbb;
+    font-size: 14px;
 `;
 
 const PlayButton = styled.button`
@@ -106,12 +116,12 @@ const PlayButton = styled.button`
     border: none;
     cursor: pointer;
     color: white;
-    font-size: 20px;
-    margin-left: 10px;
+    font-size: 24px;
+    margin-left: 15px;
     transition: color 0.3s;
 
     &:hover {
-        color: #ccc; /* Slightly lighter color on hover for contrast */
+        color: #ccc;
     }
 `;
 
@@ -133,7 +143,6 @@ const Main = () => {
                 url: `http://127.0.0.1:3001/musicas/${song.ficheiro}` 
             }));
             setPublishedSongs(songsWithUrls);
-            console.log("Loaded songs:", songsWithUrls);
         } catch (error) {
             console.error('Error fetching songs:', error.message);
         }
@@ -143,30 +152,27 @@ const Main = () => {
         fetchSongs();
     }, []);
 
-    const handleMusicSelect = (song) => {
-        console.log("Selected song:", song);
-
+    const handlePlayPause = (song) => {
         if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
-            console.log("Toggling play/pause");
             if (audioRef.current) {
                 if (audioRef.current.paused) {
-                    console.log("Playing audio");
+                    
                     audioRef.current.play().catch(error => {
-                        console.error("Error attempting to play the music:", error);
+                        console.error("Erro ao tentar retomar a música:", error);
                     });
                 } else {
-                    console.log("Pausing audio");
+                   
                     audioRef.current.pause();
                 }
             }
         } else {
+            
             setCurrentTrack(song);
             if (audioRef.current) {
                 audioRef.current.src = `http://127.0.0.1:3001/musicas/${song.ficheiro}`;
-                audioRef.current.load();
-                console.log("Playing new track:", audioRef.current.src);
+                audioRef.current.load(); 
                 audioRef.current.play().catch(error => {
-                    console.error("Error attempting to play the new music:", error);
+                    console.error("Erro ao tentar tocar a nova música:", error);
                 });
             }
         }
@@ -177,56 +183,40 @@ const Main = () => {
         song.artista.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handlePlayPause = () => {
-        if (audioRef.current) {
-            if (audioRef.current.paused) {
-                console.log("Playing audio");
-                audioRef.current.play().catch(error => {
-                    console.error("Error playing audio:", error);
-                });
-            } else {
-                console.log("Pausing audio");
-                audioRef.current.pause();
-            }
-        }
-    };
     const handleCreatePlaylist = () => {
-        const playlistName = prompt("Enter the name of the new playlist:");
-        if (playlistName) {
-            console.log(`Playlist created: ${playlistName}`);
-            
-        }
+        console.log("Create Playlist button clicked.");
     };
 
     return (
-        <div style={{ display: 'flex' }}>
-            <SidebarContainer>
-                <SidebarTitle>Playlists</SidebarTitle>
-                
-                <CreatePlaylistButton onClick={handleCreatePlaylist}>
-                    <i className="fas fa-plus"></i>
-                </CreatePlaylistButton>
-            </SidebarContainer>
+        <div>
+            <Navbar2 />
+            <div style={{ display: 'flex' }}>
+                <SidebarContainer>
+                    <SidebarTitle>Playlists</SidebarTitle>
+                    <CreatePlaylistButton onClick={handleCreatePlaylist}>
+                        <i className="fas fa-plus"></i>
+                    </CreatePlaylistButton>
+                </SidebarContainer>
 
-            <div style={{ marginLeft: '0', padding: '20px', flex: 1, marginTop: '40px' }}>
-                <Navbar2 />
                 <MusicListContainer>
-                    <br />
                     <SearchContainer>
                         <SearchInput 
                             type="text" 
-                            placeholder="Search for songs..."
+                            placeholder="Pesquisa por musicas..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)} 
                         />
                     </SearchContainer>
                     {filteredSongs.map(song => (
-                        <MusicItem key={song._id} onClick={() => handleMusicSelect(song)}>
+                        <MusicItem key={song._id} onClick={() => handlePlayPause(song)}>
                             <MusicName>{song.nome}</MusicName>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <MusicArtist>{song.artista}</MusicArtist>
-                                <PlayButton onClick={(e) => { e.stopPropagation(); handleMusicSelect(song); }}>
-                                    <i className={currentTrack?.ficheiro === song.ficheiro ? "fas fa-pause" : "fas fa-play"}></i>
+                                <PlayButton onClick={(e) => { 
+                                    e.stopPropagation(); 
+                                    handlePlayPause(song); 
+                                }}>
+                                    <i className={audioRef.current?.paused ? "fas fa-play" : "fas fa-play"}></i>
                                 </PlayButton>
                             </div>
                         </MusicItem>

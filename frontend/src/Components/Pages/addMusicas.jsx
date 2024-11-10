@@ -4,63 +4,67 @@ import { FaUpload } from 'react-icons/fa';
 import Navbar3 from '../navbar/navbar3';
 import axios from 'axios';
 
-const Container = styled.div`
-  text-align: center;
-  max-width: 800px;
-  padding: 2em;
-  background-color: #fff;
-  width: 100%;
-  margin: 0 auto;
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: white;
 `;
 
 const FormWrapper = styled.div`
-  border: 2px solid grey;
-  border-radius: 8px;
-  padding: 2em;
-  background-color: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #2b2b2b;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
 `;
 
-const Row = styled.div`
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column; 
-  margin-bottom: 1em;
+const Title = styled.h2`
+  color: #ffffff;
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
 `;
 
 const InputGroup = styled.div`
-  margin-top: 10px;
-  margin-bottom: 2px;
-  position: relative;
-  width: 100%; 
+  margin: 10px 0;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 1em;
-  line-height: 1.4;
-  background-color: #f9f9f9;
-  border: 1px solid #e5e5e5;
-  border-radius: 3px;
-  transition: 0.35s ease-in-out;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  background-color: #3d3d3d;
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
 
   &:focus {
-    outline: 0;
-    border-color: #bd8200;
+    background-color: #4a4a4a;
+    box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.2);
   }
 `;
 
 const Select = styled.select`
   width: 100%;
-  padding: 1em;
-  background-color: #f9f9f9;
-  border: 1px solid #e5e5e5;
-  border-radius: 3px;
-  transition: 0.35s ease-in-out;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3d3d3d;
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
 
   &:focus {
-    outline: 0;
-    border-color: #bd8200;
+    background-color: #4a4a4a;
+    box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.2);
   }
 `;
 
@@ -68,16 +72,16 @@ const UploadButton = styled.label`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed grey;
+  padding: 12px;
+  background-color: #3d3d3d;
   border-radius: 8px;
-  padding: 1em;
+  color: #ffffff;
   cursor: pointer;
-  color: grey;
   transition: background-color 0.2s;
-  width: 100%; 
-  
+  margin-top: 8px;
+
   &:hover {
-    background-color: rgba(189, 130, 0, 0.1);
+    background-color: #4a4a4a;
   }
 `;
 
@@ -85,23 +89,34 @@ const Icon = styled(FaUpload)`
   margin-right: 0.5em; 
 `;
 
-const Button = styled.button`
-  padding: 1em 2em;
-  background-color: grey;
+const SubmitButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  background-color: #555555;
+  color: #ffffff;
   border: none;
-  border-radius: 50px;
-  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 1em;
-  margin-top: 1em;
+  transition: all 0.3s ease;
+  margin-top: 20px;
 
   &:hover {
-    background-color: black;
+    background-color: #777777;
   }
 
-  @media (max-width: 768px) {
-    width: 100%;
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
   }
+`;
+
+const MessageText = styled.p`
+  color: ${(props) => (props.error ? '#ff4d4d' : '#4caf50')};
+  margin-top: 20px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
 `;
 
 const FormComponent = () => {
@@ -160,7 +175,7 @@ const FormComponent = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }); 
+      });
   
       console.log('Música publicada com sucesso:', response.data);
       setErrorMessage('Música publicada com sucesso.');
@@ -181,64 +196,63 @@ const FormComponent = () => {
   return (
     <div>
       <Navbar3 />
-      <Container>
+      <PageContainer>
         <FormWrapper>
+          <Title>Publicar Música</Title>
           <form onSubmit={handleSubmit}>
-            <Row>
-              <InputGroup>
-                <Input
-                  type="text"
-                  placeholder="Nome da música"
-                  value={nomeMusica}
-                  onChange={(e) => setNomeMusica(e.target.value)}
-                  required
-                />
-              </InputGroup>
-              <InputGroup>
-                <Input
-                  type="text"
-                  placeholder="Nome do artista"
-                  value={artista}
-                  onChange={(e) => setArtista(e.target.value)}
-                  required
-                />
-              </InputGroup>
-              <InputGroup>
-                <UploadButton htmlFor="file-upload">
-                  <Icon />
-                  Selecione um arquivo
-                </UploadButton>
-                <Input
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileChange}
-                  required
-                  style={{ display: 'none' }} 
-                />
-              </InputGroup>
-              <InputGroup>
-                <Select 
-                  value={categoriaId}
-                  onChange={(e) => setCategoriaId(e.target.value)}
-                  required
-                >
-                  <option value="">Selecione uma categoria</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.nome}
-                    </option>
-                  ))}
-                </Select>
-              </InputGroup>
-            </Row>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="Nome da música"
+                value={nomeMusica}
+                onChange={(e) => setNomeMusica(e.target.value)}
+                required
+              />
+            </InputGroup>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="Nome do artista"
+                value={artista}
+                onChange={(e) => setArtista(e.target.value)}
+                required
+              />
+            </InputGroup>
+            <InputGroup>
+              <UploadButton htmlFor="file-upload">
+                <Icon />
+                Selecione um arquivo
+              </UploadButton>
+              <Input
+                id="file-upload"
+                type="file"
+                onChange={handleFileChange}
+                required
+                style={{ display: 'none' }} 
+              />
+            </InputGroup>
+            <InputGroup>
+              <Select 
+                value={categoriaId}
+                onChange={(e) => setCategoriaId(e.target.value)}
+                required
+              >
+                <option value="">Selecione uma categoria</option>
+                {categories.map((category) => (
+                  <option key={category._id} value={category._id}>
+                    {category.nome}
+                  </option>
+                ))}
+              </Select>
+            </InputGroup>
 
-            <Button type="submit" disabled={isSubmitting}>
+            <SubmitButton type="submit" disabled={isSubmitting}>
               {isSubmitting ? 'Publicando...' : 'Publicar'}
-            </Button>
-            {errorMessage && <p className="error">{errorMessage}</p>}
+            </SubmitButton>
+            {errorMessage && <MessageText error>{errorMessage}</MessageText>}
           </form>
         </FormWrapper>
-      </Container>
+      </PageContainer>
     </div>
   );
 };

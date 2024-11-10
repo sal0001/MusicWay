@@ -33,12 +33,13 @@ app.use(session({
     }
 }));
 
+
 mongoose.connect('mongodb://localhost:27017/M&B', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log('MongoDB connected successfully.'))
-.catch(err => console.error('MongoDB connection error:', err));
+.then(() => console.log('Conectado a MongoDB.'))
+.catch(err => console.error('Erro a conecatar com mongoDB:', err));
 
 app.get('/auth', (req, res) => {
     if (req.session.userId) { 
@@ -122,17 +123,13 @@ app.post('/logout', (req, res) => {
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const musicDirectory = path.join(__dirname, '../musicas');
-
-      
         if (!fs.existsSync(musicDirectory)) {
             fs.mkdirSync(musicDirectory, { recursive: true });
         }
-
         cb(null, musicDirectory);
     },
     filename: (req, file, cb) => {
-      
-        const uniqueName = Date.now() + path.extname(file.originalname);
+        const uniqueName = Date.now() + path.extname(file.originalname);  
         cb(null, uniqueName);
     }
 });
@@ -143,7 +140,6 @@ const upload = multer({ storage: storage });
 
 app.post('/addMusicas', upload.single('file'), async (req, res) => {
     try {
-      
         const { nome, artista, categoriaId } = req.body;
         const file = req.file;  
 
@@ -152,21 +148,27 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
             return res.status(400).json({ error: 'Por favor, preencha todos os campos: nome, artista, arquivo e categoria.' });
         }
 
-       
+        
         const categoria = await Categoria.findById(categoriaId);
         if (!categoria) {
             return res.status(404).json({ error: 'Categoria não encontrada.' });
         }
 
       
+        const ficheiroNome = path.basename(file.path);  
+
+     
         const musica = new Musicas({
             nome,
             artista,
             categoria: categoriaId,
-            ficheiro: file.path,  
+            ficheiro: ficheiroNome,  
         });
 
+
         await musica.save();  
+
+    
         return res.status(200).json({ message: 'Música publicada com sucesso!', musica });
 
     } catch (error) {
@@ -174,6 +176,9 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
         return res.status(500).json({ error: 'Erro ao adicionar música. Tente novamente.' });
     }
 });
+
+app.use('/musicas', express.static(path.join(__dirname, '../musicas')));
+
 
 app.get('/musicas', async (req, res) => {
     try {
@@ -183,6 +188,18 @@ app.get('/musicas', async (req, res) => {
         console.error('Erro ao buscar músicas:', error);
         res.status(500).json({ error: 'Erro ao buscar músicas.' });
     }
+});
+
+app.get('/musicas/:filename', (req, res) => {
+    const filename = req.params.filename; 
+    const filePath = path.join(__dirname, '../musicas', filename); 
+    
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('Error sending file:', err);
+            res.status(500).send('Error sending file');
+        }
+    });
 });
 
 app.post('/CriarPlaylists', async (req, res) => {
@@ -285,5 +302,5 @@ app.get('/getCategorias', async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://127.0.0.1:${PORT}`);
+    console.log(`Servidor a rodar na porta http://127.0.0.1:${PORT}`);
 });

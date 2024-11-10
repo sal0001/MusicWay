@@ -1,9 +1,6 @@
 import React from 'react';
-import './navbar2.css';
 import { useNavigate } from 'react-router-dom';
-import { CgProfile } from "react-icons/cg";
-import { LuListMusic } from "react-icons/lu";
-import logo from '../Logo/MusicWaveLogo.png';
+import logo from '../Logo/MusicWayLogo.png';
 import axios from 'axios';
 
 const Navbar2 = () => {
@@ -13,11 +10,9 @@ const Navbar2 = () => {
         navigate('/admin');
     };
 
-
     const handleLogout = async () => {
         try {
             await axios.post('http://localhost:3001/logout', {}, { withCredentials: true });
-        
             navigate('/');
         } catch (error) {
             console.error('Erro ao fazer logout:', error);
@@ -27,45 +22,39 @@ const Navbar2 = () => {
 
     return (
         <div>
-            <header id="header" className="header d-flex align-items-center fixed-top">
+            <header id="header" className="header d-flex align-items-center fixed-top" style={styles.header}>
                 <div className="container-fluid container-xl position-relative d-flex align-items-center">
                     <a
                         className="logo d-flex align-items-center me-auto"
                         onClick={clickIMAGE}
-                        style={{ cursor: 'pointer', fontSize: '1em' }}
+                        style={styles.logo}
                     >
                         <img
-                            style={{ width: 100 }}
+                            style={styles.logoImage}
                             src={logo}
                             alt="MusicWay Logo"
                         />
                     </a>
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"></link>
-                    <nav id="navmenu" className="navmenu">
-                        <ul>
-                            <li className="dropdown">
-                                <a href="#" aria-haspopup="true" aria-expanded="false">
-                                    <LuListMusic style={{ fontSize: '1.5em' }} />
-                                    <i className="toggle-dropdown" style={{ fontWeight: 'bold' }}></i>
-                                </a>
-                                <ul>
-                                    <li><a href="/adicionarMusicas">publicar musicas</a></li>
-                                    <li><a href="/addCategoria">criar categoria</a></li>
-                                </ul>
+
+                    <nav id="navmenu" className="navmenu" style={styles.navMenu}>
+                        <ul style={styles.navList}>
+                            <li style={styles.navItem}>
+                                <a href="/adicionarMusicas" style={styles.navLink}>Publicar Músicas</a>
                             </li>
-                            <li className="dropdown">
-                                <a href="#" aria-haspopup="true" aria-expanded="false">
-                                    <CgProfile style={{ fontSize: '1.5em' }} />
-                                    <i className="toggle-dropdown" style={{ fontWeight: 'bold' }}></i>
+                            <li style={styles.navItem}>
+                                <a href="/addCategoria" style={styles.navLink}>Criar Categoria</a>
+                            </li>
+                            <li style={styles.navItem}>
+                                <a
+                                    style={styles.logoutLink}
+                                    onClick={handleLogout}
+                                    role="button"
+                                    aria-label="Logout"
+                                >
+                                    Sair
                                 </a>
-                                <ul>
-                                    <li>
-                                        <a style={{ color: 'red' }} onClick={handleLogout} role="button" aria-label="Logout">Sair</a>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
-                        <i className="mobile-nav-toggle d-xl-none bi bi-list"></i>
                     </nav>
                 </div>
             </header>
@@ -73,4 +62,54 @@ const Navbar2 = () => {
     );
 };
 
-export default Navbar2;
+const styles = {
+    header: {
+        backgroundColor: '#333',
+        padding: '20px 20px',
+        boxShadow: '0'
+    },
+        logo: {
+            cursor: 'pointer',
+            fontSize: '1.2em',
+        },
+        logoImage: {
+            width: 150,
+        },
+        navMenu: {
+            marginLeft: 'auto',
+        },
+        navList: {
+            display: 'flex',
+            listStyle: 'none',
+            padding: 0,
+            margin: 0,
+            alignItems: 'center',
+        },
+        navItem: {
+            margin: '0 20px',
+        },
+        navLink: {
+            textDecoration: 'none',
+            color: '#fff',
+            fontSize: '1.1em',
+            fontWeight: '500',
+            transition: 'color 0.3s ease',
+        },
+        
+        navLinkHover: {
+            color: '#3498db', 
+        },
+        logoutLink: {
+            textDecoration: 'none',
+            color: '#e74c3c',
+            fontSize: '1.1em',
+            fontWeight: 'bold',
+            transition: 'color 0.3s ease',
+        },
+        logoutLinkHover: {
+            color: '#c0392b', 
+        },
+    };
+    
+    export default Navbar2;
+    

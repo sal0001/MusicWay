@@ -79,7 +79,7 @@ const AddPlaylists = () => {
     }
   };
 
-  // Filter songs based on search query
+
   const filteredSongs = publishedSongs.filter(song =>
     song.nome.toLowerCase().includes(searchQuery.toLowerCase())
   );

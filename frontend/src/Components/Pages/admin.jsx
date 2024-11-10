@@ -5,52 +5,89 @@ import Navbar3 from '../navbar/navbar3';
 import styled from 'styled-components';
 import axios from 'axios';
 
+
 const UserListContainer = styled.div`
-    padding: 100px;
+    margin-top: 100px;
+    padding: 40px;
     width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 `;
+
 
 const UserList = styled.ul`
     list-style-type: none;
     padding: 0;
+    margin-top: 40px;
 `;
+
 
 const UserListItem = styled.li`
-    background-color: #f8f9fa;
-    margin: 20px 0;
+    background-color: #ffffff;
+    margin: 15px 0;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: space-between; /* Space between items */
-    align-items: center; /* Center items vertically */
-`;
-
-const GreyButton = styled.button`
-    background-color: #6c757d; /* Bootstrap's secondary color */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
-        background-color: #5a6268; /* Darker shade on hover */
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     }
 `;
 
-const RemoveButton = styled(GreyButton)`
-    background-color: #dc3545; /* Bootstrap's danger color */
-    padding: 5px 10px; /* Smaller padding for a smaller button */
-    width: 80px; /* Fixed width for the button */
-    height: 30px; /* Fixed height for the button */
-    font-size: 14px; /* Adjust font size for better appearance */
-    display: flex; /* Flex to center text */
-    align-items: center; /* Center text vertically */
-    justify-content: center; /* Center text horizontally */
+
+const SearchButton = styled.button`
+    background-color: grey;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 
     &:hover {
-        background-color: #c82333; /* Darker shade on hover */
+        background-color: #ccc;
+    }
+`;
+
+
+const RemoveButton = styled.button`
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #c82333;
+    }
+`;
+
+
+const SearchInput = styled.input`
+    padding: 12px;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 25px;
+    border: 2px solid #ccc;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+        border-color: black;
+        outline: none;
     }
 `;
 
@@ -111,15 +148,14 @@ const Main = () => {
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <Navbar3 />
             <UserListContainer>
-                <div className="mb-4">
-                    <input
+                <div className="mb-4 d-flex justify-content-center">
+                    <SearchInput
                         type="email"
                         placeholder="Digite o email do utilizador"
                         value={searchEmail}
                         onChange={(e) => setSearchEmail(e.target.value)}
-                        className="form-control"
                     />
-                    <GreyButton onClick={handleSearch} className="mt-2">Buscar</GreyButton>
+                    <SearchButton onClick={handleSearch} className="ml-3">Buscar</SearchButton>
                 </div>
 
                 {loading && <p>Carregando...</p>}
@@ -127,8 +163,10 @@ const Main = () => {
                 
                 {searchResult && (
                     <UserListItem>
-                        <h5>{searchResult.nome}</h5>
-                        <p>Email: {searchResult.email}</p>
+                        <div>
+                            <h5>{searchResult.nome}</h5>
+                            <p>Email: {searchResult.email}</p>
+                        </div>
                     </UserListItem>
                 )}
 
@@ -139,7 +177,9 @@ const Main = () => {
                                 <h5>{user.nome}</h5>
                                 <p>Email: {user.email}</p>
                             </div>
-                            <RemoveButton onClick={() => handleRemoveUser(user._id)}>Remover</RemoveButton>
+                            <RemoveButton onClick={() => handleRemoveUser(user._id)}>
+                                <i className="fas fa-trash-alt"></i>
+                            </RemoveButton>
                         </UserListItem>
                     ))}
                 </UserList>

@@ -1,5 +1,4 @@
-// MiniPlayer.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const MiniPlayerContainer = styled.div`
@@ -52,11 +51,67 @@ const ControlButton = styled.button`
     transition: color 0.3s;
 
     &:hover {
-        color: white;
+        color: #ff5722;
+    }
+`;
+
+const VolumeControl = styled.input`
+    -webkit-appearance: none;
+    appearance: none;
+    width: 120px;
+    height: 8px;
+    background: #888;
+    border-radius: 5px;
+    outline: none;
+    transition: background 0.3s;
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #ff5722;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    &:hover {
+        background: #555;
     }
 `;
 
 const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
+    const [volume, setVolume] = useState(1); // Volume inicial em 100%
+    const [isPlaying, setIsPlaying] = useState(false); // Controla o estado de reprodução
+
+    // Atualiza o estado de reprodução dependendo de se o áudio está pausado ou tocando
+    useEffect(() => {
+        if (audioRef.current) {
+            setIsPlaying(!audioRef.current.paused);
+        }
+    }, [audioRef.current?.paused]); // Reage às mudanças do estado 'paused' do áudio
+
+    const handleVolumeChange = (e) => {
+        const newVolume = e.target.value;
+        setVolume(newVolume);
+        if (audioRef.current) {
+            audioRef.current.volume = newVolume;
+        }
+    };
+
+    const handlePlayPause = () => {
+        if (audioRef.current) {
+            if (audioRef.current.paused) {
+                audioRef.current.play().catch((error) => {
+                    console.error('Error playing audio:', error);
+                });
+            } else {
+                audioRef.current.pause();
+            }
+            setIsPlaying(!audioRef.current.paused); // Atualiza o estado de 'isPlaying'
+        }
+    };
+
     return (
         currentTrack && (
             <MiniPlayerContainer>
@@ -74,8 +129,8 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
                     }}>
                         <i className="fas fa-backward"></i>
                     </ControlButton>
-                    <ControlButton onClick={onPlayPause}>
-                        {audioRef.current && !audioRef.current.paused ? (
+                    <ControlButton onClick={handlePlayPause}>
+                        {isPlaying ? (
                             <i className="fas fa-pause"></i>
                         ) : (
                             <i className="fas fa-play"></i>
@@ -89,6 +144,14 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
                         <i className="fas fa-forward"></i>
                     </ControlButton>
                 </ControlButtons>
+                <VolumeControl
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={volume}
+                    onChange={handleVolumeChange}
+                />
             </MiniPlayerContainer>
         )
     );

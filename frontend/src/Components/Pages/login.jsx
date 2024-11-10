@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './login.css';
 import Navbar from '../navbar/navbar';
+import styled from 'styled-components';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -18,7 +18,6 @@ const Login = () => {
         const trimmedEmail = email.trim();
         const trimmedPassword = password.trim();
 
-        // Basic validation for email and password
         if (!trimmedEmail || !trimmedPassword) {
             setErrorMessage('Email e Password são obrigatórios.');
             return;
@@ -29,18 +28,18 @@ const Login = () => {
             const response = await axios.post(
                 'http://127.0.0.1:3001/home/login',
                 { email: trimmedEmail, password: trimmedPassword },
-                { withCredentials: true } // Include credentials for session
+                { withCredentials: true } 
             );
 
             if (response.status === 200) {
                 const { user } = response.data;
                 localStorage.setItem('user', JSON.stringify(user));
 
-                // Check for admin credentials and navigate accordingly
+           
                 if (trimmedEmail === 'admin@gmail.com' && trimmedPassword === '123') {
-                    navigate('/admin'); // Redirect to admin page
+                    navigate('/admin'); 
                 } else {
-                    navigate('/main'); // Redirect to main user page
+                    navigate('/main'); 
                 }
             }
         } catch (error) {
@@ -63,22 +62,14 @@ const Login = () => {
         navigate('/home/registar');
     };
 
-    const estiloCentralizado = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        margin: 0,
-    };
-
     return (
-        <div>
+        <Container>
             <Navbar />
-            <div style={estiloCentralizado}>
-                <form onSubmit={handleLogin} style={{ border: '1px solid black', padding: '20px', borderRadius: '20px' }}>
-                    <div>
-                        <label htmlFor="email">Email</label>
-                        <input
+            <FormContainer>
+                <StyledForm onSubmit={handleLogin}>
+                    <FormGroup>
+                        <Label htmlFor="email">Email</Label>
+                        <StyledInput
                             id="email"
                             type="email"
                             placeholder="Email"
@@ -86,10 +77,10 @@ const Login = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input
+                    </FormGroup>
+                    <FormGroup>
+                        <Label htmlFor="password">Password</Label>
+                        <StyledInput
                             id="password"
                             type="password"
                             placeholder="Password"
@@ -97,18 +88,102 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                    </div>
-                    <button type="submit" disabled={loading}>
+                    </FormGroup>
+                    <SubmitButton type="submit" disabled={loading}>
                         {loading ? 'A entrar...' : 'Entrar'}
-                    </button>
-                    <p style={{ cursor: 'pointer', color: 'black' }} onClick={handleRegisterRedirect}>
+                    </SubmitButton>
+                    <RegisterText onClick={handleRegisterRedirect}>
                         Ainda não se registou?
-                    </p>
-                    {errorMessage && <p className="error">{errorMessage}</p>}
-                </form>
-            </div>
-        </div>
+                    </RegisterText>
+                    {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+                </StyledForm>
+            </FormContainer>
+        </Container>
     );
 };
+
+
+const Container = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f6f9;
+`;
+
+const FormContainer = styled.div`
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+`;
+
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+`;
+
+const FormGroup = styled.div`
+    margin-bottom: 15px;
+`;
+
+const Label = styled.label`
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+`;
+
+const StyledInput = styled.input`
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    transition: border-color 0.3s ease;
+    &:focus {
+        border-color: black;
+        outline: none;
+    }
+`;
+
+const SubmitButton = styled.button`
+    padding: 12px;
+    font-size: 1.1em;
+    background-color: grey;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    &:hover {
+        background-color: #ccc;
+    }
+    &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+`;
+
+const RegisterText = styled.p`
+    text-align: center;
+    font-size: 1em;
+    color: grey;
+    cursor: pointer;
+    margin-top: 10px;
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
+const ErrorMessage = styled.p`
+    color: red;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 10px;
+`;
 
 export default Login;

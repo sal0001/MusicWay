@@ -51,7 +51,7 @@ const ControlButton = styled.button`
     transition: color 0.3s;
 
     &:hover {
-        color: #ff5722;
+        color: grey;
     }
 `;
 
@@ -60,7 +60,7 @@ const VolumeControl = styled.input`
     appearance: none;
     width: 120px;
     height: 8px;
-    background: #888;
+    background: grey;
     border-radius: 5px;
     outline: none;
     transition: background 0.3s;
@@ -70,7 +70,7 @@ const VolumeControl = styled.input`
         appearance: none;
         width: 20px;
         height: 20px;
-        background: #ff5722;
+        background: white;
         border-radius: 50%;
         cursor: pointer;
     }
@@ -81,15 +81,15 @@ const VolumeControl = styled.input`
 `;
 
 const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
-    const [volume, setVolume] = useState(1); // Volume inicial em 100%
-    const [isPlaying, setIsPlaying] = useState(false); // Controla o estado de reprodução
+    const [volume, setVolume] = useState(1); 
+    const [isPlaying, setIsPlaying] = useState(false); 
 
-    // Atualiza o estado de reprodução dependendo de se o áudio está pausado ou tocando
+   
     useEffect(() => {
         if (audioRef.current) {
             setIsPlaying(!audioRef.current.paused);
         }
-    }, [audioRef.current?.paused]); // Reage às mudanças do estado 'paused' do áudio
+    }, [audioRef.current?.paused]); 
 
     const handleVolumeChange = (e) => {
         const newVolume = e.target.value;
@@ -108,7 +108,7 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
             } else {
                 audioRef.current.pause();
             }
-            setIsPlaying(!audioRef.current.paused); // Atualiza o estado de 'isPlaying'
+            setIsPlaying(!audioRef.current.paused); 
         }
     };
 

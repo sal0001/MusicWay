@@ -118,13 +118,19 @@ const Main = () => {
             setError('Por favor, insira um email.');
             return;
         }
-        
+    
         try {
-            const response = await axios.get('http://127.0.0.1:3001/buscarUtilizadorPorEmail', {
+            const response = await axios.get('http://127.0.0.1:3001/utilizadores/email', {
                 params: { email: searchEmail },
             });
-            setSearchResult(response.data);
-            setError(''); 
+            
+            if (response.data) {
+                setSearchResult(response.data); 
+                setError(''); 
+            } else {
+                setError('Utilizador não encontrado.');
+                setSearchResult(null); 
+            }
         } catch (err) {
             if (err.response) {
                 setError(err.response.data.error || 'Erro ao buscar o utilizador.');
@@ -134,6 +140,7 @@ const Main = () => {
             setSearchResult(null); 
         }
     };
+    
 
     const handleRemoveUser = async (userId) => {
         try {

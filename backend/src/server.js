@@ -4,7 +4,6 @@ const cors = require('cors');
 const multer = require('multer'); 
 const fs = require('fs');
 const path = require('path');
-const session = require('express-session'); 
 const Utilizadores = require('../models/utilizadores');
 const Musicas = require('../models/musicas');
 const addMusic = require('../models/Novamusica'); 
@@ -13,25 +12,18 @@ const Playlist = require('../models/playlists');
 const Categoria = require('../models/Categorias')
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
-
-
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST'],
+    credentials: true, 
+  }));
 app.use(cookieParser());
-
 const PORT = 3001;
-
-app.use(session({
-    key: "userId",
-    secret: '123456789', 
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 
-    }
-}));
 
 
 mongoose.connect('mongodb://localhost:27017/M&B', {
@@ -41,11 +33,33 @@ mongoose.connect('mongodb://localhost:27017/M&B', {
 .then(() => console.log('Conectado a MongoDB.'))
 .catch(err => console.error('Erro a conecatar com mongoDB:', err));
 
+
+if (!process.env.JWT_SECRET) {
+    console.error('JWT_SECRET is not defined in .env file!');
+    process.exit(1); 
+}
+
+
 app.get('/auth', (req, res) => {
-    if (req.session.userId) { 
-        res.json({ authenticated: true, userId: req.session.userId, user: req.session.user });
-    } else {
-        res.json({ authenticated: false });
+    const token = req.headers['authorization']?.split(' ')[1]; 
+
+    if (!token) {
+        return res.status(401).json({ authenticated: false, message: 'No token provided.' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        const user = {
+            userId: decoded.userId,
+            nome: decoded.nome,  
+            email: decoded.email,
+        };
+
+        return res.json({ authenticated: true, user }); 
+    } catch (err) {
+        console.error('Token verification error:', err);
+        return res.status(401).json({ authenticated: false, message: 'Invalid or expired token.' });
     }
 });
 
@@ -81,43 +95,48 @@ app.post('/home/login', async (req, res) => {
     }
 
     try {
-    
+       
         const user = await Utilizadores.findOne({ email });
 
         if (!user) {
             return res.status(400).json({ error: 'Email ou password incorretos.' });
         }
 
+      
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ error: 'Email ou password incorretos.' });
         }
 
-    
-        const result = [user]; 
+     
+        const token = jwt.sign(
+            { userId: user._id, nome: user.nome, email: user.email },  
+            process.env.JWT_SECRET,                                    
+            { expiresIn: '1h' }                                       
+        );
 
-        req.session.userId = result[0]._id;
-        req.session.user = result[0]; 
+       
+        res.json({
+            message: 'Login successful',
+            token,
+            user: {
+                nome: user.nome,
+                email: user.email
+            }
+        });
 
-    
-        const { password: _, ...userWithoutPassword } = result[0].toObject(); 
-        return res.status(200).json({ user: userWithoutPassword });
-        
     } catch (err) {
         console.error('Erro no servidor:', err);
         return res.status(500).json({ error: 'Erro no servidor. Tente novamente mais tarde.' });
     }
 });
 
+
 app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Logout failed:', err);
-            return res.status(500).json({ error: 'Logout failed' });
-        }
-        res.clearCookie('userId');
-        res.json({ message: 'Logged out successfully' });
-    });
+    
+    res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    
+    return res.json({ message: 'Logout successful.' });
 });
 
 const storage = multer.diskStorage({
@@ -178,8 +197,6 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
 });
 
 app.use('/musicas', express.static(path.join(__dirname, '../musicas')));
-
-
 app.get('/musicas', async (req, res) => {
     try {
         const musicas = await Musicas.find();
@@ -252,6 +269,27 @@ app.delete('/utilizadores/:id', async (req, res) => {
         res.status(200).json({ message: 'Utilizador removido com sucesso.' });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao remover o utilizador.' });
+    }
+});
+
+app.get('/utilizadores/email', async (req, res) => {
+    const { email } = req.query;
+
+    if (!email) {
+        return res.status(400).json({ error: 'O email é obrigatório.' });
+    }
+
+    try {
+        const utilizador = await Utilizadores.findOne({ email });
+
+        if (!utilizador) {
+            return res.status(404).json({ error: 'Utilizador não encontrado.' });
+        }
+
+        res.status(200).json(utilizador);
+    } catch (error) {
+        console.error('Erro ao buscar utilizador por email:', error);
+        res.status(500).json({ error: 'Erro ao buscar utilizador por email.' });
     }
 });
 

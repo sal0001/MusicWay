@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CgProfile } from 'react-icons/cg';
 import logo from '../Logo/MusicWayLogo.png';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -110,6 +109,11 @@ const Navbar2 = () => {
       <NavbarContainer>
         <NavMenu>
           <ul>
+          <li>
+              <a href="/adicionarMusicas">
+                Publicar
+              </a>
+            </li>
             <li>
               <a href="/main/Perfil">
                 Perfil

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FaUpload } from 'react-icons/fa'; 
-import Navbar3 from '../navbar/navbar3';
+import Navbar2 from '../navbar/navbar2';
 import axios from 'axios';
 
 const PageContainer = styled.div`
@@ -195,7 +195,7 @@ const FormComponent = () => {
 
   return (
     <div>
-      <Navbar3 />
+      <Navbar2 />
       <PageContainer>
         <FormWrapper>
           <Title>Publicar Música</Title>

@@ -28,21 +28,20 @@ const Login = () => {
             const response = await axios.post(
                 'http://127.0.0.1:3001/home/login',
                 { email: trimmedEmail, password: trimmedPassword },
-                { withCredentials: true } // Allow credentials (cookies) to be sent with request if needed
+                { withCredentials: true } 
             );
 
             if (response.status === 200) {
-                const { token, user } = response.data;  // Assuming your server returns token and user details
+                const { token, user } = response.data;  
 
-                // Store JWT token in localStorage
+              
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(user));
 
-                // Redirect based on user role or email
                 if (user.email === 'admin@gmail.com') {
                     navigate('/admin');
                 } else {
-                    navigate('/main');
+                    navigate('/');
                 }
             }
         } catch (error) {
@@ -62,7 +61,7 @@ const Login = () => {
     };
 
     const handleRegisterRedirect = () => {
-        navigate('/home/registar');
+        navigate('/registar');
     };
 
     return (

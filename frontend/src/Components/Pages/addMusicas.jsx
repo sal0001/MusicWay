@@ -128,6 +128,7 @@ const FormComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -139,18 +140,28 @@ const FormComponent = () => {
       }
     };
 
+    const loggedInUser = localStorage.getItem('user');
+
+if (loggedInUser) {
+  const userObject = JSON.parse(loggedInUser); 
+  setArtista(userObject.nome);  
+}
+
     fetchCategories();
   }, []);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     
-    if (selectedFile && selectedFile.type === 'audio/wav') {
-      setFile(selectedFile);
-      setErrorMessage(''); 
-    } else {
-      setFile(null);
-      setErrorMessage('Por favor, selecione um arquivo WAV.');
+    if (selectedFile) {
+      const acceptedFormats = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg'];
+      if (acceptedFormats.includes(selectedFile.type)) {
+        setFile(selectedFile);
+        setErrorMessage('');
+      } else {
+        setFile(null);
+        setErrorMessage('Por favor, selecione um arquivo de áudio válido (MP3, WAV, OGG).');
+      }
     }
   };
 
@@ -166,9 +177,9 @@ const FormComponent = () => {
   
     const formData = new FormData();
     formData.append('nome', nomeMusica);
-    formData.append('artista', artista);
+    formData.append('artista', artista); 
     formData.append('categoriaId', categoriaId);
-    formData.append('file', file); 
+    formData.append('file', file);
   
     try {
       const response = await axios.post('http://127.0.0.1:3001/addMusicas', formData, {
@@ -181,7 +192,7 @@ const FormComponent = () => {
       setErrorMessage('Música publicada com sucesso.');
   
       setNomeMusica('');
-      setArtista('');
+      setArtista(''); 
       setFile(null);
       setCategoriaId('');
     } catch (error) {
@@ -210,13 +221,7 @@ const FormComponent = () => {
               />
             </InputGroup>
             <InputGroup>
-              <Input
-                type="text"
-                placeholder="Nome do artista"
-                value={artista}
-                onChange={(e) => setArtista(e.target.value)}
-                required
-              />
+              
             </InputGroup>
             <InputGroup>
               <UploadButton htmlFor="file-upload">
@@ -228,11 +233,11 @@ const FormComponent = () => {
                 type="file"
                 onChange={handleFileChange}
                 required
-                style={{ display: 'none' }} 
+                style={{ display: 'none' }}
               />
             </InputGroup>
             <InputGroup>
-              <Select 
+              <Select
                 value={categoriaId}
                 onChange={(e) => setCategoriaId(e.target.value)}
                 required

@@ -89,10 +89,8 @@ const Navbar1 = () => {
           <Logo src={logo} alt="MusicWave Logo" />
         </a>
         <NavMenu>
-  <NavButton onClick={() => window.location.href = '/'}>Sobre nós</NavButton>
-  <NavButton onClick={() => window.location.href = '/'}>Contacto</NavButton>
-  <NavButtonPrimary onClick={() => window.location.href = '/home/login'}>Entrar</NavButtonPrimary>
-  <NavButtonPrimary onClick={() => window.location.href = '/home/registar'}>Criar</NavButtonPrimary>
+  <NavButton onClick={() => window.location.href = ''}>Sobre nós</NavButton>
+  <NavButton onClick={() => window.location.href = ''}>Contacto</NavButton>
     </NavMenu>
         <MobileToggle className="bi bi-list" />
       </Container>

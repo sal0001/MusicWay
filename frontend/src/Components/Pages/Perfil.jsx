@@ -9,30 +9,30 @@ const Perfil = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('token'); // Retrieve token from localStorage
+        const token = localStorage.getItem('token'); 
 
         if (!token) {
-            setError('Token not found. Please log in again.');
+            setError('Utilizador nao encontrado, por favor faça login.');
             setLoading(false);
             return;
         }
 
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/auth', {  // Ensure correct URL
+                const response = await axios.get('http://localhost:3001/auth', {  
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
 
                 if (response.data.authenticated) {
-                    setUser(response.data.user); // Set user data to state
+                    setUser(response.data.user); 
                 } else {
-                    setError('Authentication failed. Invalid token.');
+                    setError('falha na autenticacao.');
                 }
             } catch (err) {
-                console.error('Error fetching user data:', err);
-                setError('Failed to fetch user data. Please try again later.');
+                console.error('erro:', err);
+                setError('Faça login.');
             } finally {
                 setLoading(false);
             }

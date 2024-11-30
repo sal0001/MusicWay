@@ -1,4 +1,4 @@
-const path = require('path'); // Importar o módulo 'path' para manipulação de caminhos de arquivos
+const path = require('path'); 
 const Musicas = require('./musicas');
 
 const addMusic = async (musicData) => {

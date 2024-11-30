@@ -25,7 +25,7 @@ const Register = () => {
             const response = await axios.post('http://127.0.0.1:3001/home/registar', { nome, email, password });
             console.log('Response:', response.data);
 
-            navigate('/home/login');
+            navigate('/login');
         } catch (error) {
             console.error('Error:', error);
             if (error.response && error.response.data && error.response.data.error) {
@@ -37,11 +37,11 @@ const Register = () => {
     };
 
     const handleLoginRedirect = () => {
-        navigate('/home/login');
+        navigate('/login');
     };
 
     return (
-        <Container>
+        <Container>~
             <Navbar />
             <FormContainer>
                 <StyledForm onSubmit={handleRegister}>

@@ -27,24 +27,6 @@ const SidebarTitle = styled.h2`
     color: #fff;
 `;
 
-const CreatePlaylistButton = styled.button`
-    background-color: #555;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #333;
-    }
-`;
 
 const MusicListContainer = styled.div`
     margin-left: 400px;
@@ -183,19 +165,15 @@ const Main = () => {
         song.artista.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleCreatePlaylist = () => {
-        console.log("Create Playlist button clicked.");
-    };
+   
 
     return (
         <div>
             <Navbar2 />
             <div style={{ display: 'flex' }}>
                 <SidebarContainer>
-                    <SidebarTitle>Playlists</SidebarTitle>
-                    <CreatePlaylistButton onClick={handleCreatePlaylist}>
-                        <i className="fas fa-plus"></i>
-                    </CreatePlaylistButton>
+                    <SidebarTitle></SidebarTitle>
+                    
                 </SidebarContainer>
 
                 <MusicListContainer>

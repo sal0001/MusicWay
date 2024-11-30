@@ -166,7 +166,6 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
         if (!nome || !artista || !file || !categoriaId) {
             return res.status(400).json({ error: 'Por favor, preencha todos os campos: nome, artista, arquivo e categoria.' });
         }
-
         
         const categoria = await Categoria.findById(categoriaId);
         if (!categoria) {

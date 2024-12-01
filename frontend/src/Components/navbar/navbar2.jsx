@@ -54,8 +54,8 @@ const NavMenuRight = styled.div`
 
 const NavButton = styled.button`
   font-weight: bold;
-  border: 1px dashed #f0f0f0;
   background-color: transparent;
+  border: 0px;
   color: #ffffff;
   padding: 8px 16px;
   margin-right: 10px;
@@ -96,14 +96,19 @@ const ProfileIcon = styled.div`
 const Navbar2 = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user'));
     if (token && user) {
       setIsLoggedIn(true);
+      if (user.email === 'admin@gmail.com') {
+        setIsAdmin(true); 
+      }
     } else {
       setIsLoggedIn(false);
+      setIsAdmin(false);
     }
   }, []);
 
@@ -115,26 +120,35 @@ const Navbar2 = () => {
     navigate('/main/Perfil');
   };
 
+  const handleAdminClick = () => {
+    navigate('/admin');
+  };
+
   return (
     <Header>
       <LogoContainer onClick={clickIMAGE}>
-        <Logo src={logo} alt="MusicWave Logo" />
+        <Logo src={logo} alt="MusicWay Logo" />
       </LogoContainer>
 
       <NavbarContainer>
         <NavMenuLeft>
-          
+  
         </NavMenuLeft>
 
         <NavMenuRight>
           {isLoggedIn ? (
-            <ProfileIcon onClick={handleProfileClick}>
-              <i className="fas fa-user" />
-            </ProfileIcon>
+            <>
+              {isAdmin && (
+                <NavButton onClick={handleAdminClick}>Painel admin</NavButton>
+              )}
+              <ProfileIcon onClick={handleProfileClick}>
+                <i className="fas fa-user" />
+              </ProfileIcon>
+            </>
           ) : (
             <>
-              <NavButton onClick={() => navigate('/login')}>Login</NavButton>
               <NavButton onClick={() => navigate('/registar')}>Registar</NavButton>
+              <NavButton style={{border: "1px dotted"}} onClick={() => navigate('/login')}>Login</NavButton>
             </>
           )}
         </NavMenuRight>

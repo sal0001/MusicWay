@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaPause, FaBackward, FaForward, FaVolumeUp, FaVolumeDown, FaVolumeMute } from 'react-icons/fa'; // Import icons from react-icons
+import { FaPlay, FaPause, FaBackward, FaForward} from 'react-icons/fa'; 
 
 const MiniPlayerContainer = styled.div`
     position: fixed;

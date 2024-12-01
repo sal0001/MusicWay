@@ -5,7 +5,6 @@ import Navbar3 from '../navbar/navbar3';
 import styled from 'styled-components';
 import axios from 'axios';
 
-
 const UserListContainer = styled.div`
     margin-top: 100px;
     padding: 40px;
@@ -162,7 +161,7 @@ const Main = () => {
                         value={searchEmail}
                         onChange={(e) => setSearchEmail(e.target.value)}
                     />
-                    <SearchButton onClick={handleSearch} className="ml-3">Buscar</SearchButton>
+                    <SearchButton onClick={handleSearch} className="ml-3">Procurar</SearchButton>
                 </div>
 
                 {loading && <p>Carregando...</p>}

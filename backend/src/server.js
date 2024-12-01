@@ -218,6 +218,17 @@ app.get('/musicas/:filename', (req, res) => {
     });
 });
 
+app.delete('/musicas/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await MusicaModel.findByIdAndDelete(id);
+        res.status(200).send({ message: 'Música removida com sucesso' });
+    } catch (error) {
+        res.status(500).send({ error: 'Erro ao remover a música' });
+    }
+});
+
+
 app.post('/CriarPlaylists', async (req, res) => {
     const { nome, utilizador, musicas } = req.body;
 
@@ -291,6 +302,26 @@ app.get('/utilizadores/email', async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar utilizador por email.' });
     }
 });
+
+app.put('/up_utilizadores/:id', async (req, res) => {
+    const userId = req.params.id;
+    const { nome, email } = req.body;
+
+    try {
+        const result = await User.findByIdAndUpdate(userId, { nome, email }, { new: true, runValidators: true });
+
+        if (!result) {
+            return res.status(404).json({ error: 'Utilizador não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Perfil atualizado com sucesso.', user: result });
+    } catch (error) {
+        console.error('Erro ao atualizar perfil:', error);
+        res.status(500).json({ error: 'Erro ao atualizar o perfil. Tente novamente.' });
+    }
+});
+
+
 
 
 app.post('/addCategoria', async (req, res) => {

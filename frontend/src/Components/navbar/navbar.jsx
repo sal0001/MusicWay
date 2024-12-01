@@ -56,13 +56,7 @@ const NavButton = styled.button`
   }
 `;
 
-const NavButtonPrimary = styled(NavButton)`
-  border: 2px solid #f0f0f0;
-  background-color: #555;
-  &:hover {
-    background-color: #666;
-  }
-`;
+
 
 const MobileToggle = styled.i`
   display: none;
@@ -88,10 +82,7 @@ const Navbar1 = () => {
         <a onClick={clickIMG}>
           <Logo src={logo} alt="MusicWave Logo" />
         </a>
-        <NavMenu>
-  <NavButton onClick={() => window.location.href = ''}>Sobre nós</NavButton>
-  <NavButton onClick={() => window.location.href = ''}>Contacto</NavButton>
-    </NavMenu>
+       
         <MobileToggle className="bi bi-list" />
       </Container>
     </Header>

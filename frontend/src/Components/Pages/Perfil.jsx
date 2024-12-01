@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Navbar2 from '../navbar/navbar2';
 
 const Perfil = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token'); 
 
         if (!token) {
-            setError('Utilizador nao encontrado, por favor faça login.');
+            setError('Utilizador não encontrado. Por favor, faça login.');
             setLoading(false);
             return;
         }
@@ -28,11 +30,11 @@ const Perfil = () => {
                 if (response.data.authenticated) {
                     setUser(response.data.user); 
                 } else {
-                    setError('falha na autenticacao.');
+                    setError('Falha na autenticação.');
                 }
             } catch (err) {
-                console.error('erro:', err);
-                setError('Faça login.');
+                console.error('Erro:', err);
+                setError('Erro ao carregar os dados do usuário. Por favor, faça login.');
             } finally {
                 setLoading(false);
             }
@@ -41,22 +43,30 @@ const Perfil = () => {
         fetchUserData();
     }, []);
 
+    const handleLogout = async () => {
+        try {
+            await axios.post('http://localhost:3001/logout', {}, { withCredentials: true });
+
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            navigate('/');
+        } catch (error) {
+            console.error('Erro ao fazer logout:', error);
+            alert('Erro ao fazer logout. Tente novamente.');
+        }
+    };
+
     return (
         <div>
             <Navbar2 />
             <MainContainer>
                 <ProfileCard>
                     {loading ? (
-                        <p>Loading...</p>  
+                        <p>Carregando...</p>  
                     ) : error ? (
                         <ErrorMessage>{error}</ErrorMessage>  
                     ) : (
                         <>
-                            <ProfileHeader>
-                                <ProfileImage>
-                                    <img src="https://via.placeholder.com/120" alt="User Avatar" />
-                                </ProfileImage>
-                            </ProfileHeader>
 
                             <UserDetails>
                                 <DetailItem>
@@ -70,6 +80,7 @@ const Perfil = () => {
                             <ActionButtons>
                                 <EditButton>Editar Perfil</EditButton>
                             </ActionButtons>
+                            <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
                         </>
                     )}
                 </ProfileCard>
@@ -77,7 +88,6 @@ const Perfil = () => {
         </div>
     );
 };
-
 
 const MainContainer = styled.div`
     padding: 50px 20px;
@@ -147,6 +157,22 @@ const EditButton = styled.button`
 
     &:hover {
         background-color: #ccc;
+    }
+`;
+
+const LogoutButton = styled.button`
+    margin-top: 20px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: darkred;
     }
 `;
 

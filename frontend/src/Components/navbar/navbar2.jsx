@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../Logo/MusicWayLogo.png';
-import axios from 'axios';
 import styled from 'styled-components';
 
 const Header = styled.header`
@@ -46,13 +45,6 @@ const NavMenuLeft = styled.nav`
   li {
     margin: 0 20px;
   }
-
-  a {
-    text-decoration: none;
-    color: white;
-    font-size: 1.1em;
-    font-weight: bold;
-  }
 `;
 
 const NavMenuRight = styled.div`
@@ -79,34 +71,25 @@ const NavButton = styled.button`
   }
 `;
 
-const LogoutButton = styled(NavButton)`
-  background-color: red;
-  border: 1px solid red;
-
-  &:hover {
-    background-color: darkred;
-  }
-`;
-
-const PublishButton = styled.a`
+const ProfileIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  background-color: #555;
+  border-radius: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 12px 20px;
-  background-color: transparent;
-  color: black;
-  font-size: 1em;
-  font-weight: bold;
-  border-radius: 25px; /* Bordas arredondadas */
-  text-decoration: none;
-  border: 2px solid black; /* Borda preta para destacar */
-  width: auto; /* Largura automática para ajustar ao conteúdo */
-  height: 45px;
-  text-align: center;
+  justify-content: center;
   cursor: pointer;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+  margin-right: 10px;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1); /* Leve sombreamento no hover */
+    background-color: #777;
+  }
+
+  i {
+    color: white;
+    font-size: 20px;
   }
 `;
 
@@ -128,19 +111,8 @@ const Navbar2 = () => {
     navigate('/');
   };
 
-  const handleLogout = async () => {
-    try {
-      await axios.post('http://localhost:3001/logout', {}, { withCredentials: true });
-
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      setIsLoggedIn(false);
-
-      navigate('/');
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-      alert('Erro ao fazer logout. Tente novamente.');
-    }
+  const handleProfileClick = () => {
+    navigate('/main/Perfil');
   };
 
   return (
@@ -151,23 +123,14 @@ const Navbar2 = () => {
 
       <NavbarContainer>
         <NavMenuLeft>
-          <ul>
-            {isLoggedIn && (
-              <li>
-                <PublishButton href="/adicionarMusicas">
-                  Publicar Música
-                </PublishButton>
-              </li>
-            )}
-          </ul>
+          
         </NavMenuLeft>
 
         <NavMenuRight>
           {isLoggedIn ? (
-            <>
-              <NavButton onClick={() => navigate('/main/Perfil')}>Perfil</NavButton>
-              <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
-            </>
+            <ProfileIcon onClick={handleProfileClick}>
+              <i className="fas fa-user" />
+            </ProfileIcon>
           ) : (
             <>
               <NavButton onClick={() => navigate('/login')}>Login</NavButton>

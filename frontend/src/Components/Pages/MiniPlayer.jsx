@@ -81,8 +81,8 @@ const VolumeControl = styled.input`
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 20px;
-        height: 20px;
+        width: 10px;
+        height: 10px;
         background: white;
         border-radius: 50%;
         cursor: pointer;
@@ -98,7 +98,7 @@ const ProgressBar = styled.input`
     appearance: none;
     width: 300%;
     height: 8px;
-    background: #444;
+    background: white;
     border-radius: 5px;
     outline: none;
     margin-right: 200px;
@@ -108,9 +108,9 @@ const ProgressBar = styled.input`
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
-        width: 20px;
-        height: 20px;
-        background: #ff9d00;
+        width: 10px;
+        height: 10px;
+        background: black;
         border-radius: 50%;
         cursor: pointer;
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../Logo/MusicWayLogo.png';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const Header = styled.header`
   display: flex;
@@ -71,53 +72,76 @@ const NavButton = styled.button`
   }
 `;
 
-const ProfileIcon = styled.div`
-  width: 40px;
-  height: 40px;
-  background-color: #555;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-  margin-right: 10px;
-
-  &:hover {
-    background-color: #777;
-  }
-
-  i {
-    color: white;
-    font-size: 20px;
-  }
-`;
-
 const Navbar2 = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (token && user) {
-      setIsLoggedIn(true);
-      if (user.email === 'admin@gmail.com') {
-        setIsAdmin(true); 
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      const refreshToken = localStorage.getItem('refreshToken');
+      const user = JSON.parse(localStorage.getItem('user'));
+
+      // Verificar se o token ainda é válido
+      if (token && user) {
+        const isTokenValid = await verifyToken(token);
+        if (!isTokenValid && refreshToken) {
+          // Tentar obter um novo token com o refresh token
+          const newToken = await refreshAccessToken(refreshToken);
+          if (newToken) {
+            localStorage.setItem('token', newToken);
+            setIsLoggedIn(true);
+            if (user.email === 'admin@gmail.com') {
+              setIsAdmin(true);
+            }
+          } else {
+            setIsLoggedIn(false);
+            setIsAdmin(false);
+          }
+        } else {
+          setIsLoggedIn(true);
+          if (user.email === 'admin@gmail.com') {
+            setIsAdmin(true);
+          }
+        }
+      } else {
+        setIsLoggedIn(false);
+        setIsAdmin(false);
       }
-    } else {
-      setIsLoggedIn(false);
-      setIsAdmin(false);
-    }
+    };
+
+    checkAuth();
   }, []);
+
+  const verifyToken = async (token) => {
+    try {
+      // Simular a verificação do token
+      const response = await axios.post('http://127.0.0.1:3001/verify-token', { token });
+      return response.status === 200;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const refreshAccessToken = async (refreshToken) => {
+    try {
+      const response = await axios.post(
+        'http://127.0.0.1:3001/refresh-token',
+        { refreshToken }
+      );
+      if (response.status === 200) {
+        return response.data.token;
+      }
+      return null;
+    } catch (error) {
+      console.error('Erro ao renovar o token:', error);
+      return null;
+    }
+  };
 
   const clickIMAGE = () => {
     navigate('/');
-  };
-
-  const handleProfileClick = () => {
-    navigate('/main/Perfil');
   };
 
   const handleAdminClick = () => {
@@ -132,7 +156,7 @@ const Navbar2 = () => {
 
       <NavbarContainer>
         <NavMenuLeft>
-  
+          
         </NavMenuLeft>
 
         <NavMenuRight>
@@ -141,14 +165,13 @@ const Navbar2 = () => {
               {isAdmin && (
                 <NavButton onClick={handleAdminClick}>Painel admin</NavButton>
               )}
-              <ProfileIcon onClick={handleProfileClick}>
-                <i className="fas fa-user" />
-              </ProfileIcon>
             </>
           ) : (
             <>
               <NavButton onClick={() => navigate('/registar')}>Registar</NavButton>
-              <NavButton style={{border: "1px dotted"}} onClick={() => navigate('/login')}>Login</NavButton>
+              <NavButton style={{ border: '1px dotted' }} onClick={() => navigate('/login')}>
+                Login
+              </NavButton>
             </>
           )}
         </NavMenuRight>

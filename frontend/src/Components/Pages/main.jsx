@@ -4,7 +4,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import Navbar2 from '../navbar/navbar2';
 import styled from 'styled-components';
 import MiniPlayer from './MiniPlayer';
-import { FaMusic, FaAddressCard, FaInfoCircle } from 'react-icons/fa'; 
+import { FaMusic, FaAddressCard, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
 
 const SidebarContainer = styled.div`
     width: 400px;
@@ -36,7 +36,7 @@ const RightSidebarContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    transition: all 0.3s ease; /* Smooth transition */
+    transition: all 0.3s ease;
 `;
 
 const SidebarTitle = styled.h2`
@@ -80,12 +80,11 @@ const MusicListContainer = styled.div`
 const SearchContainer = styled.div`
     display: flex;
     align-items: center;
-    margin: 20px auto; /* Centering the container */
-    padding: 5px 10px; /* Smaller padding */
+    margin: 20px auto;
+    padding: 5px 10px;
     background-color: #333;
     border-radius: 25px;
-    width: 60%; /* Set width to a percentage or a fixed size */
-    max-width: 400px; /* Optional: maximum width */
+    width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
@@ -112,6 +111,22 @@ const SearchInput = styled.input`
     &:focus {
         border: none;
         outline: none;
+    }
+`;
+
+const DropdownContainer = styled.select`
+    padding: 8px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    margin-left: 10px;
+    font-size: 16px;
+    outline: none;
+
+    option {
+        background-color: #333;
+        color: white;
     }
 `;
 
@@ -161,7 +176,9 @@ const Main = () => {
     const [publishedSongs, setPublishedSongs] = useState([]);
     const [currentTrack, setCurrentTrack] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login state
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const audioRef = useRef(null);
 
     const fetchSongs = async () => {
@@ -181,9 +198,23 @@ const Main = () => {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:3001/getCategorias');
+            if (!response.ok) {
+                throw new Error('Failed to fetch categories: ' + response.statusText);
+            }
+            const data = await response.json();
+            setCategories(data);
+        } catch (error) {
+            console.error('Error fetching categories:', error.message);
+        }
+    };
+
     useEffect(() => {
         fetchSongs();
-        // Verificar se o utilizador está logado verificando o token no localStorage
+        fetchCategories();
+
         const token = localStorage.getItem('token');
         if (token) {
             setIsLoggedIn(true);
@@ -214,8 +245,9 @@ const Main = () => {
     };
 
     const filteredSongs = publishedSongs.filter(song =>
-        song.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        song.artista.toLowerCase().includes(searchQuery.toLowerCase())
+        (song.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.artista.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (selectedCategory ? song.categoria === selectedCategory : true)
     );
 
     return (
@@ -227,15 +259,28 @@ const Main = () => {
                 </SidebarContainer>
 
                 <MusicListContainer>
-                    <SearchContainer>
-                        <SearchIcon className="fas fa-search" />
-                        <SearchInput
-                            type="text"
-                            placeholder="Pesquisa por músicas..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </SearchContainer>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <SearchContainer>
+                            <SearchIcon className="fas fa-search" />
+                            <SearchInput
+                                type="text"
+                                placeholder="Pesquisa por músicas..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </SearchContainer>
+                        <DropdownContainer
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                        >
+                            <option value="">Todas</option>
+                            {categories.map((category) => (
+                                <option key={category._id} value={category.nome}>
+                                    {category.nome}
+                                </option>
+                            ))}
+                        </DropdownContainer>
+                    </div>
                     {filteredSongs.map(song => (
                         <MusicItem key={song._id} onClick={() => handlePlayPause(song)}>
                             <MusicName>{song.nome}</MusicName>
@@ -245,28 +290,35 @@ const Main = () => {
                                     e.stopPropagation();
                                     handlePlayPause(song);
                                 }}>
-                                    <i className={audioRef.current?.paused ? "fas fa-play" : "fas fa-play"}></i>
+                                    <i className={audioRef.current?.paused ? "fas fa-play" : "fas fa-pause"}></i>
                                 </PlayButton>
                             </div>
                         </MusicItem>
                     ))}
                 </MusicListContainer>
 
-                {/* Renderizar o RightSidebarContainer apenas se o utilizador estiver logado */}
-                {isLoggedIn && (
-                    <RightSidebarContainer>
-                        <SidebarTitle></SidebarTitle>
-                        <SidebarLink href="/adicionarMusicas">
-                            <FaMusic />
-                        </SidebarLink>
-                        <SidebarLink href="">
-                            <FaAddressCard />
-                        </SidebarLink>
-                        <SidebarLink href="">
-                            <FaInfoCircle />     
-                        </SidebarLink>
-                    </RightSidebarContainer>
-                )}
+                {isLoggedIn ? (
+    <RightSidebarContainer>
+        <SidebarTitle></SidebarTitle>
+        <SidebarLink href="/main/Perfil"> 
+            <FaUserCircle />
+        </SidebarLink>
+        <SidebarLink href="/adicionarMusicas">
+            <FaMusic />
+        </SidebarLink>
+        <SidebarLink href="">
+            <FaAddressCard />
+        </SidebarLink>
+        <SidebarLink href="">
+            <FaInfoCircle />     
+        </SidebarLink>
+    </RightSidebarContainer>
+) : (
+    <RightSidebarContainer>
+       <SidebarTitle></SidebarTitle>
+    </RightSidebarContainer>
+)}
+
             </div>
 
             <MiniPlayer

@@ -63,6 +63,7 @@ app.get('/auth', (req, res) => {
     }
 });
 
+
 app.post('/home/registar', async (req, res) => {
     const { nome, email, password } = req.body;
 
@@ -112,7 +113,7 @@ app.post('/home/login', async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, nome: user.nome, email: user.email },  
             process.env.JWT_SECRET,                                    
-            { expiresIn: '1h' }                                       
+            { expiresIn: '365d' }                                       
         );
 
        

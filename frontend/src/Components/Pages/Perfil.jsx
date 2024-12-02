@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar2 from '../navbar/navbar2';
+import {  FaMusic, FaAddressCard, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
 
 const Perfil = () => {
     const [user, setUser] = useState(null);
@@ -12,6 +13,7 @@ const Perfil = () => {
     const [editedName, setEditedName] = useState('');
     const [editedEmail, setEditedEmail] = useState('');
     const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token'); 
@@ -21,6 +23,16 @@ const Perfil = () => {
             setLoading(false);
             return;
         }
+
+        const loggedInUser = localStorage.getItem('user');
+        if (loggedInUser) {
+            const userObject = JSON.parse(loggedInUser);
+            setUser(userObject);
+            setEditedName(userObject.nome); 
+            setEditedEmail(userObject.email); 
+        }
+
+        setIsLoggedIn(Boolean(token));
 
         const fetchUserData = async () => {
             try {
@@ -69,25 +81,12 @@ const Perfil = () => {
         setIsPopupOpen(false);
     };
 
-    const getUserFromLocalStorage = () => {
-        const user = localStorage.getItem('user');
-        if (user) {
-            return JSON.parse(user); 
-        }
-        return null; 
-    };
-    
-
     const handleSaveChanges = async () => {
         try {
             const token = localStorage.getItem('token');
-            const userFromLocalStorage = getUserFromLocalStorage();
-    
-    
+            const userFromLocalStorage = JSON.parse(localStorage.getItem('user'));
             const userId = userFromLocalStorage._id; 
     
-    
-           
             const response = await axios.put(`http://localhost:3001/up_utilizadores/${userId}`, {
                 nome: editedName,
                 email: editedEmail
@@ -97,19 +96,15 @@ const Perfil = () => {
                 },
             });
     
-          
             if (response.status === 200) {
-                
                 setUser({ ...userFromLocalStorage, nome: editedName, email: editedEmail });
                 setIsPopupOpen(false);
             }
     
         } catch (error) {
             console.error('Erro ao salvar as alterações:', error);
-            
         }
     };
-    
 
     return (
         <div>
@@ -169,10 +164,73 @@ const Perfil = () => {
                     </Popup>
                 </PopupOverlay>
             )}
+
+            {isLoggedIn && (
+                <RightSidebarContainer>
+                    <SidebarTitle></SidebarTitle>
+                    <SidebarLink href="/main/Perfil"> 
+                            <FaUserCircle />
+                        </SidebarLink>
+                    <SidebarLink href="/adicionarMusicas">
+                        <FaMusic />
+                    </SidebarLink>
+                    <SidebarLink href="">
+                        <FaAddressCard />
+                    </SidebarLink>
+                    <SidebarLink href="">
+                        <FaInfoCircle />
+                    </SidebarLink>
+                </RightSidebarContainer>
+            )}
         </div>
     );
 };
 
+const RightSidebarContainer = styled.div`
+  width: 90px;
+  height: 100vh;
+  background-color: #1c1c1c;
+  color: white;
+  padding: 20px;
+  position: fixed;
+  top: 70px;
+  right: 0;
+  overflow-y: auto;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: all 0.3s ease;
+`;
+
+const SidebarTitle = styled.h2`
+  font-size: 1.5em;
+  margin-bottom: 30px;
+  color: #fff;
+  font-weight: bold;
+`;
+
+const SidebarLink = styled.a`
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: transparent;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s, padding-left 0.3s;
+
+  &:hover {
+    background-color: #444;
+    padding-left: 20px;
+  }
+
+  i {
+    margin-right: 15px;
+    font-size: 1.2em;
+  }
+`;
 
 const MainContainer = styled.div`
     padding: 50px 20px;

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from '../Logo/MusicWayLogo.png';
 import styled from 'styled-components';
-import axios from 'axios';
 
 const Header = styled.header`
   display: flex;
@@ -78,32 +77,15 @@ const Navbar2 = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       const token = localStorage.getItem('token');
-      const refreshToken = localStorage.getItem('refreshToken');
       const user = JSON.parse(localStorage.getItem('user'));
 
-      // Verificar se o token ainda é válido
+      // Verificar se o token existe e se há um usuário logado
       if (token && user) {
-        const isTokenValid = await verifyToken(token);
-        if (!isTokenValid && refreshToken) {
-          // Tentar obter um novo token com o refresh token
-          const newToken = await refreshAccessToken(refreshToken);
-          if (newToken) {
-            localStorage.setItem('token', newToken);
-            setIsLoggedIn(true);
-            if (user.email === 'admin@gmail.com') {
-              setIsAdmin(true);
-            }
-          } else {
-            setIsLoggedIn(false);
-            setIsAdmin(false);
-          }
-        } else {
-          setIsLoggedIn(true);
-          if (user.email === 'admin@gmail.com') {
-            setIsAdmin(true);
-          }
+        setIsLoggedIn(true);
+        if (user.email === 'admin@gmail.com') {
+          setIsAdmin(true);
         }
       } else {
         setIsLoggedIn(false);
@@ -113,32 +95,6 @@ const Navbar2 = () => {
 
     checkAuth();
   }, []);
-
-  const verifyToken = async (token) => {
-    try {
-      // Simular a verificação do token
-      const response = await axios.post('http://127.0.0.1:3001/verify-token', { token });
-      return response.status === 200;
-    } catch (error) {
-      return false;
-    }
-  };
-
-  const refreshAccessToken = async (refreshToken) => {
-    try {
-      const response = await axios.post(
-        'http://127.0.0.1:3001/refresh-token',
-        { refreshToken }
-      );
-      if (response.status === 200) {
-        return response.data.token;
-      }
-      return null;
-    } catch (error) {
-      console.error('Erro ao renovar o token:', error);
-      return null;
-    }
-  };
 
   const clickIMAGE = () => {
     navigate('/');
@@ -156,7 +112,7 @@ const Navbar2 = () => {
 
       <NavbarContainer>
         <NavMenuLeft>
-          
+          {/* Add left side navigation menu here */}
         </NavMenuLeft>
 
         <NavMenuRight>

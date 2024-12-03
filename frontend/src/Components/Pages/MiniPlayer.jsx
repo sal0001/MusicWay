@@ -98,7 +98,7 @@ const ProgressBar = styled.input`
     appearance: none;
     width: 300%;
     height: 8px;
-    background: white;
+    background: grey;
     border-radius: 5px;
     outline: none;
     margin-right: 200px;
@@ -110,7 +110,7 @@ const ProgressBar = styled.input`
         appearance: none;
         width: 10px;
         height: 10px;
-        background: black;
+        background: white;
         border-radius: 50%;
         cursor: pointer;
     }
@@ -193,9 +193,6 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
                     value={progress}
                     onChange={handleProgressChange}
                 />
-
-
-
                     <ControlButtons>
                         <ControlButton onClick={() => {
                             if (audioRef.current) {

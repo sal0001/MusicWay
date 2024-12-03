@@ -94,9 +94,15 @@ const Musicas = () => {
 
     const handleRemoveSong = async (songId) => {
         try {
+            console.log(`Removendo música com ID: ${songId}`);
+            
             await axios.delete(`http://127.0.0.1:3001/musicas/${songId}`);
-            setSongs(songs.filter(song => song._id !== songId)); 
+            
+            setSongs(songs.filter(song => song._id !== songId));
+            
+            console.log(`Música com ID ${songId} removida.`);
         } catch (err) {
+            console.error('Erro ao remover a música:', err);
             setError('Erro ao remover a música.');
         }
     };
@@ -126,7 +132,7 @@ const Musicas = () => {
                                 <p>Artista: {song.artista}</p>
                             </div>
                             <RemoveButton onClick={() => handleRemoveSong(song._id)}>
-                                <i className="fas fa-trash-alt"></i>&nbsp; Remover
+                                <i className="fas fa-trash-alt"></i>
                             </RemoveButton>
                         </MusicListItem>
                     ))}

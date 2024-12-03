@@ -188,15 +188,20 @@ const Main = () => {
                 throw new Error('Failed to fetch songs: ' + response.statusText);
             }
             const data = await response.json();
-            const songsWithUrls = data.map(song => ({
+    
+            const approvedSongs = data.filter(song => song.status === 'aprovado');
+    
+            const songsWithUrls = approvedSongs.map(song => ({
                 ...song,
                 url: `http://127.0.0.1:3001/musicas/${song.ficheiro}`
             }));
+    
             setPublishedSongs(songsWithUrls);
         } catch (error) {
             console.error('Error fetching songs:', error.message);
         }
     };
+    
 
     const fetchCategories = async () => {
         try {
@@ -223,16 +228,16 @@ const Main = () => {
 
     const handlePlayPause = (song) => {
         if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
-            if (audioRef.current) {
-                if (audioRef.current.paused) {
-                    audioRef.current.play().catch(error => {
-                        console.error("Erro ao tentar retomar a música:", error);
-                    });
-                } else {
-                    audioRef.current.pause();
-                }
+           
+            if (audioRef.current.paused) {
+                audioRef.current.play().catch(error => {
+                    console.error("Erro ao tentar retomar a música:", error);
+                });
+            } else {
+                audioRef.current.pause();
             }
         } else {
+           
             setCurrentTrack(song);
             if (audioRef.current) {
                 audioRef.current.src = song.url;
@@ -270,16 +275,16 @@ const Main = () => {
                             />
                         </SearchContainer>
                         <DropdownContainer
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                        >
-                            <option value="">Todas</option>
-                            {categories.map((category) => (
-                                <option key={category._id} value={category.nome}>
-                                    {category.nome}
-                                </option>
-                            ))}
-                        </DropdownContainer>
+    value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}
+>
+    <option value="">Todas</option>
+    {categories.map((category) => (
+        <option key={category._id} value={category._id}>
+            {category.nome}
+        </option>
+    ))}
+</DropdownContainer>
                     </div>
                     {filteredSongs.map(song => (
                         <MusicItem key={song._id} onClick={() => handlePlayPause(song)}>
@@ -287,11 +292,15 @@ const Main = () => {
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <MusicArtist>{song.artista}</MusicArtist>
                                 <PlayButton onClick={(e) => {
-                                    e.stopPropagation();
-                                    handlePlayPause(song);
-                                }}>
-                                    <i className={audioRef.current?.paused ? "fas fa-play" : "fas fa-pause"}></i>
-                                </PlayButton>
+    e.stopPropagation();
+    handlePlayPause(song);
+}}>
+    <i className={
+        currentTrack && currentTrack.ficheiro === song.ficheiro && !audioRef.current?.paused
+            ? "fas fa-pause"
+            : "fas fa-play"
+    }></i>
+</PlayButton>
                             </div>
                         </MusicItem>
                     ))}

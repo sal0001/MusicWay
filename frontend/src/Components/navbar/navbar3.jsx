@@ -81,10 +81,10 @@ const Navbar3 = () => {
       <NavbarContainer>
         <NavMenuRight>
               <NavButton onClick={() => navigate('/')}>Home</NavButton>
-              <NavButton onClick={() => navigate('/musicas')}>Musicas</NavButton>
-              <NavButton onClick={() => navigate('/addCategoria')}>Categorias</NavButton>
+              <NavButton onClick={() => navigate('/musicas')}>Músicas</NavButton>
+              <NavButton onClick={() => navigate('/addCategoria')}>Gêneros</NavButton>
               <NavButton onClick={() => navigate('/admin')}>Utilizadores</NavButton>
-         
+              <NavButton onClick={() => navigate('/aprovarMusicas')}>Aprovar</NavButton>
         </NavMenuRight>
       </NavbarContainer>
     </Header>

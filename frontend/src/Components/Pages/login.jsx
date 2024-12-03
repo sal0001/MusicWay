@@ -13,7 +13,7 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setErrorMessage('');
+        setErrorMessage(''); // Resetando a mensagem de erro
 
         const trimmedEmail = email.trim();
         const trimmedPassword = password.trim();
@@ -28,16 +28,17 @@ const Login = () => {
             const response = await axios.post(
                 'http://127.0.0.1:3001/home/login',
                 { email: trimmedEmail, password: trimmedPassword },
-                { withCredentials: true } 
+                { withCredentials: true } // Enviando cookies de autenticação
             );
 
             if (response.status === 200) {
-                const { token, user } = response.data;  
+                const { token, user } = response.data;
 
-              
+                // Armazenando os dados no localStorage
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(user));
 
+                // Redirecionando conforme o tipo de usuário
                 if (user.email === 'admin@gmail.com') {
                     navigate('/admin');
                 } else {
@@ -56,7 +57,7 @@ const Login = () => {
                 setErrorMessage('Ocorreu um erro ao processar a solicitação. Tente novamente.');
             }
         } finally {
-            setLoading(false);
+            setLoading(false); // Finaliza o estado de loading
         }
     };
 

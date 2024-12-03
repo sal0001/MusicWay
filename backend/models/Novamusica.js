@@ -1,6 +1,6 @@
-const path = require('path'); 
+const path = require('path');
 const Musicas = require('./musicas');
-
+const Categoria = require('./Categorias'); 
 const addMusic = async (musicData) => {
     console.log('Dados recebidos para adicionar música:', musicData);
 
@@ -10,18 +10,26 @@ const addMusic = async (musicData) => {
         throw new Error('Categoria é obrigatória para associar à música.');
     }
 
-   
-    const ficheiroNome = path.basename(ficheiro);  
+
+    const categoria = await Categoria.findById(categoriaId);
+    if (!categoria) {
+        throw new Error('Categoria não encontrada.');
+    }
+
+  
+    const ficheiroNome = path.basename(ficheiro.filename); 
 
     const newMusic = {
         nome: nome,
-        ficheiro: ficheiroNome,  
+        ficheiro: ficheiroNome,
         artista: artista,
-        categoria: categoriaId
+        categoria: categoriaId,
+ 
     };
 
     try {
-        const result = await Musicas.create(newMusic);  
+      
+        const result = await Musicas.create(newMusic);
         console.log('Música adicionada:', result);
         return result;
     } catch (error) {

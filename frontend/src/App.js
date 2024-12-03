@@ -7,8 +7,8 @@ import AdicionarMusicas from './Components/Pages/addMusicas';
 import Admin from './Components/Pages/admin';
 import AdicionarCategorias from './Components/Pages/addCategoria';
 import Musicas from './Components/Pages/Musicas';
+import AprovarMusicas from './Components/Pages/aprovarMusicas';
 
-import './App.css';
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
             <Route path="/addCategoria" element={<AdicionarCategorias />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/musicas" element={<Musicas />} />
+            <Route path="/aprovarMusicas" element={<AprovarMusicas />} />
         </Routes>
       </Router>
     </div>

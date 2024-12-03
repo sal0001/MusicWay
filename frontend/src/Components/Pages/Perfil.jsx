@@ -3,15 +3,12 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Navbar2 from '../navbar/navbar2';
-import {  FaMusic, FaAddressCard, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
+import { FaMusic, FaAddressCard, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
 
 const Perfil = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [isPopupOpen, setIsPopupOpen] = useState(false);
-    const [editedName, setEditedName] = useState('');
-    const [editedEmail, setEditedEmail] = useState('');
     const navigate = useNavigate();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -28,8 +25,6 @@ const Perfil = () => {
         if (loggedInUser) {
             const userObject = JSON.parse(loggedInUser);
             setUser(userObject);
-            setEditedName(userObject.nome); 
-            setEditedEmail(userObject.email); 
         }
 
         setIsLoggedIn(Boolean(token));
@@ -44,8 +39,6 @@ const Perfil = () => {
 
                 if (response.data.authenticated) {
                     setUser(response.data.user); 
-                    setEditedName(response.data.user.nome);  
-                    setEditedEmail(response.data.user.email); 
                 } else {
                     setError('Falha na autenticação.');
                 }
@@ -63,46 +56,12 @@ const Perfil = () => {
     const handleLogout = async () => {
         try {
             await axios.post('http://localhost:3001/logout', {}, { withCredentials: true });
-
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             navigate('/');
         } catch (error) {
             console.error('Erro ao fazer logout:', error);
             alert('Erro ao fazer logout. Tente novamente.');
-        }
-    };
-
-    const handleEditClick = () => {
-        setIsPopupOpen(true);
-    };
-
-    const handleClosePopup = () => {
-        setIsPopupOpen(false);
-    };
-
-    const handleSaveChanges = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const userFromLocalStorage = JSON.parse(localStorage.getItem('user'));
-            const userId = userFromLocalStorage._id; 
-    
-            const response = await axios.put(`http://localhost:3001/up_utilizadores/${userId}`, {
-                nome: editedName,
-                email: editedEmail
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-    
-            if (response.status === 200) {
-                setUser({ ...userFromLocalStorage, nome: editedName, email: editedEmail });
-                setIsPopupOpen(false);
-            }
-    
-        } catch (error) {
-            console.error('Erro ao salvar as alterações:', error);
         }
     };
 
@@ -118,17 +77,14 @@ const Perfil = () => {
                     ) : (
                         <>
                             <UserDetails>
+                                <h1>Detalhes do utilizador</h1>
                                 <DetailItem>
-                                    <strong>Nome:</strong> {user?.nome || 'Não disponível'}
+                                    {user?.nome || 'Não disponível'} 
                                 </DetailItem>
                                 <DetailItem>
-                                    <strong>Email:</strong> {user?.email || 'Não disponível'}
+                                    {user?.email || 'Não disponível'}
                                 </DetailItem>
                             </UserDetails>
-
-                            <ActionButtons>
-                                <EditButton onClick={handleEditClick}>Editar Perfil</EditButton>
-                            </ActionButtons>
 
                             <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
                         </>
@@ -136,41 +92,12 @@ const Perfil = () => {
                 </ProfileCard>
             </MainContainer>
 
-            {isPopupOpen && (
-                <PopupOverlay>
-                    <Popup>
-                        <PopupHeader>
-                        </PopupHeader>
-                        <PopupForm>
-                            <label>
-                                <Input
-                                    type="text"
-                                    value={editedName}
-                                    onChange={(e) => setEditedName(e.target.value)}
-                                />
-                            </label>
-                            <label>
-                                <Input
-                                    type="email"
-                                    value={editedEmail}
-                                    onChange={(e) => setEditedEmail(e.target.value)}
-                                />
-                            </label>
-                            <PopupActions>
-                                <SaveButton onClick={handleSaveChanges}>Salvar</SaveButton>
-                                <CancelButton onClick={handleClosePopup}>Cancelar</CancelButton>
-                            </PopupActions>
-                        </PopupForm>
-                    </Popup>
-                </PopupOverlay>
-            )}
-
             {isLoggedIn && (
                 <RightSidebarContainer>
                     <SidebarTitle></SidebarTitle>
                     <SidebarLink href="/main/Perfil"> 
-                            <FaUserCircle />
-                        </SidebarLink>
+                        <FaUserCircle />
+                    </SidebarLink>
                     <SidebarLink href="/adicionarMusicas">
                         <FaMusic />
                     </SidebarLink>
@@ -266,26 +193,6 @@ const DetailItem = styled.p`
     }
 `;
 
-const ActionButtons = styled.div`
-    display: flex;
-    justify-content: space-around;
-`;
-
-const EditButton = styled.button`
-    background-color: black;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #ccc;
-    }
-`;
-
 const LogoutButton = styled.button`
     margin-top: 20px;
     background-color: red;
@@ -305,74 +212,6 @@ const LogoutButton = styled.button`
 const ErrorMessage = styled.p`
     color: red;
     font-weight: bold;
-`;
-
-const PopupOverlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Popup = styled.div`
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
-const PopupHeader = styled.div`
-    text-align: center;
-    margin-bottom: 20px;
-`;
-
-const PopupForm = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-`;
-
-const Input = styled.input`
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-`;
-
-const PopupActions = styled.div`
-    display: flex;
-    justify-content: space-between;
-`;
-
-const SaveButton = styled.button`
-    background-color: black;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-        background-color: grey;
-    }
-`;
-
-const CancelButton = styled.button`
-    background-color: gray;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-
-    &:hover {
-        background-color: darkgray;
-    }
 `;
 
 export default Perfil;

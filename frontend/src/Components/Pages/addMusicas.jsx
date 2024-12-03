@@ -174,6 +174,7 @@ const FormComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -226,15 +227,25 @@ const FormComponent = () => {
     formData.append('file', file);
 
     try {
-      await axios.post('http://127.0.0.1:3001/addMusicas', formData, {
+      const response = await axios.post('http://127.0.0.1:3001/addMusicas', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setErrorMessage('Música publicada com sucesso.');
+
+      if (response.data.musica && response.data.musica.status === 'pendente') {
+        setSuccessMessage('Música publicada com sucesso e está pendente de aprovação!');
+      } else {
+        setSuccessMessage('Música publicada com sucesso!');
+      }
+
       setNomeMusica('');
       setFile(null);
       setCategoriaId('');
     } catch (error) {
-      setErrorMessage(error.response?.data?.error || 'Erro ao publicar música');
+      if (error.response) {
+        setErrorMessage(error.response?.data?.message || 'Erro ao publicar música');
+      } else {
+        setErrorMessage('Erro desconhecido ao tentar publicar música.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -284,9 +295,10 @@ const FormComponent = () => {
               </Select>
             </InputGroup>
             <SubmitButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Publicando...' : 'Publicar'}
+              {isSubmitting ? 'a submeter...' : 'Submeter'}
             </SubmitButton>
             {errorMessage && <MessageText error={Boolean(errorMessage)}>{errorMessage}</MessageText>}
+            {successMessage && <MessageText>{successMessage}</MessageText>}
           </form>
         </FormWrapper>
       </PageContainer>
@@ -294,8 +306,8 @@ const FormComponent = () => {
         <RightSidebarContainer>
           <SidebarTitle></SidebarTitle>
           <SidebarLink href="/main/Perfil"> 
-                            <FaUserCircle />
-                        </SidebarLink>
+            <FaUserCircle />
+          </SidebarLink>
           <SidebarLink href="/adicionarMusicas">
             <FaMusic />
           </SidebarLink>

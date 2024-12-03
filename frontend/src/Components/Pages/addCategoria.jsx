@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
+import 'bootstrap/dist/css/bootstrap.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import Navbar3 from '../navbar/navbar3';
+import styled from 'styled-components';
+import axios from 'axios';
 
 const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
-  background-color: white;
+  display: flex; /* Changed to flex to align the form and the category list horizontally */
+  justify-content: center;
+  align-items: flex-start; /* Align to the top */
+  padding: 40px;
   margin-top: 150px;
+  max-width: 1200px;
+  height: 100vh; /* Ensures it takes full viewport height for vertical centering */
 `;
 
 const FormContainer = styled.div`
@@ -17,17 +20,16 @@ const FormContainer = styled.div`
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-  max-width: 400px;
-  width: 100%;
+  width: 400px; /* Fixed width for the form */
   text-align: center;
-  margin-bottom: 20px;
+  margin-right: 20px; /* Space between the form and the separator */
 `;
 
-const Title = styled.h2`
-  color: #ffffff;
-  font-size: 24px;
-  margin-bottom: 20px;
-  font-family: Arial, sans-serif;
+const Separator = styled.div`
+  width: 1px; /* Thickness of the separator line */
+  background-color: #ccc; /* Light gray color for the separator */
+  margin: 0 30px; /* Space around the separator */
+  height: 100%; /* Makes the separator take up full height */
 `;
 
 const StyledInput = styled.input`
@@ -77,16 +79,43 @@ const CategoryList = styled.ul`
   list-style-type: none;
   padding: 0;
   width: 100%;
-  max-width: 400px;
+  max-width: 700px;
+  margin-top: 20px;
 `;
 
 const CategoryItem = styled.li`
-  background-color: #f0f0f0;
-  color: #333;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 8px;
-  font-size: 16px;
+  background-color: #ffffff;
+  margin: 15px 0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const RemoveButton = styled.button`
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #c82333;
+  }
 `;
 
 const AddCategoria = () => {
@@ -95,14 +124,13 @@ const AddCategoria = () => {
   const [erro, setErro] = useState('');
   const [categorias, setCategorias] = useState([]);
 
-
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:3001/getCategorias');
         setCategorias(response.data);
       } catch (error) {
-        console.error('Erro ao buscar as categorias:', error);
+        console.error('Erro ao procurar os generos:', error);
       }
     };
 
@@ -113,7 +141,7 @@ const AddCategoria = () => {
     e.preventDefault();
 
     if (!nome) {
-      setErro('O nome da categoria é obrigatório.');
+      setErro('O nome do genero é obrigatório.');
       return;
     }
 
@@ -122,12 +150,20 @@ const AddCategoria = () => {
       setNome('');
       setMensagem(response.data.message);
       setErro('');
-
       setCategorias((prevCategorias) => [...prevCategorias, { nome }]);
     } catch (error) {
-      setErro('Erro ao adicionar a categoria. Tente novamente.');
+      setErro('Erro ao adicionar o genero. Tente novamente.');
       setMensagem('');
-      console.error('Erro ao enviar a categoria:', error);
+      console.error('Erro ao criar o genero:', error);
+    }
+  };
+
+  const handleRemoveCategoria = async (categoriaId) => {
+    try {
+      await axios.delete(`http://127.0.0.1:3001/removeCategoria/${categoriaId}`);
+      setCategorias(categorias.filter((categoria) => categoria._id !== categoriaId));
+    } catch (error) {
+      console.error('Erro ao remover a categoria:', error);
     }
   };
 
@@ -136,23 +172,32 @@ const AddCategoria = () => {
       <Navbar3 />
       <PageContainer>
         <FormContainer>
-          <Title>Adicionar Categoria</Title>
           <form onSubmit={handleSubmit}>
             <StyledInput
               type="text"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              placeholder="Nome da Categoria"
+              placeholder="Nome do genero"
               required
             />
-            <StyledButton type="submit">Adicionar Categoria</StyledButton>
+            <StyledButton type="submit">Adicionar Genero</StyledButton>
           </form>
           {mensagem && <MessageText>{mensagem}</MessageText>}
           {erro && <MessageText error>{erro}</MessageText>}
         </FormContainer>
+        
+        <Separator />
+        
         <CategoryList>
-          {categorias.map((categoria, index) => (
-            <CategoryItem key={index}>{categoria.nome}</CategoryItem>
+          {categorias.map((categoria) => (
+            <CategoryItem key={categoria._id}>
+              <div>
+                <h5>{categoria.nome}</h5>
+              </div>
+              <RemoveButton onClick={() => handleRemoveCategoria(categoria._id)}>
+                <i className="fas fa-trash-alt"></i>
+              </RemoveButton>
+            </CategoryItem>
           ))}
         </CategoryList>
       </PageContainer>

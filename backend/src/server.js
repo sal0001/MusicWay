@@ -19,9 +19,10 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:3000', 
-    methods: ['GET', 'POST'],
-    credentials: true, 
-  }));
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], 
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 app.use(cookieParser());
 const PORT = 3001;
 
@@ -41,27 +42,31 @@ if (!process.env.JWT_SECRET) {
 
 
 app.get('/auth', (req, res) => {
-    const token = req.headers['authorization']?.split(' ')[1]; 
-
-    if (!token) {
-        return res.status(401).json({ authenticated: false, message: 'No token provided.' });
-    }
-
     try {
+        const authHeader = req.headers['authorization'];
+        if (!authHeader) {
+            return res.status(401).json({ authenticated: false, message: 'Cabeçalho de autorização ausente.' });
+        }
+
+        const token = authHeader.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ authenticated: false, message: 'Token ausente no cabeçalho de autorização.' });
+        }
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
         const user = {
             userId: decoded.userId,
-            nome: decoded.nome,  
+            nome: decoded.nome,
             email: decoded.email,
         };
 
-        return res.json({ authenticated: true, user }); 
+        return res.status(200).json({ authenticated: true, user });
     } catch (err) {
-        console.error('Token verification error:', err);
-        return res.status(401).json({ authenticated: false, message: 'Invalid or expired token.' });
+        console.error('Erro na verificação do token:', err);
+        return res.status(401).json({ authenticated: false, message: 'Token inválido ou expirado.' });
     }
 });
+
 
 
 app.post('/home/registar', async (req, res) => {
@@ -91,34 +96,33 @@ app.post('/home/registar', async (req, res) => {
 app.post('/home/login', async (req, res) => {
     const { email, password } = req.body;
 
+  
     if (!email || !password) {
-        return res.status(400).json({ error: 'Email e password são obrigatórios.' });
+        return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
 
     try {
-       
+        
         const user = await Utilizadores.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({ error: 'Email ou password incorretos.' });
+            return res.status(400).json({ error: 'Email ou senha incorretos.' });
         }
 
-      
+    
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ error: 'Email ou password incorretos.' });
+            return res.status(400).json({ error: 'Email ou senha incorretos.' });
         }
 
-     
         const token = jwt.sign(
-            { userId: user._id, nome: user.nome, email: user.email },  
-            process.env.JWT_SECRET,                                    
-            { expiresIn: '365d' }                                       
+            { userId: user._id, nome: user.nome, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '365d' }  
         );
 
-       
         res.json({
-            message: 'Login successful',
+            message: 'Login realizado com sucesso.',
             token,
             user: {
                 nome: user.nome,
@@ -134,10 +138,9 @@ app.post('/home/login', async (req, res) => {
 
 
 app.post('/logout', (req, res) => {
-    
-    res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-    
-    return res.json({ message: 'Logout successful.' });
+ 
+    res.clearCookie('token', { path: '/' });
+    return res.status(200).json({ message: 'Logout bem-sucedido.' });
 });
 
 const storage = multer.diskStorage({
@@ -163,17 +166,18 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
         const { nome, artista, categoriaId } = req.body;
         const file = req.file;  
 
-        
+       
         if (!nome || !artista || !file || !categoriaId) {
             return res.status(400).json({ error: 'Por favor, preencha todos os campos: nome, artista, arquivo e categoria.' });
         }
         
+      
         const categoria = await Categoria.findById(categoriaId);
         if (!categoria) {
             return res.status(404).json({ error: 'Categoria não encontrada.' });
         }
 
-      
+       
         const ficheiroNome = path.basename(file.path);  
 
      
@@ -181,13 +185,14 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
             nome,
             artista,
             categoria: categoriaId,
-            ficheiro: ficheiroNome,  
+            ficheiro: ficheiroNome,
+            status: 'pendente',  
         });
 
-
+     
         await musica.save();  
 
-    
+        
         return res.status(200).json({ message: 'Música publicada com sucesso!', musica });
 
     } catch (error) {
@@ -195,6 +200,17 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
         return res.status(500).json({ error: 'Erro ao adicionar música. Tente novamente.' });
     }
 });
+
+
+  app.get('/getMusicasPendentes', async (req, res) => {
+    try {
+        const musicasPendentes = await Musicas.find({ status: 'pendente' });
+        res.status(200).json(musicasPendentes);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao obter músicas pendentes' });
+    }
+});
+
 
 app.use('/musicas', express.static(path.join(__dirname, '../musicas')));
 app.get('/musicas', async (req, res) => {
@@ -219,43 +235,71 @@ app.get('/musicas/:filename', (req, res) => {
     });
 });
 
+app.patch('/aprovarMusica/:id', async (req, res) => {
+    const { id } = req.params;
+    console.log('Aprovando música com ID:', id); 
+
+    try {
+     
+        const musica = await Musicas.findById(id);
+        
+    
+        if (!musica) {
+            return res.status(404).send({ error: 'Música não encontrada' });
+        }
+
+        musica.status = 'aprovado';
+
+        await musica.save();
+
+        console.log('Música aprovada:', musica);
+        res.status(200).send({ message: 'Música aprovada com sucesso', musica });
+
+    } catch (error) {
+        console.error('Erro ao aprovar música:', error);
+        res.status(500).send({ error: 'Erro ao aprovar música' });
+    }
+});
+
+app.delete('/rejeitarMusica/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        
+        const musica = await Musicas.findById(id);
+        if (!musica) {
+            return res.status(404).send({ error: 'Música não encontrada' });
+        }
+
+        await Musicas.findByIdAndDelete(id);
+        res.status(200).send({ message: 'Música removida com sucesso' });
+    } catch (error) {
+        console.error('Erro ao remover a música:', error);
+        res.status(500).send({ error: 'Erro ao remover a música' });
+    }
+});
+
 app.delete('/musicas/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        await MusicaModel.findByIdAndDelete(id);
+        
+        
+        const musica = await Musicas.findById(id);
+        if (!musica) {
+            return res.status(404).send({ error: 'Música não encontrada' });
+        }
+
+        
+        await Musicas.findByIdAndDelete(id);
         res.status(200).send({ message: 'Música removida com sucesso' });
     } catch (error) {
+        console.error('Erro ao remover a música:', error);
         res.status(500).send({ error: 'Erro ao remover a música' });
     }
 });
 
 
-app.post('/CriarPlaylists', async (req, res) => {
-    const { nome, utilizador, musicas } = req.body;
 
-    if (!nome || !utilizador) {
-        return res.status(400).json({ error: 'Nome e usuário são obrigatórios.' });
-    }
-
-    try {
-        const novaPlaylist = new addPlaylist({ nome, utilizador, musicas }); 
-        await novaPlaylist.save(); 
-        res.status(201).json(novaPlaylist);
-    } catch (error) {
-        console.error('Erro ao criar a nova playlist:', error);
-        res.status(500).json({ error: 'Erro ao criar a nova playlist: ' + error.message });
-    }
-});
-
-app.get('/VerPlaylists', async (req, res) => {
-    try {
-        const playlists = await Playlist.find().populate('musicas').populate('utilizador');
-        res.status(200).json(playlists);
-    } catch (error) {
-        console.error('Erro ao buscar as playlists:', error);
-        res.status(500).json({ error: 'Erro ao buscar as playlists.' });
-    }
-});
 
 app.get('/utilizadores', async (req, res) => {
     try {
@@ -304,27 +348,6 @@ app.get('/utilizadores/email', async (req, res) => {
     }
 });
 
-app.put('/up_utilizadores/:id', async (req, res) => {
-    const userId = req.params.id;
-    const { nome, email } = req.body;
-
-    try {
-        const result = await User.findByIdAndUpdate(userId, { nome, email }, { new: true, runValidators: true });
-
-        if (!result) {
-            return res.status(404).json({ error: 'Utilizador não encontrado.' });
-        }
-
-        res.status(200).json({ message: 'Perfil atualizado com sucesso.', user: result });
-    } catch (error) {
-        console.error('Erro ao atualizar perfil:', error);
-        res.status(500).json({ error: 'Erro ao atualizar o perfil. Tente novamente.' });
-    }
-});
-
-
-
-
 app.post('/addCategoria', async (req, res) => {
    
     if (!req.body.nome) {
@@ -367,6 +390,23 @@ app.get('/getCategorias', async (req, res) => {
         return res.status(500).json({ error: 'Erro ao buscar categorias.' });
     }
 });
+
+app.delete('/removeCategoria/:categoriaId', async (req, res) => {
+    try {
+      const categoriaId = req.params.categoriaId;
+  
+      const result = await Categoria.findByIdAndDelete(categoriaId);
+  
+      if (!result) {
+        return res.status(404).json({ message: 'Categoria não encontrada.' });
+      }
+  
+      res.status(200).json({ message: 'Categoria removida com sucesso.' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Erro ao remover a categoria.' });
+    }
+  });
 
 
 

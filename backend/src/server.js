@@ -6,8 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const Utilizadores = require('../models/utilizadores');
 const Musicas = require('../models/musicas');
-const addMusic = require('../models/Novamusica'); 
-const addPlaylist = require('../models/NovaPlaylist'); 
 const Playlist = require('../models/playlists');
 const Categoria = require('../models/Categorias')
 const bcrypt = require('bcryptjs');
@@ -416,26 +414,26 @@ app.delete('/removeCategoria/:categoriaId', async (req, res) => {
 
 // Playlists
 
-app.post('/addPlaylist', async (req, res) => {
+app.post('/addPlaylist', upload.single('imagem'), async (req, res) => {
     try {
         const { nome, descricao = '', musicas, utilizador } = req.body;
 
-      
-        if (!nome || !utilizador) {
-            return res.status(400).json({ error: 'Nome e utilizador são obrigatórios.' });
+        const imagem = req.file ? req.file.filename : null;
+
+        if (!nome || !utilizador || !imagem) {
+            return res.status(400).json({ error: 'Nome, utilizador e imagem são obrigatórios.' });
         }
 
-      
         let musicasArray = [];
         if (musicas) {
             if (typeof musicas === 'string') {
                 try {
-                    musicasArray = JSON.parse(musicas); 
+                    musicasArray = JSON.parse(musicas);
                 } catch (error) {
                     return res.status(400).json({ error: 'O campo "musicas" deve conter um JSON válido.' });
                 }
             } else if (Array.isArray(musicas)) {
-                musicasArray = musicas; 
+                musicasArray = musicas;
             } else {
                 return res.status(400).json({ error: 'O campo "musicas" deve ser um array ou um JSON válido.' });
             }
@@ -443,9 +441,9 @@ app.post('/addPlaylist', async (req, res) => {
 
         const newPlaylist = new Playlist({
             nome,
-            descricao,
             musicas: musicasArray,
-            utilizador
+            utilizador,
+            imagem, 
         });
 
         await newPlaylist.save();

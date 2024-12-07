@@ -186,16 +186,34 @@ const SidebarLink = styled.a`
     }
 `;
 
+const ImageUploadInput = styled.input`
+  margin-bottom: 10px;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+
+  &::-webkit-file-upload-button {
+    padding: 5px 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+`;
+
 const CreatePlaylistPage = () => {
   const [songs, setSongs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSongs, setSelectedSongs] = useState([]);
   const [playlistName, setPlaylistName] = useState('');
-  const [playlistDescription, setPlaylistDescription] = useState('');
-  const [isPublic, setIsPublic] = useState(false);
   const [userId, setUserId] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState('');
+  const [imageFile, setImageFile] = useState(null);
 
   
   const fetchSongs = async () => {
@@ -253,50 +271,40 @@ const CreatePlaylistPage = () => {
 
 
   const createPlaylist = async () => {
-   
-    if (!playlistName.trim()) {
-      alert('O nome da playlist é obrigatório.');
+    if (!playlistName.trim() || !imageFile) {
+      alert('O nome da playlist e a imagem são obrigatórios.');
       return;
     }
-  
+
     if (selectedSongs.length === 0) {
       alert('Selecione ao menos uma música para a playlist.');
       return;
     }
-  
+
     if (!userId) {
       alert('Usuário não autenticado. Faça login para criar uma playlist.');
       return;
     }
-  
 
-    const validMusicas = Array.isArray(selectedSongs) ? selectedSongs : [];
-  
-    const playlistData = {
-      nome: playlistName.trim(),
-      descricao: playlistDescription.trim(),
-      musicas: validMusicas, 
-      utilizador: userId,
-      publica: isPublic,
-    };
-  
+    const formData = new FormData();
+    formData.append('nome', playlistName.trim());
+    formData.append('utilizador', userId);
+    formData.append('imagem', imageFile);  
+    formData.append('musicas', JSON.stringify(selectedSongs));  
+
     try {
       const response = await fetch('http://127.0.0.1:3001/addPlaylist', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(playlistData),
+        body: formData, 
       });
-  
+
       if (response.ok) {
         setFeedbackMessage('Playlist criada com sucesso!');
         setPlaylistName('');
-        setPlaylistDescription('');
         setSelectedSongs([]);
-        setIsPublic(false);
+        setImageFile(null);
       } else {
-        setFeedbackMessage('Erro ao criar playlist');
+        setFeedbackMessage('Erro ao criar playlist.');
       }
     } catch (error) {
       console.error('Erro ao criar playlist:', error.message);
@@ -330,11 +338,10 @@ const CreatePlaylistPage = () => {
             value={playlistName}
             onChange={(e) => setPlaylistName(e.target.value)}
           />
-          <PlaylistNameInput
-            type="text"
-            placeholder="Descrição"
-            value={playlistDescription}
-            onChange={(e) => setPlaylistDescription(e.target.value)}
+          <ImageUploadInput
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
           />
           <CreatePlaylistButton onClick={createPlaylist}>
             Criar Playlist
@@ -380,7 +387,7 @@ const CreatePlaylistPage = () => {
         <SidebarLink href="/criarPlaylist">
             <FaAddressCard />
         </SidebarLink>
-        <SidebarLink href="">
+        <SidebarLink href="/Sobrenos">
             <FaInfoCircle />     
         </SidebarLink>
     </RightSidebarContainer>

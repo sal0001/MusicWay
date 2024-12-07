@@ -256,7 +256,7 @@ const FormComponent = () => {
       <Navbar2 />
       <PageContainer>
         <FormWrapper>
-          <Title>Publicar Música</Title>
+          <Title>Submeter Música</Title>
           <form onSubmit={handleSubmit}>
             <InputGroup>
               <Input
@@ -314,7 +314,7 @@ const FormComponent = () => {
           <SidebarLink href="/criarPlaylist">
             <FaAddressCard />
           </SidebarLink>
-          <SidebarLink href="">
+          <SidebarLink href="/Sobrenos">
             <FaInfoCircle />
           </SidebarLink>
         </RightSidebarContainer>

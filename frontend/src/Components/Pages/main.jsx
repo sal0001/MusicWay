@@ -276,20 +276,25 @@ const Main = () => {
             <div style={{ display: 'flex' }}>
             <SidebarContainer>
             {isLoggedIn ? (
-    <>
-        <SidebarTitle>Playlists</SidebarTitle>
-        {playlists.map((playlist) => (
-            <SidebarLink 
-                style={{ backgroundColor: "#4f4f4f" }} 
-                key={playlist._id} 
-                href={`/playlist/${playlist._id}`}
-            >
-                {playlist.nome}
-            </SidebarLink>
-        ))}
-    </>
+  <>
+    <SidebarTitle>Playlists</SidebarTitle>
+    {playlists.map((playlist) => (
+      <SidebarLink 
+        style={{ backgroundColor: "#4f4f4f", display: 'flex', alignItems: 'center' }} 
+        key={playlist._id} 
+        href={`/playlist/${playlist._id}`}
+      >
+        <img 
+          src={`http://127.0.0.1:3001/musicas/${playlist.imagem}`} 
+          alt={playlist.nome} 
+          style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px', marginRight: '10px' }} 
+        />
+        {playlist.nome}
+      </SidebarLink>
+    ))}
+  </>
 ) : (
-    <p></p>
+  <p></p>
 )}
                 
                 </SidebarContainer>
@@ -348,7 +353,7 @@ const Main = () => {
         <SidebarLink href="/criarPlaylist">
             <FaAddressCard />
         </SidebarLink>
-        <SidebarLink href="">
+        <SidebarLink href="/Sobrenos">
             <FaInfoCircle />     
         </SidebarLink>
     </RightSidebarContainer>

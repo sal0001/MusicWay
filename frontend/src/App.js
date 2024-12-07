@@ -10,6 +10,7 @@ import Musicas from './Components/Pages/Musicas';
 import AprovarMusicas from './Components/Pages/aprovarMusicas';
 import CriarPlaylist from './Components/Pages/criarPlaylist';
 import Playlist from './Components/Pages/Playlist';
+import Sobrenos from './Components/Pages/Aboutus';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
             <Route path="/aprovarMusicas" element={<AprovarMusicas />} />
             <Route path="/criarPlaylist" element={<CriarPlaylist />} />
             <Route path="/playlist" element={<Playlist />} />
+            <Route path="/Sobrenos" element={<Sobrenos />} />
         </Routes>
       </Router>
     </div>

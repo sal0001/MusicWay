@@ -8,11 +8,6 @@ const PlaylistSchema = new mongoose.Schema({
         maxlength: 50,
         trim: true
     },
-    descricao: {
-        type: String,
-        maxlength: 255,
-        trim: true
-    },
     musicas: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'musicas'
@@ -22,16 +17,16 @@ const PlaylistSchema = new mongoose.Schema({
         ref: 'utilizadores',
         required: true
     },
+    imagem: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true
 });
 
 PlaylistSchema.index({ nome: 1, utilizador: 1 }, { unique: true });
 
-PlaylistSchema.pre('save', function (next) {
-    console.log(`Playlist "${this.nome}" criada/modificada pelo usuário ${this.utilizador}`);
-    next();
-});
 
 const Playlist = mongoose.model('playlists', PlaylistSchema);
 

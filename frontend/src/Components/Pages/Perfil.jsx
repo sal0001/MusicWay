@@ -70,52 +70,50 @@ const Perfil = () => {
             <Navbar2 />
             <Container>
             {loading ? (
-                        <p>Carregando...</p>
-                    ) : error ? (
-                        <ErrorMessage>{error}</ErrorMessage>
-                    ) : (
-                        <>
-            <ProfileWrapper className="container rounded bg-white mt-5 mb-5">
-                <div className="row">
-                    <LeftColumn className="col-md-3 border-right">
-                        <ProfileInfo className="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <ProfileImage
-                                className="rounded-circle mt-5"
-                                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
-                                alt="Profile"
-                            />
-                            <span className="font-weight-bold">{user?.nome || "Guest"}</span>
-                            <span className="text-black-50">{user?.email || "No email available"}</span>
-                        </ProfileInfo>
-                    </LeftColumn>
+                <p>Carregando...</p>
+            ) : error ? (
+                <ErrorMessage>{error}</ErrorMessage>
+            ) : (
+                <>
+                <ProfileWrapper className="container rounded bg-white mt-5 mb-5">
+                    <div className="row">
+                    
+                        <LeftColumn className="col-md-3 border-right">
+                            <ProfileInfo className="d-flex flex-column align-items-center text-center p-3 py-4">
+                                <ProfileImage
+                                    className="rounded-circle mt-5"
+                                    src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                                    alt="Profile"
+                                />
+                            </ProfileInfo>
+                        </LeftColumn>
+                        <Separator className="col-md-1 d-flex justify-content-center">
+                            <Divider />
+                        </Separator>
 
-                    <MiddleColumn className="col-md-5 border-right">
-                        <div className="p-3 py-5">
-                            <Header className="d-flex justify-content-between align-items-center mb-3">
-                                <h4>O seu perfil</h4>
-                            </Header>
-                            <FormRow className="row mt-3">
-                                <div className="col-md-12">
-                                    <Label className="labels">Nome</Label>
-                                    <Input type="text" className="form-control" placeholder="Nome" />
+    
+                        <MiddleColumn className="col-md-2">
+                            <div className="p-2 py-5">
+                                <FormRow className="row mt-3">
+                                    <div className="col-md-15">
+                                        <Label className="labels">Nome</Label>
+                                        <span className="font-weight-bold">{user?.nome || "Guest"}</span>
+                                    </div>
+                                    <div className="col-md-15">
+                                        <Label className="labels">Email</Label>
+                                        <span className="font-weight-bold">{user?.email || "No email available"}</span>
+                                    </div>
+                                </FormRow>
+                                <div className="mt-5 text-center">
+                                    <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
                                 </div>
-                                <div className="col-md-12">
-                                    <Label className="labels">Email</Label>
-                                    <Input type="text" className="form-control" placeholder="Email" />
-                                </div>
-                            </FormRow>
-                            <div className="mt-5 text-center">
-                            <SaveButton >Salvar</SaveButton>
-                            <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
                             </div>
-                        </div>
-                    </MiddleColumn>
-                </div>
-            </ProfileWrapper>
-
-            </>
-                    )}
-        </Container>    
+                        </MiddleColumn>
+                    </div>
+                </ProfileWrapper>
+                </>
+            )}
+            </Container>   
 
             {isLoggedIn && (
                 <RightSidebarContainer>
@@ -129,7 +127,7 @@ const Perfil = () => {
                     <SidebarLink href="/criarPlaylist">
                         <FaAddressCard />
                     </SidebarLink>
-                    <SidebarLink href="">
+                    <SidebarLink href="/Sobrenos">
                         <FaInfoCircle />
                     </SidebarLink>
                 </RightSidebarContainer>
@@ -138,33 +136,28 @@ const Perfil = () => {
     );
 };
 
-const SaveButton = styled.button`
-    margin-top: 20px;
-    background-color: black;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: grey;
-    }
+const Separator = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
 `;
 
+const Divider = styled.div`
+    height: 80%;
+    width: 2px;
+    background-color: #ddd;
+`;
 
 const Container = styled.div`
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+     background-color: black;
 `;
 
 const ProfileWrapper = styled.div`
-    max-width: 1000px;
-    border: solid 2px black;
+    max-width: 800px;
 `;
 
 const LeftColumn = styled.div`
@@ -181,10 +174,6 @@ const ProfileImage = styled.img`
 
 const MiddleColumn = styled.div``;
 
-const Header = styled.div`
-    margin-bottom: 20px;
-`;
-
 const FormRow = styled.div`
     margin-top: 20px;
 `;
@@ -194,14 +183,6 @@ const Label = styled.label`
     margin-bottom: 5px;
     display: block;
 `;
-
-const Input = styled.input`
-    &:focus {
-        box-shadow: none;
-        border-color: #ba68c8;
-    }
-`;
-
 
 const RightSidebarContainer = styled.div`
   width: 90px;

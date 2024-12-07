@@ -84,7 +84,7 @@ const Navbar3 = () => {
               <NavButton onClick={() => navigate('/musicas')}>Músicas</NavButton>
               <NavButton onClick={() => navigate('/addCategoria')}>Gêneros</NavButton>
               <NavButton onClick={() => navigate('/admin')}>Utilizadores</NavButton>
-              <NavButton onClick={() => navigate('/aprovarMusicas')}>Aprovar</NavButton>
+              <NavButton onClick={() => navigate('/aprovarMusicas')}>Aprovar-Músicas</NavButton>
         </NavMenuRight>
       </NavbarContainer>
     </Header>

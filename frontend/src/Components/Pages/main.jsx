@@ -180,6 +180,7 @@ const Main = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const audioRef = useRef(null);
+    const [playlists, setPlaylists] = useState([]);
 
     const fetchSongs = async () => {
         try {
@@ -201,6 +202,19 @@ const Main = () => {
             console.error('Error fetching songs:', error.message);
         }
     };
+
+    const fetchPlaylists = async () => {
+        try {
+            const response = await fetch('http://127.0.0.1:3001/playlists');
+            if (!response.ok) {
+                throw new Error('Failed to fetch playlists: ' + response.statusText);
+            }
+            const data = await response.json();
+            setPlaylists(data);
+        } catch (error) {
+            console.error('Error fetching playlists:', error.message);
+        }
+    };
     
 
     const fetchCategories = async () => {
@@ -219,6 +233,7 @@ const Main = () => {
     useEffect(() => {
         fetchSongs();
         fetchCategories();
+        fetchPlaylists();
 
         const token = localStorage.getItem('token');
         if (token) {
@@ -259,10 +274,25 @@ const Main = () => {
         <div>
             <Navbar2 />
             <div style={{ display: 'flex' }}>
-                <SidebarContainer>
-                    <SidebarTitle></SidebarTitle>
+            <SidebarContainer>
+            {isLoggedIn ? (
+    <>
+        <SidebarTitle>Playlists</SidebarTitle>
+        {playlists.map((playlist) => (
+            <SidebarLink 
+                style={{ backgroundColor: "#4f4f4f" }} 
+                key={playlist._id} 
+                href={`/playlist/${playlist._id}`}
+            >
+                {playlist.nome}
+            </SidebarLink>
+        ))}
+    </>
+) : (
+    <p></p>
+)}
+                
                 </SidebarContainer>
-
                 <MusicListContainer>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <SearchContainer>
@@ -315,7 +345,7 @@ const Main = () => {
         <SidebarLink href="/adicionarMusicas">
             <FaMusic />
         </SidebarLink>
-        <SidebarLink href="">
+        <SidebarLink href="/criarPlaylist">
             <FaAddressCard />
         </SidebarLink>
         <SidebarLink href="">

@@ -311,7 +311,7 @@ const FormComponent = () => {
           <SidebarLink href="/adicionarMusicas">
             <FaMusic />
           </SidebarLink>
-          <SidebarLink href="">
+          <SidebarLink href="/criarPlaylist">
             <FaAddressCard />
           </SidebarLink>
           <SidebarLink href="">

@@ -8,6 +8,8 @@ import Admin from './Components/Pages/admin';
 import AdicionarCategorias from './Components/Pages/addCategoria';
 import Musicas from './Components/Pages/Musicas';
 import AprovarMusicas from './Components/Pages/aprovarMusicas';
+import CriarPlaylist from './Components/Pages/criarPlaylist';
+import Playlist from './Components/Pages/Playlist';
 
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
             <Route path="/admin" element={<Admin />} />
             <Route path="/musicas" element={<Musicas />} />
             <Route path="/aprovarMusicas" element={<AprovarMusicas />} />
+            <Route path="/criarPlaylist" element={<CriarPlaylist />} />
+            <Route path="/playlist" element={<Playlist />} />
         </Routes>
       </Router>
     </div>

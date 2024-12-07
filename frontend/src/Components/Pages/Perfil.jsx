@@ -68,29 +68,54 @@ const Perfil = () => {
     return (
         <div>
             <Navbar2 />
-            <MainContainer>
-                <ProfileCard>
-                    {loading ? (
+            <Container>
+            {loading ? (
                         <p>Carregando...</p>
                     ) : error ? (
                         <ErrorMessage>{error}</ErrorMessage>
                     ) : (
                         <>
-                            <UserDetails>
-                                <h1>Detalhes do utilizador</h1>
-                                <DetailItem>
-                                    {user?.nome || 'Não disponível'} 
-                                </DetailItem>
-                                <DetailItem>
-                                    {user?.email || 'Não disponível'}
-                                </DetailItem>
-                            </UserDetails>
+            <ProfileWrapper className="container rounded bg-white mt-5 mb-5">
+                <div className="row">
+                    <LeftColumn className="col-md-3 border-right">
+                        <ProfileInfo className="d-flex flex-column align-items-center text-center p-3 py-5">
+                        <ProfileImage
+                                className="rounded-circle mt-5"
+                                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg"
+                                alt="Profile"
+                            />
+                            <span className="font-weight-bold">{user?.nome || "Guest"}</span>
+                            <span className="text-black-50">{user?.email || "No email available"}</span>
+                        </ProfileInfo>
+                    </LeftColumn>
 
+                    <MiddleColumn className="col-md-5 border-right">
+                        <div className="p-3 py-5">
+                            <Header className="d-flex justify-content-between align-items-center mb-3">
+                                <h4>O seu perfil</h4>
+                            </Header>
+                            <FormRow className="row mt-3">
+                                <div className="col-md-12">
+                                    <Label className="labels">Nome</Label>
+                                    <Input type="text" className="form-control" placeholder="Nome" />
+                                </div>
+                                <div className="col-md-12">
+                                    <Label className="labels">Email</Label>
+                                    <Input type="text" className="form-control" placeholder="Email" />
+                                </div>
+                            </FormRow>
+                            <div className="mt-5 text-center">
+                            <SaveButton >Salvar</SaveButton>
                             <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
-                        </>
+                            </div>
+                        </div>
+                    </MiddleColumn>
+                </div>
+            </ProfileWrapper>
+
+            </>
                     )}
-                </ProfileCard>
-            </MainContainer>
+        </Container>    
 
             {isLoggedIn && (
                 <RightSidebarContainer>
@@ -101,7 +126,7 @@ const Perfil = () => {
                     <SidebarLink href="/adicionarMusicas">
                         <FaMusic />
                     </SidebarLink>
-                    <SidebarLink href="">
+                    <SidebarLink href="/criarPlaylist">
                         <FaAddressCard />
                     </SidebarLink>
                     <SidebarLink href="">
@@ -112,6 +137,71 @@ const Perfil = () => {
         </div>
     );
 };
+
+const SaveButton = styled.button`
+    margin-top: 20px;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: grey;
+    }
+`;
+
+
+const Container = styled.div`
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const ProfileWrapper = styled.div`
+    max-width: 1000px;
+    border: solid 2px black;
+`;
+
+const LeftColumn = styled.div`
+    text-align: center;
+`;
+
+const ProfileInfo = styled.div`
+    padding-top: 40px;
+`;
+
+const ProfileImage = styled.img`
+    width: 150px;
+`;
+
+const MiddleColumn = styled.div``;
+
+const Header = styled.div`
+    margin-bottom: 20px;
+`;
+
+const FormRow = styled.div`
+    margin-top: 20px;
+`;
+
+const Label = styled.label`
+    font-size: 11px;
+    margin-bottom: 5px;
+    display: block;
+`;
+
+const Input = styled.input`
+    &:focus {
+        box-shadow: none;
+        border-color: #ba68c8;
+    }
+`;
+
 
 const RightSidebarContainer = styled.div`
   width: 90px;
@@ -159,39 +249,6 @@ const SidebarLink = styled.a`
   }
 `;
 
-const MainContainer = styled.div`
-    padding: 50px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f0f2f5;
-    height: 100vh;
-`;
-
-const ProfileCard = styled.div`
-    width: 100%;
-    max-width: 500px;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
-`;
-
-const UserDetails = styled.div`
-    text-align: left;
-    margin-bottom: 30px;
-`;
-
-const DetailItem = styled.p`
-    font-size: 1.1rem;
-    color: #555;
-    margin: 8px 0;
-    strong {
-        font-weight: bold;
-        color: #333;
-    }
-`;
 
 const LogoutButton = styled.button`
     margin-top: 20px;

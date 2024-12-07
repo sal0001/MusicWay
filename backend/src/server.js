@@ -136,12 +136,16 @@ app.post('/home/login', async (req, res) => {
     }
 });
 
-
+//Logout
 app.post('/logout', (req, res) => {
  
     res.clearCookie('token', { path: '/' });
     return res.status(200).json({ message: 'Logout bem-sucedido.' });
 });
+
+
+
+//Musicas
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -300,7 +304,7 @@ app.delete('/musicas/:id', async (req, res) => {
 
 
 
-
+// Utilizadores
 app.get('/utilizadores', async (req, res) => {
     try {
         const utilizadores = await Utilizadores.find(); 
@@ -348,6 +352,8 @@ app.get('/utilizadores/email', async (req, res) => {
     }
 });
 
+
+// Categorias
 app.post('/addCategoria', async (req, res) => {
    
     if (!req.body.nome) {
@@ -407,6 +413,62 @@ app.delete('/removeCategoria/:categoriaId', async (req, res) => {
       res.status(500).json({ message: 'Erro ao remover a categoria.' });
     }
   });
+
+// Playlists
+
+app.post('/addPlaylist', async (req, res) => {
+    try {
+        const { nome, descricao = '', musicas, utilizador } = req.body;
+
+      
+        if (!nome || !utilizador) {
+            return res.status(400).json({ error: 'Nome e utilizador são obrigatórios.' });
+        }
+
+      
+        let musicasArray = [];
+        if (musicas) {
+            if (typeof musicas === 'string') {
+                try {
+                    musicasArray = JSON.parse(musicas); 
+                } catch (error) {
+                    return res.status(400).json({ error: 'O campo "musicas" deve conter um JSON válido.' });
+                }
+            } else if (Array.isArray(musicas)) {
+                musicasArray = musicas; 
+            } else {
+                return res.status(400).json({ error: 'O campo "musicas" deve ser um array ou um JSON válido.' });
+            }
+        }
+
+        const newPlaylist = new Playlist({
+            nome,
+            descricao,
+            musicas: musicasArray,
+            utilizador
+        });
+
+        await newPlaylist.save();
+
+        res.status(201).json({
+            message: 'Playlist criada com sucesso!',
+            playlist: newPlaylist
+        });
+    } catch (error) {
+        console.error('Erro ao criar playlist:', error.message || error);
+        res.status(500).json({ error: 'Erro interno ao criar playlist. Tente novamente mais tarde.' });
+    }
+});
+
+app.get('/playlists', async (req, res) => {
+    try {
+        const playlists = await Playlist.find();
+        res.json(playlists);
+    } catch (error) {
+        console.error('Error fetching playlists:', error.message);
+        res.status(500).json({ error: 'Erro ao buscar playlists' });
+    }
+});
 
 
 

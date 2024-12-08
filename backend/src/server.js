@@ -471,5 +471,5 @@ app.get('/playlists', async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Servidor a rodar na porta http://127.0.0.1:${PORT}`);
+    console.log(`Servidor a correr na porta http://127.0.0.1:${PORT}`);
 });

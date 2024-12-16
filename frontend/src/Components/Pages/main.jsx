@@ -23,7 +23,7 @@ const SidebarContainer = styled.div`
 `;
 
 const RightSidebarContainer = styled.div`
-    width: 90px;
+    width: 170px;
     height: 100vh;
     background-color: #1c1c1c;
     color: white;
@@ -70,7 +70,7 @@ const SidebarLink = styled.a`
 
 const MusicListContainer = styled.div`
     margin-left: 400px;
-    margin-right: 100px;
+    margin-right: 170px;
     padding: 20px;
     flex: 1;
     margin-top: 60px;
@@ -344,17 +344,17 @@ const Main = () => {
                 {isLoggedIn ? (
     <RightSidebarContainer>
         <SidebarTitle></SidebarTitle>
-        <SidebarLink href="/main/Perfil"> 
-            <FaUserCircle />
+        <SidebarLink  href="/main/Perfil"> 
+            <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
         </SidebarLink>
         <SidebarLink href="/adicionarMusicas">
-            <FaMusic />
+            <FaMusic style={{ marginRight: '8px' }} />Publicar
         </SidebarLink>
         <SidebarLink href="/criarPlaylist">
-            <FaAddressCard />
+            <FaAddressCard style={{ marginRight: '8px' }} />Playlist
         </SidebarLink>
         <SidebarLink href="/Sobrenos">
-            <FaInfoCircle />     
+            <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
         </SidebarLink>
     </RightSidebarContainer>
 ) : (

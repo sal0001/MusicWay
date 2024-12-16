@@ -1,23 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const multer = require('multer'); 
+const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const Utilizadores = require('../models/utilizadores');
 const Musicas = require('../models/musicas');
 const Playlist = require('../models/playlists');
+const Roles = require('../models/Roles');
 const Categoria = require('../models/Categorias')
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: 'http://localhost:3000', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], 
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
@@ -29,13 +31,13 @@ mongoose.connect('mongodb://localhost:27017/M&B', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log('Conectado a MongoDB.'))
-.catch(err => console.error('Erro a conecatar com mongoDB:', err));
+    .then(() => console.log('Conectado a MongoDB.'))
+    .catch(err => console.error('Erro a conecatar com mongoDB:', err));
 
 
 if (!process.env.JWT_SECRET) {
     console.error('JWT_SECRET is not defined in .env file!');
-    process.exit(1); 
+    process.exit(1);
 }
 
 
@@ -66,7 +68,6 @@ app.get('/auth', (req, res) => {
 });
 
 
-
 app.post('/home/registar', async (req, res) => {
     const { nome, email, password } = req.body;
 
@@ -81,12 +82,25 @@ app.post('/home/registar', async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new Utilizadores({ nome, email, password: hashedPassword });
+
+        let role = await Roles.findOne({ nome: 'utilizador' });
+        if (!role) {
+            role = new Roles({ nome: 'utilizador' });
+            await role.save();
+        }
+
+        const user = new Utilizadores({
+            nome,
+            email,
+            password: hashedPassword,
+            role: role._id
+        });
+
         await user.save();
 
         res.status(201).json({ message: 'Utilizador registrado com sucesso.', user });
     } catch (err) {
-        console.error('Erro ao registrar utilizador:', err); 
+        console.error('Erro ao registrar utilizador:', err);
         res.status(500).json({ error: 'Erro ao registrar utilizador: ' + err.message });
     }
 });
@@ -94,20 +108,20 @@ app.post('/home/registar', async (req, res) => {
 app.post('/home/login', async (req, res) => {
     const { email, password } = req.body;
 
-  
+
     if (!email || !password) {
         return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
 
     try {
-        
+
         const user = await Utilizadores.findOne({ email });
 
         if (!user) {
             return res.status(400).json({ error: 'Email ou senha incorretos.' });
         }
 
-    
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ error: 'Email ou senha incorretos.' });
@@ -116,7 +130,7 @@ app.post('/home/login', async (req, res) => {
         const token = jwt.sign(
             { userId: user._id, nome: user.nome, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: '365d' }  
+            { expiresIn: '365d' }
         );
 
         res.json({
@@ -136,7 +150,7 @@ app.post('/home/login', async (req, res) => {
 
 //Logout
 app.post('/logout', (req, res) => {
- 
+
     res.clearCookie('token', { path: '/' });
     return res.status(200).json({ message: 'Logout bem-sucedido.' });
 });
@@ -154,7 +168,7 @@ const storage = multer.diskStorage({
         cb(null, musicDirectory);
     },
     filename: (req, file, cb) => {
-        const uniqueName = Date.now() + path.extname(file.originalname);  
+        const uniqueName = Date.now() + path.extname(file.originalname);
         cb(null, uniqueName);
     }
 });
@@ -166,35 +180,35 @@ const upload = multer({ storage: storage });
 app.post('/addMusicas', upload.single('file'), async (req, res) => {
     try {
         const { nome, artista, categoriaId } = req.body;
-        const file = req.file;  
+        const file = req.file;
 
-       
+
         if (!nome || !artista || !file || !categoriaId) {
             return res.status(400).json({ error: 'Por favor, preencha todos os campos: nome, artista, arquivo e categoria.' });
         }
-        
-      
+
+
         const categoria = await Categoria.findById(categoriaId);
         if (!categoria) {
             return res.status(404).json({ error: 'Categoria não encontrada.' });
         }
 
-       
-        const ficheiroNome = path.basename(file.path);  
 
-     
+        const ficheiroNome = path.basename(file.path);
+
+
         const musica = new Musicas({
             nome,
             artista,
             categoria: categoriaId,
             ficheiro: ficheiroNome,
-            status: 'pendente',  
+            status: 'pendente',
         });
 
-     
-        await musica.save();  
 
-        
+        await musica.save();
+
+
         return res.status(200).json({ message: 'Música publicada com sucesso!', musica });
 
     } catch (error) {
@@ -204,7 +218,7 @@ app.post('/addMusicas', upload.single('file'), async (req, res) => {
 });
 
 
-  app.get('/getMusicasPendentes', async (req, res) => {
+app.get('/getMusicasPendentes', async (req, res) => {
     try {
         const musicasPendentes = await Musicas.find({ status: 'pendente' });
         res.status(200).json(musicasPendentes);
@@ -226,9 +240,9 @@ app.get('/musicas', async (req, res) => {
 });
 
 app.get('/musicas/:filename', (req, res) => {
-    const filename = req.params.filename; 
-    const filePath = path.join(__dirname, '../musicas', filename); 
-    
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, '../musicas', filename);
+
     res.sendFile(filePath, (err) => {
         if (err) {
             console.error('Error sending file:', err);
@@ -239,13 +253,13 @@ app.get('/musicas/:filename', (req, res) => {
 
 app.patch('/aprovarMusica/:id', async (req, res) => {
     const { id } = req.params;
-    console.log('Aprovando música com ID:', id); 
+    console.log('Aprovando música com ID:', id);
 
     try {
-     
+
         const musica = await Musicas.findById(id);
-        
-    
+
+
         if (!musica) {
             return res.status(404).send({ error: 'Música não encontrada' });
         }
@@ -266,8 +280,8 @@ app.patch('/aprovarMusica/:id', async (req, res) => {
 app.delete('/rejeitarMusica/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        
-        
+
+
         const musica = await Musicas.findById(id);
         if (!musica) {
             return res.status(404).send({ error: 'Música não encontrada' });
@@ -284,14 +298,14 @@ app.delete('/rejeitarMusica/:id', async (req, res) => {
 app.delete('/musicas/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        
-        
+
+
         const musica = await Musicas.findById(id);
         if (!musica) {
             return res.status(404).send({ error: 'Música não encontrada' });
         }
 
-        
+
         await Musicas.findByIdAndDelete(id);
         res.status(200).send({ message: 'Música removida com sucesso' });
     } catch (error) {
@@ -305,8 +319,8 @@ app.delete('/musicas/:id', async (req, res) => {
 // Utilizadores
 app.get('/utilizadores', async (req, res) => {
     try {
-        const utilizadores = await Utilizadores.find(); 
-        res.status(200).json(utilizadores); 
+        const utilizadores = await Utilizadores.find();
+        res.status(200).json(utilizadores);
     } catch (error) {
         console.error('Erro ao buscar utilizadores:', error);
         res.status(500).json({ error: 'Erro ao buscar utilizadores.' });
@@ -353,37 +367,37 @@ app.get('/utilizadores/email', async (req, res) => {
 
 // Categorias
 app.post('/addCategoria', async (req, res) => {
-   
+
     if (!req.body.nome) {
         return res.status(400).json({ error: 'O nome da categoria é obrigatório.' });
     }
 
     try {
-       
+
         const novaCategoria = new Categoria({
             nome: req.body.nome
         });
 
-       
+
         const categoriaSalva = await novaCategoria.save();
 
-    
+
         res.status(200).json({
             message: 'Categoria adicionada com sucesso.',
             categoria: categoriaSalva
         });
     } catch (error) {
         console.error('Erro ao adicionar categoria:', error);
-        
+
         return res.status(500).json({ error: 'Erro ao adicionar a categoria.' });
     }
 });
 
 app.get('/getCategorias', async (req, res) => {
     try {
-       
+
         const categorias = await Categoria.find();
-        
+
         if (!categorias || categorias.length === 0) {
             return res.status(404).json({ error: 'Nenhuma categoria encontrada.' });
         }
@@ -397,20 +411,20 @@ app.get('/getCategorias', async (req, res) => {
 
 app.delete('/removeCategoria/:categoriaId', async (req, res) => {
     try {
-      const categoriaId = req.params.categoriaId;
-  
-      const result = await Categoria.findByIdAndDelete(categoriaId);
-  
-      if (!result) {
-        return res.status(404).json({ message: 'Categoria não encontrada.' });
-      }
-  
-      res.status(200).json({ message: 'Categoria removida com sucesso.' });
+        const categoriaId = req.params.categoriaId;
+
+        const result = await Categoria.findByIdAndDelete(categoriaId);
+
+        if (!result) {
+            return res.status(404).json({ message: 'Categoria não encontrada.' });
+        }
+
+        res.status(200).json({ message: 'Categoria removida com sucesso.' });
     } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Erro ao remover a categoria.' });
+        console.error(err);
+        res.status(500).json({ message: 'Erro ao remover a categoria.' });
     }
-  });
+});
 
 // Playlists
 
@@ -443,7 +457,7 @@ app.post('/addPlaylist', upload.single('imagem'), async (req, res) => {
             nome,
             musicas: musicasArray,
             utilizador,
-            imagem, 
+            imagem,
         });
 
         await newPlaylist.save();
@@ -467,6 +481,31 @@ app.get('/playlists', async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar playlists' });
     }
 });
+
+app.get('/playlist/:id', async (req, res) => {
+    const playlistId = req.params.id;
+  
+    try {
+      
+      if (!mongoose.Types.ObjectId.isValid(playlistId)) {
+        return res.status(400).json({ error: 'ID de playlist inválido' });
+      }
+  
+      const playlist = await Playlist.findById(playlistId).exec();
+  
+      if (!playlist) {
+        return res.status(404).json({ error: 'Playlist não encontrada' });
+      }
+
+      const musicas = await Musicas.find({ '_id': { $in: playlist.musicas } }).exec();
+  
+      res.status(200).json({ playlist, musicas });
+  
+    } catch (error) {
+      console.error('Erro ao buscar a playlist:', error);
+      res.status(500).json({ error: 'Erro ao buscar a playlist.' });
+    }
+  });
 
 
 

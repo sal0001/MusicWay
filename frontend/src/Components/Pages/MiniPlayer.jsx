@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaPause, FaBackward, FaForward} from 'react-icons/fa'; 
+import { FaPlay, FaPause, FaBackward, FaForward } from 'react-icons/fa';
 
 const MiniPlayerContainer = styled.div`
     position: fixed;
@@ -40,7 +40,7 @@ const TrackArtist = styled.span`
 const ControlSection = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Space between controls */
+    justify-content: space-between;
     width: 100%;
     margin-top: 0px;
 `;
@@ -48,8 +48,8 @@ const ControlSection = styled.div`
 const ControlButtons = styled.div`
     display: flex;
     align-items: center;
-    flex-grow: 1; /* Allow the buttons to take available space */
-    justify-content: center; /* Center the play/pause button */
+    flex-grow: 1;
+    justify-content: center;
     margin-right: 100px;
 `;
 
@@ -96,13 +96,11 @@ const VolumeControl = styled.input`
 const ProgressBar = styled.input`
     -webkit-appearance: none;
     appearance: none;
-    width: 300%;
+    width: 100%;
     height: 8px;
     background: grey;
     border-radius: 5px;
     outline: none;
-    margin-right: 200px;
-    margin-left: 150px;
     transition: background 0.3s;
 
     &::-webkit-slider-thumb {
@@ -120,28 +118,45 @@ const ProgressBar = styled.input`
     }
 `;
 
+const TimeDisplay = styled.div`
+    font-size: 14px;
+    color: white;
+    margin-right: 10px;
+`;
+
+const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+};
+
 const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
     const [volume, setVolume] = useState(1);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [progress, setProgress] = useState(0);  
+    const [progress, setProgress] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
 
     useEffect(() => {
         if (audioRef.current) {
-            setIsPlaying(!audioRef.current.paused);
-        }
-    }, [audioRef.current?.paused]);
-
-    useEffect(() => {
-        if (audioRef.current) {
-            const updateProgress = () => {
-                const currentTime = audioRef.current.currentTime;
-                const duration = audioRef.current.duration;
-                setProgress((currentTime / duration) * 100);  
+            const handleTimeUpdate = () => {
+                setCurrentTime(audioRef.current.currentTime);
+                setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
             };
 
-            const interval = setInterval(updateProgress, 500); 
+            const handleLoadedMetadata = () => {
+                setDuration(audioRef.current.duration);
+            };
 
-            return () => clearInterval(interval); 
+            audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+            audioRef.current.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+            return () => {
+                if (audioRef.current) {
+                    audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+                    audioRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+                }
+            };
         }
     }, [audioRef]);
 
@@ -170,29 +185,29 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
         if (audioRef.current) {
             const newTime = (audioRef.current.duration * e.target.value) / 100;
             audioRef.current.currentTime = newTime;
-            setProgress(e.target.value);  
+            setProgress(e.target.value);
         }
     };
 
     return (
         currentTrack && (
             <MiniPlayerContainer>
-                
                 <ControlSection>
-                <TrackInfo>
-                    <TrackDetails>
-                        <TrackName>{currentTrack.nome}</TrackName>
-                        <TrackArtist>{currentTrack.artista}</TrackArtist>
-                    </TrackDetails>
-                </TrackInfo>
-                <ProgressBar
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="0.1"
-                    value={progress}
-                    onChange={handleProgressChange}
-                />
+                    <TrackInfo>
+                        <TrackDetails>
+                            <TrackName>{currentTrack.nome}</TrackName>
+                            <TrackArtist>{currentTrack.artista}</TrackArtist>
+                        </TrackDetails>
+                    </TrackInfo>
+                    <TimeDisplay>{formatTime(currentTime)} {formatTime(duration)}</TimeDisplay>
+                    <ProgressBar
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="0.1"
+                        value={progress}
+                        onChange={handleProgressChange}
+                    />
                     <ControlButtons>
                         <ControlButton onClick={() => {
                             if (audioRef.current) {
@@ -212,7 +227,6 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
                             <FaForward />
                         </ControlButton>
                     </ControlButtons>
-                    
                     <VolumeControl
                         type="range"
                         min="0"
@@ -220,13 +234,8 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
                         step="0.01"
                         value={volume}
                         onChange={handleVolumeChange}
-                        
                     />
-                   
-                     
-
                 </ControlSection>
-
             </MiniPlayerContainer>
         )
     );

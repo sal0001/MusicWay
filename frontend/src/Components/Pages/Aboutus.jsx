@@ -9,7 +9,6 @@ const BigContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  background-color: rgb(51, 51, 51);
   padding: 10px 20px;
 `;
 
@@ -36,20 +35,20 @@ const SidebarLink = styled.a`
 `;
 
 const RightSidebarContainer = styled.div`
-  width: 90px;
-  height: 100vh;
-  background-color: #1c1c1c;
-  color: white;
-  padding: 20px;
-  position: fixed;
-  top: 70px;
-  right: 0;
-  overflow-y: auto;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  transition: all 0.3s ease;
+    width: 170px;
+    height: 100vh;
+    background-color: #1c1c1c;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 70px;
+    right: 0;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 0.3s ease;
 `;
 
 const SidebarTitle = styled.h2`
@@ -112,7 +111,7 @@ const Heading = styled.p`
 const SubHeading = styled.p`
   font-size: 14px;
   line-height: 25px;
-  color: white;
+  color: black;
   margin-bottom: 40px;
 
   @media (max-width: 1024px) {
@@ -151,27 +150,6 @@ const RandomImage = styled.img`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
-const Footer = styled.div`
-  background-color: #333333;
-  color: white;
-  padding: 20px;
-  text-align: center;
-
-  @media (max-width: 500px) {
-    font-size: 14px;
-  }
-`;
-
-const ContactDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-
-const ContactItem = styled.p`
-  margin: 5px 0;
-`;
 
 const Aboutus = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -191,13 +169,13 @@ const Aboutus = () => {
       <BigContainer>
         <Container>
           <LeftSide>
-            <Heading>Meet Our Creative Team</Heading>
+            <Heading>Contact us</Heading>
             <SubHeading>
-              Semaj Africa is an online education platform that delivers video
-              courses, programs and resources for Individual, Advertising & Media
-              Specialist, Online Marketing Professionals, Freelancers, and anyone
-              looking to pursue a career in digital marketing, Accounting, Web
-              development, Programming. Multimedia and CAD design.
+            Email: support@semajafrica.com
+            <br />
+            Phone: +123-456-7890
+            <br />
+            Address: 1234 Digital Ave, Learning City, EduState
             </SubHeading>
           </LeftSide>
           <RightSide>
@@ -205,31 +183,28 @@ const Aboutus = () => {
           </RightSide>
         </Container>
       </BigContainer>
-      <Footer>
-        <ContactDetails>
-          <Heading>Contact Us</Heading>
-          <ContactItem>Email: support@semajafrica.com</ContactItem>
-          <ContactItem>Phone: +123-456-7890</ContactItem>
-          <ContactItem>Address: 1234 Digital Ave, Learning City, EduState</ContactItem>
-        </ContactDetails>
-      </Footer>
-      {isLoggedIn && (
-        <RightSidebarContainer>
-          <SidebarTitle></SidebarTitle>
-          <SidebarLink href="/main/Perfil"> 
-            <FaUserCircle />
-          </SidebarLink>
-          <SidebarLink href="/adicionarMusicas">
-            <FaMusic />
-          </SidebarLink>
-          <SidebarLink href="/criarPlaylist">
-            <FaAddressCard />
-          </SidebarLink>
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle />
-          </SidebarLink>
-        </RightSidebarContainer>
-      )}
+      {isLoggedIn ? (
+         <RightSidebarContainer>
+             <SidebarTitle></SidebarTitle>
+             <SidebarLink  href="/main/Perfil"> 
+                 <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
+             </SidebarLink>
+             <SidebarLink href="/adicionarMusicas">
+                 <FaMusic style={{ marginRight: '8px' }} />Publicar
+             </SidebarLink>
+             <SidebarLink href="/criarPlaylist">
+                 <FaAddressCard style={{ marginRight: '8px' }} />Playlist
+             </SidebarLink>
+             <SidebarLink href="/Sobrenos">
+                 <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+             </SidebarLink>
+         </RightSidebarContainer>
+     ) : (
+         <RightSidebarContainer>
+            <SidebarTitle></SidebarTitle>
+         </RightSidebarContainer>
+     )}
+     
     </div>
   );
 };

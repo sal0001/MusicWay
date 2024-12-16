@@ -5,11 +5,10 @@ const RolesSchema = new mongoose.Schema({
         type: String, 
         required: true 
     },
-   
 }, {
     timestamps: true
 });
 
-const Roles = mongoose.model('roles', RolesSchema);
+const Roles = mongoose.models.Roles || mongoose.model('Roles', RolesSchema);
 
 module.exports = Roles;

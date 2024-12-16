@@ -5,20 +5,20 @@ import Navbar2 from '../navbar/navbar2';
 import axios from 'axios';
 
 const RightSidebarContainer = styled.div`
-  width: 90px;
-  height: 100vh;
-  background-color: #1c1c1c;
-  color: white;
-  padding: 20px;
-  position: fixed;
-  top: 70px;
-  right: 0;
-  overflow-y: auto;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  transition: all 0.3s ease;
+    width: 170px;
+    height: 100vh;
+    background-color: #1c1c1c;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 70px;
+    right: 0;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 0.3s ease;
 `;
 
 const SidebarTitle = styled.h2`
@@ -302,23 +302,28 @@ const FormComponent = () => {
           </form>
         </FormWrapper>
       </PageContainer>
-      {isLoggedIn && (
-        <RightSidebarContainer>
-          <SidebarTitle></SidebarTitle>
-          <SidebarLink href="/main/Perfil"> 
-            <FaUserCircle />
-          </SidebarLink>
-          <SidebarLink href="/adicionarMusicas">
-            <FaMusic />
-          </SidebarLink>
-          <SidebarLink href="/criarPlaylist">
-            <FaAddressCard />
-          </SidebarLink>
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle />
-          </SidebarLink>
-        </RightSidebarContainer>
-      )}
+      {isLoggedIn ? (
+         <RightSidebarContainer>
+             <SidebarTitle></SidebarTitle>
+             <SidebarLink  href="/main/Perfil"> 
+                 <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
+             </SidebarLink>
+             <SidebarLink href="/adicionarMusicas">
+                 <FaMusic style={{ marginRight: '8px' }} />Publicar
+             </SidebarLink>
+             <SidebarLink href="/criarPlaylist">
+                 <FaAddressCard style={{ marginRight: '8px' }} />Playlist
+             </SidebarLink>
+             <SidebarLink href="/Sobrenos">
+                 <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+             </SidebarLink>
+         </RightSidebarContainer>
+     ) : (
+         <RightSidebarContainer>
+            <SidebarTitle></SidebarTitle>
+         </RightSidebarContainer>
+     )}
+     
     </div>
   );
 };

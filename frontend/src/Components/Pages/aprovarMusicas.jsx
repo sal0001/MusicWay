@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Navbar3 from '../navbar/navbar3';
@@ -91,13 +91,21 @@ const SearchBar = styled.input`
     }
 `;
 
-
+const AudioPlayer = styled.audio`
+    width: 500%;
+    margin-top: 10px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+`;
 
 const AprovarMusicas = () => {
     const [pendingSongs, setPendingSongs] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+
+    // Create a ref for the audio element
+    const audioRefs = useRef({});
 
     useEffect(() => {
         const fetchPendingSongs = async () => {
@@ -116,21 +124,20 @@ const AprovarMusicas = () => {
 
     const handleApprove = async (songId) => {
         try {
-            console.log('Aprovando música com ID:', songId); 
+            console.log('Aprovando música com ID:', songId);
             const response = await axios.patch(`http://127.0.0.1:3001/aprovarMusica/${songId}`);
-            console.log('Resposta da aprovação:', response.data); 
-            setPendingSongs(prevSongs => prevSongs.filter(song => song._id !== songId)); 
+            console.log('Resposta da aprovação:', response.data);
+            setPendingSongs(prevSongs => prevSongs.filter(song => song._id !== songId));
         } catch (err) {
             console.error('Erro ao aprovar música:', err);
             setError('Erro ao aprovar a música.');
         }
     };
-    
+
     const handleReject = async (songId) => {
         try {
-            
             await axios.delete(`http://127.0.0.1:3001/rejeitarMusica/${songId}`);
-            setPendingSongs(prevSongs => prevSongs.filter(song => song._id !== songId)); 
+            setPendingSongs(prevSongs => prevSongs.filter(song => song._id !== songId));
         } catch (err) {
             console.error('Erro ao rejeitar música:', err);
             setError('Erro ao rejeitar a música.');
@@ -160,14 +167,23 @@ const AprovarMusicas = () => {
                             <div>
                                 <h5>{song.nome}</h5>
                                 <p>Artista: {song.artista}</p>
+                                <AudioPlayer
+                                    ref={el => (audioRefs.current[song._id] = el)}
+                                    controls
+                                >
+                                    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/mp3" />
+                                    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/ogg" />
+                                    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/wav" />
+                                    Seu navegador não suporta o elemento de áudio.
+                                </AudioPlayer>
                             </div>
                             <div>
-                            <ApproveButton onClick={() => handleApprove(song._id)}>
-                                Aprovar
-                            </ApproveButton>
-                            <RejectButton onClick={() => handleReject(song._id)}>
-                                Rejeitar
-                            </RejectButton>
+                                <ApproveButton onClick={() => handleApprove(song._id)}>
+                                    Aprovar
+                                </ApproveButton>
+                                <RejectButton onClick={() => handleReject(song._id)}>
+                                    Rejeitar
+                                </RejectButton>
                             </div>
                         </MusicListItem>
                     ))}

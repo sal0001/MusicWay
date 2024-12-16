@@ -115,23 +115,28 @@ const Perfil = () => {
             )}
             </Container>   
 
-            {isLoggedIn && (
+             {isLoggedIn ? (
                 <RightSidebarContainer>
                     <SidebarTitle></SidebarTitle>
-                    <SidebarLink href="/main/Perfil"> 
-                        <FaUserCircle />
+                    <SidebarLink  href="/main/Perfil"> 
+                        <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
                     </SidebarLink>
                     <SidebarLink href="/adicionarMusicas">
-                        <FaMusic />
+                        <FaMusic style={{ marginRight: '8px' }} />Publicar
                     </SidebarLink>
                     <SidebarLink href="/criarPlaylist">
-                        <FaAddressCard />
+                        <FaAddressCard style={{ marginRight: '8px' }} />Playlist
                     </SidebarLink>
                     <SidebarLink href="/Sobrenos">
-                        <FaInfoCircle />
+                        <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
                     </SidebarLink>
                 </RightSidebarContainer>
+            ) : (
+                <RightSidebarContainer>
+                   <SidebarTitle></SidebarTitle>
+                </RightSidebarContainer>
             )}
+            
         </div>
     );
 };
@@ -140,12 +145,14 @@ const Separator = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    
 `;
 
 const Divider = styled.div`
     height: 80%;
     width: 2px;
     background-color: #ddd;
+    
 `;
 
 const Container = styled.div`
@@ -153,11 +160,13 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-     background-color: grey;
+    
 `;
 
 const ProfileWrapper = styled.div`
     max-width: 800px;
+    background-color: grey;
+    
 `;
 
 const LeftColumn = styled.div`
@@ -166,6 +175,7 @@ const LeftColumn = styled.div`
 
 const ProfileInfo = styled.div`
     padding-top: 40px;
+    
 `;
 
 const ProfileImage = styled.img`
@@ -185,20 +195,20 @@ const Label = styled.label`
 `;
 
 const RightSidebarContainer = styled.div`
-  width: 90px;
-  height: 100vh;
-  background-color: #1c1c1c;
-  color: white;
-  padding: 20px;
-  position: fixed;
-  top: 70px;
-  right: 0;
-  overflow-y: auto;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  transition: all 0.3s ease;
+    width: 170px;
+    height: 100vh;
+    background-color: #1c1c1c;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 70px;
+    right: 0;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    transition: all 0.3s ease;
 `;
 
 const SidebarTitle = styled.h2`

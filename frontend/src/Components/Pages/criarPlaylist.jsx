@@ -141,7 +141,7 @@ const CreatePlaylistButton = styled.button`
 
 
 const RightSidebarContainer = styled.div`
-    width: 90px;
+    width: 170px;
     height: 100vh;
     background-color: #1c1c1c;
     color: white;
@@ -375,27 +375,28 @@ const CreatePlaylistPage = () => {
               </MusicItem>
             ))}
         </MusicListContainer>
-        {isLoggedIn ? (
-    <RightSidebarContainer>
-        <SidebarTitle></SidebarTitle>
-        <SidebarLink href="/main/Perfil"> 
-            <FaUserCircle />
-        </SidebarLink>
-        <SidebarLink href="/adicionarMusicas">
-            <FaMusic />
-        </SidebarLink>
-        <SidebarLink href="/criarPlaylist">
-            <FaAddressCard />
-        </SidebarLink>
-        <SidebarLink href="/Sobrenos">
-            <FaInfoCircle />     
-        </SidebarLink>
-    </RightSidebarContainer>
-) : (
-    <RightSidebarContainer>
-       <SidebarTitle></SidebarTitle>
-    </RightSidebarContainer>
-)}
+         {isLoggedIn ? (
+            <RightSidebarContainer>
+                <SidebarTitle></SidebarTitle>
+                <SidebarLink  href="/main/Perfil"> 
+                    <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
+                </SidebarLink>
+                <SidebarLink href="/adicionarMusicas">
+                    <FaMusic style={{ marginRight: '8px' }} />Publicar
+                </SidebarLink>
+                <SidebarLink href="/criarPlaylist">
+                    <FaAddressCard style={{ marginRight: '8px' }} />Playlist
+                </SidebarLink>
+                <SidebarLink href="/Sobrenos">
+                    <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+                </SidebarLink>
+            </RightSidebarContainer>
+        ) : (
+            <RightSidebarContainer>
+               <SidebarTitle></SidebarTitle>
+            </RightSidebarContainer>
+        )}
+        
       </PlaylistPageContainer>
     </div>
   );

@@ -79,19 +79,9 @@ const Perfil = () => {
                     <div className="row">
                     
                         <LeftColumn className="col-md-3 border-right">
-                            <ProfileInfo className="d-flex flex-column align-items-center text-center p-3 py-4">
-                                <ProfileImage
-                                    className="rounded-circle mt-5"
-                                    src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
-                                    alt="Profile"
-                                />
-                            </ProfileInfo>
                         </LeftColumn>
                         <Separator className="col-md-1 d-flex justify-content-center">
-                            <Divider />
                         </Separator>
-
-    
                         <MiddleColumn className="col-md-2">
                             <div className="p-2 py-5">
                                 <FormRow className="row mt-3">
@@ -148,13 +138,6 @@ const Separator = styled.div`
     
 `;
 
-const Divider = styled.div`
-    height: 80%;
-    width: 2px;
-    background-color: #ddd;
-    
-`;
-
 const Container = styled.div`
     min-height: 100vh;
     display: flex;
@@ -166,6 +149,8 @@ const Container = styled.div`
 const ProfileWrapper = styled.div`
     max-width: 800px;
     background-color: grey;
+    border: solid 1px black;
+    
     
 `;
 
@@ -173,14 +158,6 @@ const LeftColumn = styled.div`
     text-align: center;
 `;
 
-const ProfileInfo = styled.div`
-    padding-top: 40px;
-    
-`;
-
-const ProfileImage = styled.img`
-    width: 150px;
-`;
 
 const MiddleColumn = styled.div``;
 

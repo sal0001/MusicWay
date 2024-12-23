@@ -181,6 +181,7 @@ const Main = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const audioRef = useRef(null);
     const [playlists, setPlaylists] = useState([]);
+    const [userId, setUserId] = useState(null); 
 
     const fetchSongs = async () => {
         try {
@@ -202,7 +203,7 @@ const Main = () => {
             console.error('Error fetching songs:', error.message);
         }
     };
-
+    
     const fetchPlaylists = async () => {
         try {
             const response = await fetch('http://127.0.0.1:3001/playlists');
@@ -210,7 +211,10 @@ const Main = () => {
                 throw new Error('Failed to fetch playlists: ' + response.statusText);
             }
             const data = await response.json();
-            setPlaylists(data);
+    
+            const userPlaylists = data.filter(playlist => playlist.userId === userId);
+    
+            setPlaylists(userPlaylists);
         } catch (error) {
             console.error('Error fetching playlists:', error.message);
         }

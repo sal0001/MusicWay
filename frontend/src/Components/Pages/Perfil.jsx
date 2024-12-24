@@ -13,7 +13,7 @@ const Perfil = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('token'); 
+        const token = localStorage.getItem('token');
 
         if (!token) {
             setError('Utilizador não encontrado. Por favor, faça login.');
@@ -31,14 +31,14 @@ const Perfil = () => {
 
         const fetchUserData = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/auth', {  
+                const response = await axios.get('http://localhost:3001/auth', {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
                 if (response.data.authenticated) {
-                    setUser(response.data.user); 
+                    setUser(response.data.user);
                 } else {
                     setError('Falha na autenticação.');
                 }
@@ -69,106 +69,115 @@ const Perfil = () => {
         <div>
             <Navbar2 />
             <Container>
-            {loading ? (
-                <p>Carregando...</p>
-            ) : error ? (
-                <ErrorMessage>{error}</ErrorMessage>
-            ) : (
-                <>
-                <ProfileWrapper className="container rounded bg-white mt-5 mb-5">
-                    <div className="row">
-                    
-                        <LeftColumn className="col-md-3 border-right">
-                        </LeftColumn>
-                        <Separator className="col-md-1 d-flex justify-content-center">
-                        </Separator>
-                        <MiddleColumn className="col-md-2">
-                            <div className="p-2 py-5">
-                                <FormRow className="row mt-3">
-                                    <div className="col-md-15">
-                                        <Label className="labels">Nome</Label>
-                                        <span className="font-weight-bold">{user?.nome || "Guest"}</span>
-                                    </div>
-                                    <div className="col-md-15">
-                                        <Label className="labels">Email</Label>
-                                        <span className="font-weight-bold">{user?.email || "No email available"}</span>
-                                    </div>
-                                </FormRow>
-                                <div className="mt-5 text-center">
+                {loading ? (
+                    <p>Carregando...</p>
+                ) : error ? (
+                    <ErrorMessage>{error}</ErrorMessage>
+                ) : (
+                    <>
+                        <ProfileWrapper>
+                            <div className="row">
+                                <LeftColumn>
+                                    <img
+                                        src={user?.avatar || 'https://via.placeholder.com/150'}
+                                        alt="Avatar"
+                                    />
+                                    <h3>{user?.nome || 'Guest'}</h3>
+                                    <p>{user?.email || 'No email available'}</p>
+                                </LeftColumn>
+                                <MiddleColumn>
                                     <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
-                                </div>
+                                </MiddleColumn>
                             </div>
-                        </MiddleColumn>
-                    </div>
-                </ProfileWrapper>
-                </>
-            )}
-            </Container>   
+                        </ProfileWrapper>
+                    </>
+                )}
+            </Container>
 
-             {isLoggedIn ? (
+            {isLoggedIn && (
                 <RightSidebarContainer>
                     <SidebarTitle></SidebarTitle>
-                    <SidebarLink  href="/main/Perfil"> 
-                        <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
+                    <SidebarLink href="/main/Perfil">
+                        <FaUserCircle style={{ marginRight: '8px' }} />
+                        Perfil
                     </SidebarLink>
                     <SidebarLink href="/adicionarMusicas">
-                        <FaMusic style={{ marginRight: '8px' }} />Publicar
+                        <FaMusic style={{ marginRight: '8px' }} />
+                        Publicar
                     </SidebarLink>
                     <SidebarLink href="/criarPlaylist">
-                        <FaAddressCard style={{ marginRight: '8px' }} />Playlist
+                        <FaAddressCard style={{ marginRight: '8px' }} />
+                        Playlist
                     </SidebarLink>
                     <SidebarLink href="/Sobrenos">
-                        <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+                        <FaInfoCircle style={{ marginRight: '8px' }} />
+                        Contactar
                     </SidebarLink>
                 </RightSidebarContainer>
-            ) : (
-                <RightSidebarContainer>
-                   <SidebarTitle></SidebarTitle>
-                </RightSidebarContainer>
             )}
-            
         </div>
     );
 };
 
-const Separator = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-`;
-
 const Container = styled.div`
     min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    
+    background: linear-gradient(to bottom, #d3d3d3, grey);
+    color: white;
 `;
 
 const ProfileWrapper = styled.div`
-    max-width: 800px;
-    background-color: grey;
-    border: solid 1px black;
-    
-    
+    max-width: 900px;
+    background: grey;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-align: center;
 `;
 
 const LeftColumn = styled.div`
     text-align: center;
+    margin-top: 30px;
+
+    img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        margin-bottom: 20px;
+    }
 `;
 
+const MiddleColumn = styled.div`
+    margin-top: 30px;
 
-const MiddleColumn = styled.div``;
+    span {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+`;
 
-const FormRow = styled.div`
+const LogoutButton = styled.button`
     margin-top: 20px;
-`;
+    background: linear-gradient(45deg, #ff6b6b, #c05656);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
 
-const Label = styled.label`
-    font-size: 11px;
-    margin-bottom: 5px;
-    display: block;
+    &:hover {
+        background: darkred;
+    }
 `;
 
 const RightSidebarContainer = styled.div`
@@ -185,52 +194,29 @@ const RightSidebarContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    transition: all 0.3s ease;
 `;
 
 const SidebarTitle = styled.h2`
-  font-size: 1.5em;
-  margin-bottom: 30px;
-  color: #fff;
-  font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    color: #fff;
+    font-weight: bold;
 `;
 
 const SidebarLink = styled.a`
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  margin-bottom: 20px;
-  background-color: transparent;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background-color 0.3s, padding-left 0.3s;
-
-  &:hover {
-    background-color: #444;
-    padding-left: 20px;
-  }
-
-  i {
-    margin-right: 15px;
-    font-size: 1.2em;
-  }
-`;
-
-
-const LogoutButton = styled.button`
-    margin-top: 20px;
-    background-color: red;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: transparent;
     color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s, padding-left 0.3s;
 
     &:hover {
-        background-color: darkred;
+        background-color: #444;
+        padding-left: 20px;
     }
 `;
 

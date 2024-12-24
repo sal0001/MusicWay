@@ -55,7 +55,7 @@ const PageContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: white;
+  background: linear-gradient(to bottom, #d3d3d3, grey);
 `;
 
 const FormWrapper = styled.div`
@@ -270,7 +270,7 @@ const FormComponent = () => {
             <InputGroup>
               <UploadButton htmlFor="file-upload">
                 <Icon />
-                Selecione um arquivo
+                Coloque uma musica
               </UploadButton>
               <Input
                 id="file-upload"

@@ -12,6 +12,7 @@ const MusicListContainer = styled.div`
     max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+    
 `;
 
 const MusicList = styled.ul`
@@ -21,7 +22,7 @@ const MusicList = styled.ul`
 `;
 
 const MusicListItem = styled.li`
-    background-color: #ffffff;
+    background: linear-gradient(to bottom, #d3d3d3, grey);
     margin: 15px 0;
     padding: 20px;
     border-radius: 10px;

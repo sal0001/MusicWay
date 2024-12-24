@@ -111,7 +111,8 @@ const Container = styled.div`
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f4f6f9;
+    background: linear-gradient(to bottom, #d3d3d3, grey);
+
 `;
 
 const FormContainer = styled.div`

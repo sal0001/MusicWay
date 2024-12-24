@@ -9,7 +9,10 @@ const PlaylistPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 80px;
+  width: 100%;
+  background: linear-gradient(to bottom, #d3d3d3, grey);  
+  min-height: 100vh;  
 `;
 
 const SearchContainer = styled.div`
@@ -50,8 +53,7 @@ const SearchInput = styled.input`
 `;
 
 const MusicListContainer = styled.div`
-  width: 80%;
-  margin-top: 20px;
+  width: 70%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

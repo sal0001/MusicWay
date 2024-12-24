@@ -4,13 +4,14 @@ import Navbar2 from '../navbar/navbar2';
 import { FaMusic, FaAddressCard, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
 
 const BigContainer = styled.div`
-  min-height: 75px;
+  min-height: 100vh;  
   width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding: 10px 20px;
+  background: linear-gradient(to bottom, #d3d3d3, grey);
 `;
+
 
 const SidebarLink = styled.a`
   display: flex;
@@ -105,6 +106,7 @@ const Heading = styled.p`
     font-size: 25px;
     line-height: 40px;
     max-width: 370px;
+    
   }
 `;
 
@@ -113,6 +115,7 @@ const SubHeading = styled.p`
   line-height: 25px;
   color: black;
   margin-bottom: 40px;
+  
 
   @media (max-width: 1024px) {
     text-align: center;

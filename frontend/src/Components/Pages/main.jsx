@@ -75,6 +75,7 @@ const MusicListContainer = styled.div`
     flex: 1;
     margin-top: 60px;
     width: 100%;
+    
 `;
 
 const SearchContainer = styled.div`
@@ -170,6 +171,10 @@ const PlayButton = styled.button`
     &:hover {
         color: #ccc;
     }
+`;
+const PageContainer = styled.div`
+    background: linear-gradient(to bottom, #d3d3d3, grey);
+    min-height: 100vh;  
 `;
 
 const Main = () => {
@@ -276,6 +281,7 @@ const Main = () => {
 
     return (
         <div>
+            <PageContainer>
             <Navbar2 />
             <div style={{ display: 'flex' }}>
             <SidebarContainer>
@@ -367,7 +373,9 @@ const Main = () => {
     </RightSidebarContainer>
 )}
 
+
             </div>
+            </PageContainer>
 
             <MiniPlayer
                 currentTrack={currentTrack}
@@ -377,7 +385,9 @@ const Main = () => {
             />
             <audio ref={audioRef} onEnded={() => setCurrentTrack(null)} />
         </div>
+        
     );
+    
 };
 
 export default Main;

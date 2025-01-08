@@ -131,7 +131,7 @@ const Container = styled.div`
 
 const ProfileWrapper = styled.div`
     max-width: 900px;
-    background: grey;
+    background: black;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);

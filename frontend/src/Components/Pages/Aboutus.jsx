@@ -172,7 +172,7 @@ const Aboutus = () => {
       <BigContainer>
         <Container>
           <LeftSide>
-            <Heading>Contact us</Heading>
+            <Heading>Contacta-nos</Heading>
             <SubHeading>
             Email: support@semajafrica.com
             <br />

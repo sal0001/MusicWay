@@ -216,10 +216,8 @@ const Main = () => {
                 throw new Error('Failed to fetch playlists: ' + response.statusText);
             }
             const data = await response.json();
-    
-            const userPlaylists = data.filter(playlist => playlist.userId === userId);
-    
-            setPlaylists(userPlaylists);
+
+            setPlaylists(data);
         } catch (error) {
             console.error('Error fetching playlists:', error.message);
         }
@@ -304,7 +302,9 @@ const Main = () => {
     ))}
   </>
 ) : (
-  <p></p>
+    <SidebarLink> 
+    Registe-se ou faça login para ver as playlists
+  </SidebarLink>
 )}
                 
                 </SidebarContainer>
@@ -370,6 +370,9 @@ const Main = () => {
 ) : (
     <RightSidebarContainer>
        <SidebarTitle></SidebarTitle>
+       <SidebarLink href="/Sobrenos">
+            <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+        </SidebarLink>
     </RightSidebarContainer>
 )}
 

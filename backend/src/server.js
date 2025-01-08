@@ -31,8 +31,8 @@ mongoose.connect('mongodb://localhost:27017/M&B', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-    .then(() => console.log('Conectado a MongoDB.'))
-    .catch(err => console.error('Erro a conecatar com mongoDB:', err));
+    .then(() => console.log('Conectado a base de dados.'))
+    .catch(err => console.error('Erro a conectar a base de dados:', err));
 
 
 if (!process.env.JWT_SECRET) {

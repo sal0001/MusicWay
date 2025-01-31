@@ -186,7 +186,6 @@ const Main = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const audioRef = useRef(null);
     const [playlists, setPlaylists] = useState([]);
-    const [userId, setUserId] = useState(null); 
 
     const fetchSongs = async () => {
         try {
@@ -302,11 +301,12 @@ const Main = () => {
     ))}
   </>
 ) : (
-    <SidebarLink> 
-    Registe-se ou faça login para ver as playlists
-  </SidebarLink>
-)}
-                
+    <div>
+    <br/>
+    <p>Registe-se ou faça login para ver as playlists</p> 
+    </div>
+  
+)}               
                 </SidebarContainer>
                 <MusicListContainer>
                     <div style={{ display: 'flex', alignItems: 'center' }}>

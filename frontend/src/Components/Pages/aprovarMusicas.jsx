@@ -22,7 +22,6 @@ const MusicList = styled.ul`
 
 const MusicListItem = styled.li`
       background: linear-gradient(to bottom, #d3d3d3, grey);
-
     margin: 15px 0;
     padding: 20px;
     border-radius: 10px;
@@ -104,8 +103,6 @@ const AprovarMusicas = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
-    // Create a ref for the audio element
     const audioRefs = useRef({});
 
     useEffect(() => {
@@ -122,6 +119,12 @@ const AprovarMusicas = () => {
 
         fetchPendingSongs();
     }, []);
+
+    useEffect(() => {
+        Object.values(audioRefs.current).forEach(audio => {
+            audio.crossOrigin = "anonymous"; 
+        });
+    }, [pendingSongs]); 
 
     const handleApprove = async (songId) => {
         try {
@@ -169,14 +172,14 @@ const AprovarMusicas = () => {
                                 <h5>{song.nome}</h5>
                                 <p>Artista: {song.artista}</p>
                                 <AudioPlayer
-                                    ref={el => (audioRefs.current[song._id] = el)}
-                                    controls
-                                >
-                                    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/mp3" />
-                                    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/ogg" />
-                                    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/wav" />
-                                    Seu navegador não suporta o elemento de áudio.
-                                </AudioPlayer>
+    ref={el => (audioRefs.current[song._id] = el)}
+    controls
+>
+    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/mp3" />
+    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/ogg" />
+    <source src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`} type="audio/wav" />
+    Seu navegador não suporta o elemento de áudio.
+</AudioPlayer>
                             </div>
                             <div>
                                 <ApproveButton onClick={() => handleApprove(song._id)}>

@@ -79,7 +79,7 @@ const Perfil = () => {
                             <div className="row">
                                 <LeftColumn>
                                     <img
-                                        src={user?.avatar || 'https://via.placeholder.com/150'}
+                                        src={user?.avatar || 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.webp'}
                                         alt="Avatar"
                                     />
                                     <h3>{user?.nome || 'Guest'}</h3>

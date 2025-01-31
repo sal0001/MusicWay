@@ -19,12 +19,27 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }));
 app.use(cookieParser());
+app.options('*', cors()); 
 const PORT = 3001;
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); 
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); 
+  
+    
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+  
+    next();
+  });
 
 
 mongoose.connect('mongodb://localhost:27017/M&B', {
@@ -228,7 +243,12 @@ app.get('/getMusicasPendentes', async (req, res) => {
 });
 
 
-app.use('/musicas', express.static(path.join(__dirname, '../musicas')));
+app.use('/musicas', cors({
+    origin: 'http://localhost:3000', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
+}), express.static(path.join(__dirname, '../musicas')));
+
 app.get('/musicas', async (req, res) => {
     try {
         const musicas = await Musicas.find();
@@ -239,9 +259,30 @@ app.get('/musicas', async (req, res) => {
     }
 });
 
+app.get('/musicas/:id', async (req, res) => {
+    try {
+        const { id } = req.params; 
+        const musica = await Musicas.findById(id); 
+
+        if (!musica) {
+            
+            return res.status(404).json({ error: 'Música não encontrada.' });
+        }
+
+        res.status(200).json(musica); 
+    } catch (error) {
+        console.error('Erro ao buscar música por ID:', error);
+        res.status(500).json({ error: 'Erro ao buscar música.' });
+    }
+});
+
+
 app.get('/musicas/:filename', (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(__dirname, '../musicas', filename);
+
+    res.set('Access-Control-Allow-Origin', 'http://localhost:3000'); 
+    res.set('Cache-Control', 'no-store');
 
     res.sendFile(filePath, (err) => {
         if (err) {
@@ -251,21 +292,18 @@ app.get('/musicas/:filename', (req, res) => {
     });
 });
 
-app.patch('/aprovarMusica/:id', async (req, res) => {
+app.patch('/aprovarMusica/:id', cors(), async (req, res) => { 
     const { id } = req.params;
     console.log('Aprovando música com ID:', id);
 
     try {
-
         const musica = await Musicas.findById(id);
-
 
         if (!musica) {
             return res.status(404).send({ error: 'Música não encontrada' });
         }
 
         musica.status = 'aprovado';
-
         await musica.save();
 
         console.log('Música aprovada:', musica);
@@ -486,7 +524,7 @@ app.get('/playlist/:id', async (req, res) => {
     const playlistId = req.params.id;
   
     try {
-      
+      1
       if (!mongoose.Types.ObjectId.isValid(playlistId)) {
         return res.status(400).json({ error: 'ID de playlist inválido' });
       }

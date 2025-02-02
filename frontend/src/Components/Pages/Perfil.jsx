@@ -107,7 +107,7 @@ const Perfil = () => {
                     </SidebarLink>
                     <SidebarLink href="/criarPlaylist">
                         <FaAddressCard style={{ marginRight: '8px' }} />
-                        Playlist
+                        Playlist +
                     </SidebarLink>
                     <SidebarLink href="/Sobrenos">
                         <FaInfoCircle style={{ marginRight: '8px' }} />

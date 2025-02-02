@@ -196,7 +196,7 @@ const Aboutus = () => {
                  <FaMusic style={{ marginRight: '8px' }} />Publicar
              </SidebarLink>
              <SidebarLink href="/criarPlaylist">
-                 <FaAddressCard style={{ marginRight: '8px' }} />Playlist
+                 <FaAddressCard style={{ marginRight: '8px' }} />Playlist +
              </SidebarLink>
              <SidebarLink href="/Sobrenos">
                  <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     

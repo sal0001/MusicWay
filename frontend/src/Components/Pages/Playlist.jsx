@@ -197,7 +197,7 @@ const Playlist = () => {
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <MusicArtist>{musica.artista}</MusicArtist>
                                 <PlayButton onClick={(e) => {
-                                    e.stopPropagation(); // Previne o clique no item da música
+                                    e.stopPropagation(); 
                                     handlePlayPause(musica);
                                 }}>
                                     <i className={
@@ -221,7 +221,7 @@ const Playlist = () => {
                         <FaMusic style={{ marginRight: '8px' }} />Publicar
                     </SidebarLink>
                     <SidebarLink href="/criarPlaylist">
-                        <FaAddressCard style={{ marginRight: '8px' }} />Playlist
+                        <FaAddressCard style={{ marginRight: '8px' }} />Playlist +
                     </SidebarLink>
                 </RightSidebarContainer>
             ) : (

@@ -161,10 +161,12 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
     }, [audioRef]);
 
     const handleVolumeChange = (e) => {
-        const newVolume = e.target.value;
-        setVolume(newVolume);
-        if (audioRef.current) {
-            audioRef.current.volume = newVolume;
+        const newVolume = parseFloat(e.target.value);
+        if (!isNaN(newVolume) && newVolume >= 0 && newVolume <= 1) {
+            setVolume(newVolume);
+            if (audioRef.current) {
+                audioRef.current.volume = newVolume;
+            }
         }
     };
 

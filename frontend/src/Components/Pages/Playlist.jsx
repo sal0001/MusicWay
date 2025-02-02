@@ -96,13 +96,14 @@ const SidebarLink = styled.a`
 
 const Playlist = () => {
     const { id } = useParams();
-    const [publishedSongs, setPublishedSongs] = useState([]);
     const [playlist, setPlaylist] = useState(null);
     const [musicas, setMusicas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentTrack, setCurrentTrack] = useState(null);
-    const audioRef = useRef(null);
+    const audioRef = useRef(new Audio());
+    const [publishedSongs, setPublishedSongs] = useState([]);
+
 
     const token = localStorage.getItem('token'); 
     const isLoggedIn = !!token; 
@@ -115,16 +116,16 @@ const Playlist = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                const data = await response.json();
-                if (response.ok) {
-                    setPlaylist(data.playlist);
-                    setMusicas(data.musicas);
-                } else {
-                    setError(data.error || 'Erro desconhecido');
+
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar a playlist');
                 }
+
+                const data = await response.json();
+                setPlaylist(data.playlist);
+                setMusicas(data.musicas);
             } catch (error) {
-                console.error('Erro ao buscar a playlist:', error);
-                setError('Erro ao buscar a playlist');
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -135,19 +136,19 @@ const Playlist = () => {
 
     const fetchSongs = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:3001/musicass/${id}`);
+            const response = await fetch('http://127.0.0.1:3001/musicas');
             if (!response.ok) {
                 throw new Error('Failed to fetch songs: ' + response.statusText);
             }
             const data = await response.json();
-
+    
             const approvedSongs = data.filter(song => song.status === 'aprovado');
-
+    
             const songsWithUrls = approvedSongs.map(song => ({
                 ...song,
                 url: `http://127.0.0.1:3001/musicas/${song.ficheiro}`
             }));
-
+    
             setPublishedSongs(songsWithUrls);
         } catch (error) {
             console.error('Error fetching songs:', error.message);
@@ -156,43 +157,37 @@ const Playlist = () => {
 
     useEffect(() => {
         fetchSongs();
-    }, []);
+    }, [id]);
 
     const handlePlayPause = (song) => {
-        if (audioRef.current) {
-            if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
-                if (audioRef.current.paused) {
-                    audioRef.current.play().catch(error => {
-                        console.error("Failed to resume playback:", error);
-                    });
-                } else {
-                    audioRef.current.pause();
-                }
+        if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
+            // Se a música for a mesma, só pausa ou toca
+            if (audioRef.current.paused) {
+                audioRef.current.play().catch(error => {
+                    console.error("Erro ao tentar retomar a música:", error);
+                });
             } else {
-                setCurrentTrack(song);
-                audioRef.current.src = song.url; 
-                audioRef.current
-                    .play()
-                    .catch(error => console.error("Failed to play audio:", error));
+                audioRef.current.pause();
+            }
+        } else {
+            // Se for uma nova música, atualize o track e carregue a nova música
+            setCurrentTrack(song);
+            if (audioRef.current) {
+                audioRef.current.src = song.url;
+                audioRef.current.load();
+                audioRef.current.play().catch(error => {
+                    console.error("Erro ao tentar tocar a nova música:", error);
+                });
             }
         }
     };
     
-
-    if (loading) {
-        return <div>Carregando...</div>;
-    }
-
-    if (error) {
-        return <div>{error}</div>;
-    }
-
     return (
         <div>
             <Navbar2 />
             <div style={{ marginTop: '80px', padding: '20px' }}>
                 <h2>{playlist?.nome || 'Playlist'}</h2>
-
+    
                 {musicas.length === 0 ? (
                     <p>Não há músicas nesta playlist.</p>
                 ) : (
@@ -202,7 +197,7 @@ const Playlist = () => {
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <MusicArtist>{musica.artista}</MusicArtist>
                                 <PlayButton onClick={(e) => {
-                                    e.stopPropagation();
+                                    e.stopPropagation(); // Previne o clique no item da música
                                     handlePlayPause(musica);
                                 }}>
                                     <i className={
@@ -216,10 +211,9 @@ const Playlist = () => {
                     ))
                 )}
             </div>
-
+    
             {isLoggedIn ? (
                 <RightSidebarContainer>
-                    <SidebarTitle></SidebarTitle>
                     <SidebarLink href="/main/Perfil">
                         <FaUserCircle style={{ marginRight: '8px' }}/>Perfil
                     </SidebarLink>
@@ -229,25 +223,14 @@ const Playlist = () => {
                     <SidebarLink href="/criarPlaylist">
                         <FaAddressCard style={{ marginRight: '8px' }} />Playlist
                     </SidebarLink>
-                    <SidebarLink href="/Sobrenos">
-                        <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
-                    </SidebarLink>
                 </RightSidebarContainer>
             ) : (
-                <RightSidebarContainer>
-                    <SidebarTitle></SidebarTitle>
-                </RightSidebarContainer>
+                <RightSidebarContainer />
             )}
-
-            <MiniPlayer
-                currentTrack={currentTrack}
-                audioRef={audioRef}
-                onPlayPause={handlePlayPause}
-                onTrackEnd={() => setCurrentTrack(null)}
-            />
-            <audio ref={audioRef} onEnded={() => setCurrentTrack(null)} />
+    
+            <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />
         </div>
-    );
+    );    
 };
 
 export default Playlist;

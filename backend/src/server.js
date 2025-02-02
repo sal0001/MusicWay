@@ -265,7 +265,6 @@ app.get('/musicas/:id', async (req, res) => {
         const musica = await Musicas.findById(id); 
 
         if (!musica) {
-            
             return res.status(404).json({ error: 'Música não encontrada.' });
         }
 
@@ -275,6 +274,7 @@ app.get('/musicas/:id', async (req, res) => {
         res.status(500).json({ error: 'Erro ao buscar música.' });
     }
 });
+
 
 
 app.get('/musicas/:filename', (req, res) => {
@@ -291,6 +291,7 @@ app.get('/musicas/:filename', (req, res) => {
         }
     });
 });
+
 
 app.patch('/aprovarMusica/:id', cors(), async (req, res) => { 
     const { id } = req.params;

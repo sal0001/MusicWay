@@ -124,6 +124,12 @@ const Playlist = () => {
                 const data = await response.json();
                 setPlaylist(data.playlist);
                 setMusicas(data.musicas);
+
+                const songsWithUrls = data.musicas.map(song => ({
+                    ...song,
+                    url: `http://127.0.0.1:3001/musicas/${song.ficheiro}`
+                }));
+                setPublishedSongs(songsWithUrls);
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -134,34 +140,8 @@ const Playlist = () => {
         fetchPlaylist();
     }, [id, token]);
 
-    const fetchSongs = async () => {
-        try {
-            const response = await fetch('http://127.0.0.1:3001/musicas');
-            if (!response.ok) {
-                throw new Error('Failed to fetch songs: ' + response.statusText);
-            }
-            const data = await response.json();
-    
-            const approvedSongs = data.filter(song => song.status === 'aprovado');
-    
-            const songsWithUrls = approvedSongs.map(song => ({
-                ...song,
-                url: `http://127.0.0.1:3001/musicas/${song.ficheiro}`
-            }));
-    
-            setPublishedSongs(songsWithUrls);
-        } catch (error) {
-            console.error('Error fetching songs:', error.message);
-        }
-    };
-
-    useEffect(() => {
-        fetchSongs();
-    }, [id]);
-
     const handlePlayPause = (song) => {
         if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
-            // Se a música for a mesma, só pausa ou toca
             if (audioRef.current.paused) {
                 audioRef.current.play().catch(error => {
                     console.error("Erro ao tentar retomar a música:", error);
@@ -170,7 +150,6 @@ const Playlist = () => {
                 audioRef.current.pause();
             }
         } else {
-            // Se for uma nova música, atualize o track e carregue a nova música
             setCurrentTrack(song);
             if (audioRef.current) {
                 audioRef.current.src = song.url;
@@ -187,21 +166,21 @@ const Playlist = () => {
             <Navbar2 />
             <div style={{ marginTop: '80px', padding: '20px' }}>
                 <h2>{playlist?.nome || 'Playlist'}</h2>
-    
-                {musicas.length === 0 ? (
+
+                {publishedSongs.length === 0 ? (
                     <p>Não há músicas nesta playlist.</p>
                 ) : (
-                    musicas.map((musica) => (
-                        <MusicItem key={musica._id} onClick={() => handlePlayPause(musica)}>
-                            <MusicName>{musica.nome}</MusicName>
+                    publishedSongs.map((song) => (
+                        <MusicItem key={song._id} onClick={() => handlePlayPause(song)}>
+                            <MusicName>{song.nome}</MusicName>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <MusicArtist>{musica.artista}</MusicArtist>
+                                <MusicArtist>{song.artista}</MusicArtist>
                                 <PlayButton onClick={(e) => {
-                                    e.stopPropagation(); 
-                                    handlePlayPause(musica);
+                                    e.stopPropagation();
+                                    handlePlayPause(song);
                                 }}>
                                     <i className={
-                                        currentTrack && currentTrack.ficheiro === musica.ficheiro && !audioRef.current?.paused
+                                        currentTrack && currentTrack.ficheiro === song.ficheiro && !audioRef.current?.paused
                                             ? "fas fa-pause"
                                             : "fas fa-play"
                                     }></i>
@@ -211,23 +190,33 @@ const Playlist = () => {
                     ))
                 )}
             </div>
-    
-            {isLoggedIn ? (
-                <RightSidebarContainer>
-                    <SidebarLink href="/main/Perfil">
-                        <FaUserCircle style={{ marginRight: '8px' }}/>Perfil
-                    </SidebarLink>
-                    <SidebarLink href="/adicionarMusicas">
-                        <FaMusic style={{ marginRight: '8px' }} />Publicar
-                    </SidebarLink>
-                    <SidebarLink href="/criarPlaylist">
-                        <FaAddressCard style={{ marginRight: '8px' }} />Playlist +
-                    </SidebarLink>
-                </RightSidebarContainer>
-            ) : (
-                <RightSidebarContainer />
-            )}
-    
+
+          
+                          {isLoggedIn ? (
+              <RightSidebarContainer>
+                  <SidebarTitle></SidebarTitle>
+                  <SidebarLink  href="/main/Perfil"> 
+                      <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
+                  </SidebarLink>
+                  <SidebarLink href="/adicionarMusicas">
+                      <FaMusic style={{ marginRight: '8px' }} />Publicar
+                  </SidebarLink>
+                  <SidebarLink href="/criarPlaylist">
+                      <FaAddressCard style={{ marginRight: '8px' }} />Playlist +
+                  </SidebarLink>
+                  <SidebarLink href="/Sobrenos">
+                      <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+                  </SidebarLink>
+              </RightSidebarContainer>
+          ) : (
+              <RightSidebarContainer>
+                 <SidebarTitle></SidebarTitle>
+                 <SidebarLink href="/Sobrenos">
+                      <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
+                  </SidebarLink>
+              </RightSidebarContainer>
+          )}
+
             <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />
         </div>
     );    

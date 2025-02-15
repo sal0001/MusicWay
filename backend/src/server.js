@@ -467,7 +467,23 @@ app.delete('/removeCategoria/:categoriaId', async (req, res) => {
 
 // Playlists
 
-app.post('/addPlaylist', upload.single('imagem'), async (req, res) => {
+const imagensStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const imagensDirectory = path.join(__dirname, '../imagens');
+        if (!fs.existsSync(imagensDirectory)) {
+            fs.mkdirSync(imagensDirectory, { recursive: true });
+        }
+        cb(null, imagensDirectory);
+    },
+    filename: (req, file, cb) => {
+        const uniqueName = Date.now() + path.extname(file.originalname);
+        cb(null, uniqueName);
+    }
+});
+
+const imagens = multer({ storage: imagensStorage });
+
+app.post('/addPlaylist', imagens.single('imagem'), async (req, res) => {
     try {
         const { nome, descricao = '', musicas, utilizador } = req.body;
 
@@ -510,6 +526,9 @@ app.post('/addPlaylist', upload.single('imagem'), async (req, res) => {
         res.status(500).json({ error: 'Erro interno ao criar playlist. Tente novamente mais tarde.' });
     }
 });
+
+app.use('/imagens', express.static(path.join(__dirname, '../imagens')));
+
 
 app.get('/playlists', async (req, res) => {
     try {

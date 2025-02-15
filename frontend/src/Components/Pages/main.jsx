@@ -186,6 +186,7 @@ const Main = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const audioRef = useRef(null);
     const [playlists, setPlaylists] = useState([]);
+    
 
     const fetchSongs = async () => {
         try {
@@ -285,14 +286,16 @@ const Main = () => {
             {isLoggedIn ? (
   <>
     <SidebarTitle>Playlists</SidebarTitle>
+    
     {playlists.map((playlist) => (
+        
       <SidebarLink 
         style={{ backgroundColor: "#4f4f4f", display: 'flex', alignItems: 'center' }} 
         key={playlist._id} 
         href={`/playlist/${playlist._id}`}
       >
         <img 
-          src={`http://127.0.0.1:3001/musicas/${playlist.imagem}`} 
+          src={`http://127.0.0.1:3001/imagens/${playlist.imagem}`} 
           alt={playlist.nome} 
           style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px', marginRight: '10px' }} 
         />
@@ -375,8 +378,6 @@ const Main = () => {
         </SidebarLink>
     </RightSidebarContainer>
 )}
-
-
             </div>
             </PageContainer>
 

@@ -20,6 +20,15 @@ const SidebarContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    transition: width 0.3s ease;
+
+    @media (max-width: 768px) {
+        width: 250px;
+    }
+
+    @media (max-width: 480px) {
+        width: 200px;
+    }
 `;
 
 const RightSidebarContainer = styled.div`
@@ -36,7 +45,35 @@ const RightSidebarContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    transition: all 0.3s ease;
+    transition: width 0.3s ease;
+
+    @media (max-width: 768px) {
+        width: 120px;
+    }
+
+    @media (max-width: 480px) {
+        width: 100px;
+    }
+`;
+
+const MusicListContainer = styled.div`
+    margin-left: 400px;
+    margin-right: 170px;
+    padding: 20px;
+    flex: 1;
+    margin-top: 60px;
+    width: 100%;
+    transition: margin 0.3s ease;
+
+    @media (max-width: 768px) {
+        margin-left: 250px;
+        margin-right: 120px;
+    }
+
+    @media (max-width: 480px) {
+        margin-left: 200px;
+        margin-right: 100px;
+    }
 `;
 
 const SidebarTitle = styled.h2`
@@ -68,15 +105,6 @@ const SidebarLink = styled.a`
     }
 `;
 
-const MusicListContainer = styled.div`
-    margin-left: 400px;
-    margin-right: 170px;
-    padding: 20px;
-    flex: 1;
-    margin-top: 60px;
-    width: 100%;
-    
-`;
 
 const SearchContainer = styled.div`
     display: flex;
@@ -211,19 +239,32 @@ const Main = () => {
     
     const fetchPlaylists = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:3001/playlists');
+            // Get the token from localStorage
+            const token = localStorage.getItem('token');
+            
+            // Prepare headers
+            const headers = new Headers();
+            if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+            }
+    
+            // Fetch playlists with headers
+            const response = await fetch('http://127.0.0.1:3001/playlists', {
+                method: 'GET',
+                headers: headers
+            });
+    
             if (!response.ok) {
                 throw new Error('Failed to fetch playlists: ' + response.statusText);
             }
+    
             const data = await response.json();
-
             setPlaylists(data);
         } catch (error) {
             console.error('Error fetching playlists:', error.message);
         }
     };
     
-
     const fetchCategories = async () => {
         try {
             const response = await fetch('http://127.0.0.1:3001/getCategorias');
@@ -238,15 +279,21 @@ const Main = () => {
     };
 
     useEffect(() => {
-        fetchSongs();
-        fetchCategories();
-        fetchPlaylists();
-
         const token = localStorage.getItem('token');
+        
+        // Prepare headers
+        const headers = new Headers();
         if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
             setIsLoggedIn(true);
         }
+    
+        // Use headers in your fetch requests
+        fetchSongs(headers);
+        fetchCategories(headers);
+        fetchPlaylists(headers);
     }, []);
+    
 
     const handlePlayPause = (song) => {
         if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
@@ -285,6 +332,7 @@ const Main = () => {
             <SidebarContainer>
             {isLoggedIn ? (
   <>
+    <hr />
     <SidebarTitle>Playlists</SidebarTitle>
     
     {playlists.map((playlist) => (

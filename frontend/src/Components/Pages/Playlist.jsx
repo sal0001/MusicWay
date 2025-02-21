@@ -29,6 +29,14 @@ const MusicName = styled.span`
     font-size: 18px;
 `;
 
+const MusicImage = styled.div`
+    width: 120px;
+    height: 120px;
+    border-radius: 20px;
+    background-color: #555;
+    margin-right: 15px;
+`;
+
 const MusicArtist = styled.span`
     color: #bbb;
     font-size: 14px;
@@ -72,6 +80,12 @@ const SidebarTitle = styled.h2`
     font-weight: bold;
 `;
 
+const MainPage = styled.div`
+    background: linear-gradient(to bottom, #d3d3d3, grey);
+    width: 100%;
+    height: 90vh; 
+    margin-top: 0;
+`;
 const SidebarLink = styled.a`
     display: flex;
     align-items: center;
@@ -93,6 +107,10 @@ const SidebarLink = styled.a`
         font-size: 1.2em;
     }
 `;
+
+
+
+
 
 const Playlist = () => {
     const { id } = useParams();
@@ -162,11 +180,13 @@ const Playlist = () => {
     };
     
     return (
+        <MainPage>
         <div>
             <Navbar2 />
             <div style={{ marginTop: '80px', padding: '20px' }}>
-                <h2>{playlist?.nome || 'Playlist'}</h2>
-
+            <MusicImage src={playlist?.imagem || 'Playlist'} />
+            <h2>{playlist?.nome || 'Playlist'}</h2>
+            <hr />
                 {publishedSongs.length === 0 ? (
                     <p>Não há músicas nesta playlist.</p>
                 ) : (
@@ -189,9 +209,8 @@ const Playlist = () => {
                         </MusicItem>
                     ))
                 )}
+                
             </div>
-
-          
                           {isLoggedIn ? (
               <RightSidebarContainer>
                   <SidebarTitle></SidebarTitle>
@@ -217,8 +236,11 @@ const Playlist = () => {
               </RightSidebarContainer>
           )}
 
-            <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />
+            <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />~
+            
         </div>
+        </MainPage>
+        
     );    
 };
 

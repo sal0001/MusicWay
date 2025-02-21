@@ -61,22 +61,18 @@ app.get("/auth", (req, res) => {
   try {
     const authHeader = req.headers["authorization"];
     if (!authHeader) {
-      return res
-        .status(401)
-        .json({
-          authenticated: false,
-          message: "Cabeçalho de autorização ausente.",
-        });
+      return res.status(401).json({
+        authenticated: false,
+        message: "Cabeçalho de autorização ausente.",
+      });
     }
 
     const token = authHeader.split(" ")[1];
     if (!token) {
-      return res
-        .status(401)
-        .json({
-          authenticated: false,
-          message: "Token ausente no cabeçalho de autorização.",
-        });
+      return res.status(401).json({
+        authenticated: false,
+        message: "Token ausente no cabeçalho de autorização.",
+      });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -207,12 +203,10 @@ app.post("/addMusicas", upload.single("file"), async (req, res) => {
     const file = req.file;
 
     if (!nome || !artista || !file || !categoriaId) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Por favor, preencha todos os campos: nome, artista, arquivo e categoria.",
-        });
+      return res.status(400).json({
+        error:
+          "Por favor, preencha todos os campos: nome, artista, arquivo e categoria.",
+      });
     }
 
     const categoria = await Categoria.findById(categoriaId);
@@ -508,11 +502,9 @@ app.post("/addPlaylist", imagens.single("imagem"), async (req, res) => {
       } else if (Array.isArray(musicas)) {
         musicasArray = musicas;
       } else {
-        return res
-          .status(400)
-          .json({
-            error: 'O campo "musicas" deve ser um array ou um JSON válido.',
-          });
+        return res.status(400).json({
+          error: 'O campo "musicas" deve ser um array ou um JSON válido.',
+        });
       }
     }
 
@@ -531,11 +523,9 @@ app.post("/addPlaylist", imagens.single("imagem"), async (req, res) => {
     });
   } catch (error) {
     console.error("Erro ao criar playlist:", error.message || error);
-    res
-      .status(500)
-      .json({
-        error: "Erro interno ao criar playlist. Tente novamente mais tarde.",
-      });
+    res.status(500).json({
+      error: "Erro interno ao criar playlist. Tente novamente mais tarde.",
+    });
   }
 });
 
@@ -564,7 +554,6 @@ app.get("/playlists", async (req, res) => {
     decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const playlists = await Playlist.find({ utilizador: decoded.userId });
-
     res.json(playlists);
   } catch (error) {
     console.error("Error fetching playlists:", error.message);

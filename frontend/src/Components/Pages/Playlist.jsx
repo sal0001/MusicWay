@@ -184,7 +184,19 @@ const Playlist = () => {
       <div>
         <Navbar2 />
         <div style={{ marginTop: "80px", padding: "20px" }}>
-          <MusicImage src={playlist?.imagem || "Playlist"} />
+          {playlist?.imagem && (
+            <img
+              src={playlist.imagem}
+              alt="Imagem da Playlist"
+              style={{
+                width: "200px",
+                height: "200px",
+                borderRadius: "20px",
+                objectFit: "cover",
+                marginBottom: "20px",
+              }}
+            />
+          )}
           <h2>{playlist?.nome || "Playlist"}</h2>
           <br />
           {publishedSongs.length === 0 ? (
@@ -218,7 +230,7 @@ const Playlist = () => {
         </div>
         {isLoggedIn ? (
           <RightSidebarContainer>
-            <SidebarTitle></SidebarTitle>
+            <br />
             <SidebarLink href="/main/Perfil">
               <FaUserCircle style={{ marginRight: "8px" }} />
               Perfil
@@ -226,10 +238,6 @@ const Playlist = () => {
             <SidebarLink href="/adicionarMusicas">
               <FaMusic style={{ marginRight: "8px" }} />
               Publicar
-            </SidebarLink>
-            <SidebarLink href="/criarPlaylist">
-              <FaAddressCard style={{ marginRight: "8px" }} />
-              Playlist +
             </SidebarLink>
             <SidebarLink href="/Sobrenos">
               <FaInfoCircle style={{ marginRight: "8px" }} />

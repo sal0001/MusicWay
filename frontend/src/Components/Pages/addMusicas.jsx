@@ -1,24 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { FaUpload, FaMusic, FaAddressCard, FaInfoCircle, FaUserCircle } from 'react-icons/fa';
-import Navbar2 from '../navbar/navbar2';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import {
+  FaUpload,
+  FaMusic,
+  FaAddressCard,
+  FaInfoCircle,
+  FaUserCircle,
+} from "react-icons/fa";
+import Navbar2 from "../navbar/navbar2";
+import axios from "axios";
 
 const RightSidebarContainer = styled.div`
-    width: 170px;
-    height: 100vh;
-    background-color: #1c1c1c;
-    color: white;
-    padding: 20px;
-    position: fixed;
-    top: 70px;
-    right: 0;
-    overflow-y: auto;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    transition: all 0.3s ease;
+  width: 170px;
+  height: 100vh;
+  background-color: #1c1c1c;
+  color: white;
+  padding: 20px;
+  position: fixed;
+  top: 70px;
+  right: 0;
+  overflow-y: auto;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: all 0.3s ease;
 `;
 
 const SidebarTitle = styled.h2`
@@ -159,41 +165,41 @@ const SubmitButton = styled.button`
 `;
 
 const MessageText = styled.p`
-  color: ${(props) => (props.error ? '#ff4d4d' : '#4caf50')};
+  color: ${(props) => (props.error ? "#ff4d4d" : "#4caf50")};
   margin-top: 20px;
   font-size: 14px;
   font-family: Arial, sans-serif;
 `;
 
 const FormComponent = () => {
-  const [nomeMusica, setNomeMusica] = useState('');
-  const [artista, setArtista] = useState('');
+  const [nomeMusica, setNomeMusica] = useState("");
+  const [artista, setArtista] = useState("");
   const [file, setFile] = useState(null);
-  const [categoriaId, setCategoriaId] = useState('');
+  const [categoriaId, setCategoriaId] = useState("");
   const [categories, setCategories] = useState([]);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:3001/getCategorias');
+        const response = await axios.get("http://127.0.0.1:3001/getCategorias");
         setCategories(response.data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        setErrorMessage('Erro ao carregar categorias');
+        console.error("Error fetching categories:", error);
+        setErrorMessage("Erro ao carregar categorias");
       }
     };
 
-    const loggedInUser = localStorage.getItem('user');
+    const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
       const userObject = JSON.parse(loggedInUser);
       setArtista(userObject.nome);
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setIsLoggedIn(Boolean(token));
 
     fetchCategories();
@@ -202,12 +208,19 @@ const FormComponent = () => {
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-      const acceptedFormats = ['audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mpeg'];
+      const acceptedFormats = [
+        "audio/mp3",
+        "audio/wav",
+        "audio/ogg",
+        "audio/mpeg",
+      ];
       if (acceptedFormats.includes(selectedFile.type)) {
         setFile(selectedFile);
-        setErrorMessage('');
+        setErrorMessage("");
       } else {
-        setErrorMessage('Por favor, selecione um arquivo de áudio válido (MP3, WAV, OGG).');
+        setErrorMessage(
+          "Por favor, selecione um arquivo de áudio válido (MP3, WAV, OGG)."
+        );
       }
     }
   };
@@ -215,36 +228,44 @@ const FormComponent = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!nomeMusica || !artista || !file || !categoriaId) {
-      setErrorMessage('Preencha todos os campos.');
+      setErrorMessage("Preencha todos os campos.");
       return;
     }
 
     setIsSubmitting(true);
     const formData = new FormData();
-    formData.append('nome', nomeMusica);
-    formData.append('artista', artista);
-    formData.append('categoriaId', categoriaId);
-    formData.append('file', file);
+    formData.append("nome", nomeMusica);
+    formData.append("artista", artista);
+    formData.append("categoriaId", categoriaId);
+    formData.append("file", file);
 
     try {
-      const response = await axios.post('http://127.0.0.1:3001/addMusicas', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:3001/addMusicas",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-      if (response.data.musica && response.data.musica.status === 'pendente') {
-        setSuccessMessage('Música publicada com sucesso e está pendente de aprovação!');
+      if (response.data.musica && response.data.musica.status === "pendente") {
+        setSuccessMessage(
+          "Música publicada com sucesso e está pendente de aprovação!"
+        );
       } else {
-        setSuccessMessage('Música publicada com sucesso!');
+        setSuccessMessage("Música publicada com sucesso!");
       }
 
-      setNomeMusica('');
+      setNomeMusica("");
       setFile(null);
-      setCategoriaId('');
+      setCategoriaId("");
     } catch (error) {
       if (error.response) {
-        setErrorMessage(error.response?.data?.message || 'Erro ao publicar música');
+        setErrorMessage(
+          error.response?.data?.message || "Erro ao publicar música"
+        );
       } else {
-        setErrorMessage('Erro desconhecido ao tentar publicar música.');
+        setErrorMessage("Erro desconhecido ao tentar publicar música.");
       }
     } finally {
       setIsSubmitting(false);
@@ -277,7 +298,7 @@ const FormComponent = () => {
                 type="file"
                 onChange={handleFileChange}
                 required
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
             </InputGroup>
             <InputGroup>
@@ -295,35 +316,38 @@ const FormComponent = () => {
               </Select>
             </InputGroup>
             <SubmitButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'a submeter...' : 'Submeter'}
+              {isSubmitting ? "a submeter..." : "Submeter"}
             </SubmitButton>
-            {errorMessage && <MessageText error={Boolean(errorMessage)}>{errorMessage}</MessageText>}
+            {errorMessage && (
+              <MessageText error={Boolean(errorMessage)}>
+                {errorMessage}
+              </MessageText>
+            )}
             {successMessage && <MessageText>{successMessage}</MessageText>}
           </form>
         </FormWrapper>
       </PageContainer>
       {isLoggedIn ? (
-         <RightSidebarContainer>
-             <SidebarTitle></SidebarTitle>
-             <SidebarLink  href="/main/Perfil"> 
-                 <FaUserCircle  style={{ marginRight: '8px' }}/>Perfil
-             </SidebarLink>
-             <SidebarLink href="/adicionarMusicas">
-                 <FaMusic style={{ marginRight: '8px' }} />Publicar
-             </SidebarLink>
-             <SidebarLink href="/criarPlaylist">
-                 <FaAddressCard style={{ marginRight: '8px' }} />Playlist
-             </SidebarLink>
-             <SidebarLink href="/Sobrenos">
-                 <FaInfoCircle style={{ marginRight: '8px' }} />Contactar     
-             </SidebarLink>
-         </RightSidebarContainer>
-     ) : (
-         <RightSidebarContainer>
-            <SidebarTitle></SidebarTitle>
-         </RightSidebarContainer>
-     )}
-     
+        <RightSidebarContainer>
+          <br />
+          <SidebarLink href="/main/Perfil">
+            <FaUserCircle style={{ marginRight: "8px" }} />
+            Perfil
+          </SidebarLink>
+          <SidebarLink href="/adicionarMusicas">
+            <FaMusic style={{ marginRight: "8px" }} />
+            Publicar
+          </SidebarLink>
+          <SidebarLink href="/Sobrenos">
+            <FaInfoCircle style={{ marginRight: "8px" }} />
+            Contactar
+          </SidebarLink>
+        </RightSidebarContainer>
+      ) : (
+        <RightSidebarContainer>
+          <SidebarTitle></SidebarTitle>
+        </RightSidebarContainer>
+      )}
     </div>
   );
 };

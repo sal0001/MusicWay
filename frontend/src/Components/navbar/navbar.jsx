@@ -1,25 +1,25 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import logo from '../Logo/MusicWayLogo.png';
+import React from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import logo from "../Logo/MusicWayLogo.png";
 
 const Header = styled.header`
-  background-color: #333;
-  padding: 20px 0;
+  display: flex;
+  align-items: center;
   position: fixed;
+  padding: 15px 0;
   top: 0;
   width: 100%;
+  background: linear-gradient(to right, #1e1e2f, #252545);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  font-family: 'Roboto Mono', monospace;
-  margin-bottom: 20px; // Aumente este valor para ajustar a margem inferior
 `;
-
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center; /* Centraliza o conteúdo horizontalmente */
 `;
 
 const Logo = styled.img`
@@ -56,8 +56,6 @@ const NavButton = styled.button`
   }
 `;
 
-
-
 const MobileToggle = styled.i`
   display: none;
   font-size: 24px;
@@ -73,7 +71,7 @@ const Navbar1 = () => {
   const navigate = useNavigate();
 
   const clickIMG = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -82,7 +80,7 @@ const Navbar1 = () => {
         <a onClick={clickIMG}>
           <Logo src={logo} alt="MusicWave Logo" />
         </a>
-       
+
         <MobileToggle className="bi bi-list" />
       </Container>
     </Header>

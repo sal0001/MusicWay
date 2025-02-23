@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import logo from '../Logo/MusicWayLogo.png';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../Logo/MusicWayLogo.png";
+import styled from "styled-components";
 
 const Header = styled.header`
   display: flex;
@@ -10,8 +10,8 @@ const Header = styled.header`
   padding: 15px 0;
   top: 0;
   width: 100%;
-  background-color: #333;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to right, #1e1e2f, #252545);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 `;
 
@@ -20,6 +20,11 @@ const LogoContainer = styled.a`
   align-items: center;
   cursor: pointer;
   margin-left: 50px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const Logo = styled.img`
@@ -28,46 +33,42 @@ const Logo = styled.img`
 
 const NavbarContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end; /* Alinha os itens à direita */
   align-items: center;
   width: 100%;
-  padding: 0 20px;
-`;
-
-const NavMenuLeft = styled.nav`
-  ul {
-    display: flex;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  li {
-    margin: 0 20px;
-  }
+  padding: 0 50px; /* Adiciona padding para afastar do limite da tela */
 `;
 
 const NavMenuRight = styled.div`
   display: flex;
   align-items: center;
+  gap: 15px; /* Espaçamento entre os botões */
 `;
 
 const NavButton = styled.button`
   font-weight: bold;
-  background-color: transparent;
-  border: 0px;
+  background: ${(props) =>
+    props.variant === "outline"
+      ? "transparent"
+      : "linear-gradient(45deg, #ff6b6b, #c05656)"};
+  border: ${(props) =>
+    props.variant === "outline" ? "1px dashed #ffffff" : "none"};
   color: #ffffff;
-  padding: 8px 16px;
-  margin-right: 10px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: #444;
+    background: ${(props) =>
+      props.variant === "outline"
+        ? "rgba(255, 255, 255, 0.1)"
+        : "linear-gradient(45deg, #c05656, #ff6b6b)"};
+    transform: translateY(-2px);
   }
 
-  &:last-child {
-    margin-right: 0;
+  &:active {
+    transform: translateY(0);
   }
 `;
 
@@ -78,13 +79,13 @@ const Navbar2 = () => {
 
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem('token');
-      const user = JSON.parse(localStorage.getItem('user'));
+      const token = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
 
       // Verificar se o token existe e se há um usuário logado
       if (token && user) {
         setIsLoggedIn(true);
-        if (user.email === 'admin@gmail.com') {
+        if (user.email === "admin@gmail.com") {
           setIsAdmin(true);
         }
       } else {
@@ -97,11 +98,11 @@ const Navbar2 = () => {
   }, []);
 
   const clickIMAGE = () => {
-    navigate('/');
+    navigate("/");
   };
 
   const handleAdminClick = () => {
-    navigate('/admin');
+    navigate("/admin");
   };
 
   return (
@@ -111,10 +112,6 @@ const Navbar2 = () => {
       </LogoContainer>
 
       <NavbarContainer>
-        <NavMenuLeft>
-          {/* Add left side navigation menu here */}
-        </NavMenuLeft>
-
         <NavMenuRight>
           {isLoggedIn ? (
             <>
@@ -124,8 +121,10 @@ const Navbar2 = () => {
             </>
           ) : (
             <>
-              <NavButton onClick={() => navigate('/registar')}>Registar</NavButton>
-              <NavButton style={{ border: '1px dotted' }} onClick={() => navigate('/login')}>
+              <NavButton onClick={() => navigate("/registar")}>
+                Registar
+              </NavButton>
+              <NavButton variant="outline" onClick={() => navigate("/login")}>
                 Login
               </NavButton>
             </>

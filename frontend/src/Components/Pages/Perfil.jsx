@@ -85,40 +85,39 @@ const Perfil = () => {
         ) : error ? (
           <ErrorMessage>{error}</ErrorMessage>
         ) : (
-          <>
-            <ProfileWrapper>
-              <div className="row">
-                <LeftColumn>
-                  <img
-                    src={
-                      user?.avatar ||
-                      "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.webp"
-                    }
-                    alt="Avatar"
-                  />
-                  <h3>{user?.nome || "Guest"}</h3>
-                  <p>{user?.email || "No email available"}</p>
-                </LeftColumn>
-                <MiddleColumn>
-                  <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
-                </MiddleColumn>
-              </div>
-            </ProfileWrapper>
-          </>
+          <ProfileWrapper>
+            <LeftColumn>
+              <img
+                src={
+                  user?.avatar ||
+                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.webp"
+                }
+                alt="Avatar"
+              />
+              <h3>{user?.nome || "Guest"}</h3>
+              <p>{user?.email || "No email available"}</p>
+              <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
+            </LeftColumn>
+          </ProfileWrapper>
         )}
       </Container>
 
-      {isLoggedIn && (
+      {isLoggedIn ? (
         <RightSidebarContainer>
           <br />
           <SidebarLink href="/main/Perfil">
             <FaUserCircle style={{ marginRight: "8px" }} />
             Perfil
           </SidebarLink>
-          <SidebarLink href="/adicionarMusicas">
-            <FaMusic style={{ marginRight: "8px" }} />
-            Publicar
+
+          <SidebarLink href="/Sobrenos">
+            <FaInfoCircle style={{ marginRight: "8px" }} />
+            Contactar
           </SidebarLink>
+        </RightSidebarContainer>
+      ) : (
+        <RightSidebarContainer>
+          <br />
           <SidebarLink href="/Sobrenos">
             <FaInfoCircle style={{ marginRight: "8px" }} />
             Contactar
@@ -135,56 +134,43 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to bottom, #d3d3d3, grey);
+  background: linear-gradient(to bottom, #1e1e2f, #252545);
   color: white;
+  padding: 20px;
 `;
 
 const ProfileWrapper = styled.div`
-  max-width: 900px;
-  background: black;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  color: white;
+  background: #2c2c54;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
   text-align: center;
+  max-width: 400px;
+  width: 100%;
 `;
 
 const LeftColumn = styled.div`
   text-align: center;
-  margin-top: 30px;
-
   img {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #fff;
-    margin-bottom: 20px;
-  }
-`;
-
-const MiddleColumn = styled.div`
-  margin-top: 30px;
-
-  span {
-    display: block;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
+    border: 4px solid #fff;
+    margin-bottom: 15px;
   }
 `;
 
 const LogoutButton = styled.button`
-  margin-top: 20px;
+  margin-top: 15px;
   background: linear-gradient(45deg, #ff6b6b, #c05656);
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
   transition: all 0.3s;
-
   &:hover {
     background: darkred;
   }
@@ -193,39 +179,40 @@ const LogoutButton = styled.button`
 const RightSidebarContainer = styled.div`
   width: 170px;
   height: 100vh;
-  background-color: #1c1c1c;
+  background: linear-gradient(to bottom, #1e1e2e, #3a3a5a);
   color: white;
   padding: 20px;
   position: fixed;
   top: 70px;
   right: 0;
   overflow-y: auto;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-`;
+  transition: width 0.3s ease;
 
-const SidebarTitle = styled.h2`
-  font-size: 1.5em;
-  margin-bottom: 30px;
-  color: #fff;
-  font-weight: bold;
+  @media (max-width: 768px) {
+    width: 120px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100px;
+  }
 `;
 
 const SidebarLink = styled.a`
   display: flex;
   align-items: center;
   padding: 15px;
-  margin-bottom: 20px;
-  background-color: transparent;
+  margin-bottom: 15px;
+  background: transparent;
   color: white;
   text-decoration: none;
   border-radius: 8px;
   transition: background-color 0.3s, padding-left 0.3s;
 
   &:hover {
-    background-color: #444;
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
     padding-left: 20px;
   }
 `;

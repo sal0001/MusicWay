@@ -3,12 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar2 from "../navbar/navbar2";
-import {
-  FaMusic,
-  FaAddressCard,
-  FaInfoCircle,
-  FaUserCircle,
-} from "react-icons/fa";
+import { FaUserCircle, FaInfoCircle } from "react-icons/fa";
 
 const Perfil = () => {
   const [user, setUser] = useState(null);
@@ -19,7 +14,6 @@ const Perfil = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       setError("Utilizador não encontrado. Por favor, faça login.");
       setLoading(false);
@@ -28,27 +22,21 @@ const Perfil = () => {
 
     const loggedInUser = localStorage.getItem("user");
     if (loggedInUser) {
-      const userObject = JSON.parse(loggedInUser);
-      setUser(userObject);
+      setUser(JSON.parse(loggedInUser));
     }
-
     setIsLoggedIn(Boolean(token));
 
     const fetchUserData = async () => {
       try {
         const response = await axios.get("http://localhost:3001/auth", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
         if (response.data.authenticated) {
           setUser(response.data.user);
         } else {
           setError("Falha na autenticação.");
         }
       } catch (err) {
-        console.error("Erro:", err);
         setError(
           "Erro ao carregar os dados do usuário. Por favor, faça login."
         );
@@ -56,7 +44,6 @@ const Perfil = () => {
         setLoading(false);
       }
     };
-
     fetchUserData();
   }, []);
 
@@ -71,9 +58,12 @@ const Perfil = () => {
       localStorage.removeItem("user");
       navigate("/");
     } catch (error) {
-      console.error("Erro ao fazer logout:", error);
       alert("Erro ao fazer logout. Tente novamente.");
     }
+  };
+
+  const handleEditProfile = () => {
+    navigate("/editar-perfil");
   };
 
   return (
@@ -96,34 +86,24 @@ const Perfil = () => {
               />
               <h3>{user?.nome || "Guest"}</h3>
               <p>{user?.email || "No email available"}</p>
-              <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
+              <ButtonContainer>
+                <EditButton onClick={handleEditProfile}>Editar</EditButton>
+                <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
+              </ButtonContainer>
             </LeftColumn>
           </ProfileWrapper>
         )}
       </Container>
 
-      {isLoggedIn ? (
-        <RightSidebarContainer>
-          <br />
-          <SidebarLink href="/main/Perfil">
-            <FaUserCircle style={{ marginRight: "8px" }} />
-            Perfil
-          </SidebarLink>
-
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px" }} />
-            Contactar
-          </SidebarLink>
-        </RightSidebarContainer>
-      ) : (
-        <RightSidebarContainer>
-          <br />
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px" }} />
-            Contactar
-          </SidebarLink>
-        </RightSidebarContainer>
-      )}
+      <RightSidebarContainer>
+        <br />
+        <SidebarLink href="/main/Perfil">
+          <FaUserCircle style={{ marginRight: "8px" }} /> Perfil
+        </SidebarLink>
+        <SidebarLink href="/Sobrenos">
+          <FaInfoCircle style={{ marginRight: "8px" }} /> Contactar
+        </SidebarLink>
+      </RightSidebarContainer>
     </div>
   );
 };
@@ -161,8 +141,14 @@ const LeftColumn = styled.div`
   }
 `;
 
-const LogoutButton = styled.button`
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: center;
   margin-top: 15px;
+`;
+
+const LogoutButton = styled.button`
   background: linear-gradient(45deg, #ff6b6b, #c05656);
   color: white;
   border: none;
@@ -176,6 +162,13 @@ const LogoutButton = styled.button`
   }
 `;
 
+const EditButton = styled(LogoutButton)`
+  background: linear-gradient(45deg, #4caf50, #2e7d32);
+  &:hover {
+    background: #1b5e20;
+  }
+`;
+
 const RightSidebarContainer = styled.div`
   width: 170px;
   height: 100vh;
@@ -185,19 +178,9 @@ const RightSidebarContainer = styled.div`
   position: fixed;
   top: 70px;
   right: 0;
-  overflow-y: auto;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease;
-
-  @media (max-width: 768px) {
-    width: 120px;
-  }
-
-  @media (max-width: 480px) {
-    width: 100px;
-  }
 `;
 
 const SidebarLink = styled.a`
@@ -205,12 +188,10 @@ const SidebarLink = styled.a`
   align-items: center;
   padding: 15px;
   margin-bottom: 15px;
-  background: transparent;
   color: white;
   text-decoration: none;
   border-radius: 8px;
   transition: background-color 0.3s, padding-left 0.3s;
-
   &:hover {
     background: linear-gradient(135deg, #ff7eb3, #ff758c);
     padding-left: 20px;

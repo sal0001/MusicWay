@@ -756,7 +756,14 @@ const Main = () => {
           <MusicListContainer>
             <div style={{ display: "flex", alignItems: "center" }}>
               <SearchContainer>
-                <FaSearch style={{ marginRight: "10px" }} />
+                <FaSearch
+                  style={{
+                    marginRight: "5px",
+                    fontSize: "25px",
+                    color: "white",
+                    marginLeft: "5px",
+                  }}
+                />
                 <SearchInput
                   type="text"
                   placeholder="Pesquisa por músicas..."

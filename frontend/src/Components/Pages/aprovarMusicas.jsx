@@ -1,109 +1,91 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Navbar3 from "../navbar/navbar3";
 import styled from "styled-components";
 import axios from "axios";
 
-const MusicListContainer = styled.div`
-  margin-top: 100px;
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 40px;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #1e1e2f, #252545);
+  width: 100vw;
+  overflow-x: hidden;
+  color: white;
+`;
+
+const ContentContainer = styled.div`
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   width: 100%;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 100%;
+  align-items: center;
 `;
 
-const MusicList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-  margin-top: 40px;
+const SearchBar = styled.input`
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3d3d3d;
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+
+  &:focus {
+    background-color: #4a4a4a;
+    box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.2);
+  }
 `;
 
-const MusicListItem = styled.li`
-  background: linear-gradient(to bottom, #d3d3d3, grey);
-  margin: 15px 0;
-  padding: 20px;
+const MusicList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-top: 20px;
+  width: 100%;
+`;
+
+const MusicItem = styled.div`
+  background: linear-gradient(to bottom, #3a3a5a, #2c2c54);
+  padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   }
 `;
 
-const ApproveButton = styled.button`
-  background-color: #28a745;
+const DownloadButton = styled.a`
+  background: linear-gradient(45deg, #28a745, #218838);
   color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
   font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: background-color 0.3s ease;
-  width: 120px;
+  text-align: center;
 
   &:hover {
-    background-color: #218838;
+    background: linear-gradient(45deg, #34d058, #1e7e34);
   }
-`;
-
-const RejectButton = styled.button`
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
-  width: 120px;
-
-  &:hover {
-    background-color: #c82333;
-  }
-`;
-
-const SearchBar = styled.input`
-  width: 100%;
-  padding: 15px;
-  border-radius: 30px;
-  border: 1px solid #ddd;
-  margin-bottom: 30px;
-  font-size: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  outline: none;
-  transition: box-shadow 0.2s ease;
-
-  &:focus {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const AudioPlayer = styled.audio`
-  width: 100%;
-  margin-top: 10px;
-  border-radius: 10px;
-  background-color: #f8f9fa;
 `;
 
 const AprovarMusicas = () => {
   const [pendingSongs, setPendingSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const audioRefs = useRef({});
 
   useEffect(() => {
     const fetchPendingSongs = async () => {
@@ -112,47 +94,13 @@ const AprovarMusicas = () => {
           "http://127.0.0.1:3001/getMusicasPendentes"
         );
         setPendingSongs(response.data);
-      } catch (err) {
-        setError("Erro ao buscar músicas pendentes.");
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao buscar músicas pendentes:", error);
       }
     };
 
     fetchPendingSongs();
   }, []);
-
-  useEffect(() => {
-    Object.values(audioRefs.current).forEach((audio) => {
-      if (audio) {
-        audio.crossOrigin = "anonymous";
-      }
-    });
-  }, [pendingSongs]);
-
-  const handleApprove = async (songId) => {
-    try {
-      const response = await axios.patch(
-        `http://127.0.0.1:3001/aprovarMusica/${songId}`
-      );
-      setPendingSongs((prevSongs) =>
-        prevSongs.filter((song) => song._id !== songId)
-      );
-    } catch (err) {
-      setError("Erro ao aprovar a música.");
-    }
-  };
-
-  const handleReject = async (songId) => {
-    try {
-      await axios.delete(`http://127.0.0.1:3001/rejeitarMusica/${songId}`);
-      setPendingSongs((prevSongs) =>
-        prevSongs.filter((song) => song._id !== songId)
-      );
-    } catch (err) {
-      setError("Erro ao rejeitar a música.");
-    }
-  };
 
   const filteredSongs = pendingSongs.filter(
     (song) =>
@@ -161,54 +109,34 @@ const AprovarMusicas = () => {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+    <div>
       <Navbar3 />
-      <MusicListContainer>
-        <SearchBar
-          type="text"
-          placeholder="Procurar músicas pendentes..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        {loading && <p>Carregando...</p>}
-        {error && <p className="text-danger">{error}</p>}
-        <MusicList>
-          {filteredSongs.map((song) => (
-            <MusicListItem key={song._id}>
-              <div>
-                <h5>{song.nome}</h5>
-                <p>Artista: {song.artista}</p>
-                <AudioPlayer
-                  ref={(el) => el && (audioRefs.current[song._id] = el)}
-                  controls
+      <PageContainer>
+        <ContentContainer>
+          <SearchBar
+            type="text"
+            placeholder="Procurar músicas pendentes..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <MusicList>
+            {filteredSongs.map((song) => (
+              <MusicItem key={song._id}>
+                <div>
+                  <h5>{song.nome}</h5>
+                  <p>Artista: {song.artista}</p>
+                </div>
+                <DownloadButton
+                  href={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
+                  download
                 >
-                  <source
-                    src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
-                    type="audio/mp3"
-                  />
-                  <source
-                    src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
-                    type="audio/ogg"
-                  />
-                  <source
-                    src={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
-                    type="audio/wav"
-                  />
-                  Seu navegador não suporta o elemento de áudio.
-                </AudioPlayer>
-              </div>
-              <div>
-                <ApproveButton onClick={() => handleApprove(song._id)}>
-                  Aprovar
-                </ApproveButton>
-                <RejectButton onClick={() => handleReject(song._id)}>
-                  Rejeitar
-                </RejectButton>
-              </div>
-            </MusicListItem>
-          ))}
-        </MusicList>
-      </MusicListContainer>
+                  ouvir
+                </DownloadButton>
+              </MusicItem>
+            ))}
+          </MusicList>
+        </ContentContainer>
+      </PageContainer>
     </div>
   );
 };

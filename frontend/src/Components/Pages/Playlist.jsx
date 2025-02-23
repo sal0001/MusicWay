@@ -24,10 +24,10 @@ const MainPage = styled.div`
 `;
 
 const PlaylistContainer = styled.div`
-  width: 90%;
-  max-width: 800px;
-  text-align: center;
+  width: 100%; // Alterado para ocupar 100% da largura
+  max-width: 100%; // Aumentei o max-width para dar mais espaço
   margin-top: 120px;
+  padding-left: 20px; // Adicionado padding à esquerda para alinhar o conteúdo
 `;
 
 const PlaylistImage = styled.img`
@@ -46,8 +46,10 @@ const PlaylistImage = styled.img`
 
 const MusicList = styled.div`
   margin-top: 20px;
-  width: 100%;
+  width: 100%; // Ocupa 100% da largura disponível
   margin-bottom: 200px;
+  padding-left: 0; // Removido qualquer padding que possa estar centralizando o conteúdo
+  padding-right: 190px;
 `;
 
 const MusicItem = styled.div`

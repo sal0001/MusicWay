@@ -1,35 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import '@fortawesome/fontawesome-free/css/all.min.css';
-import Navbar3 from '../navbar/navbar3';
-import styled from 'styled-components';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import Navbar3 from "../navbar/navbar3";
+import styled from "styled-components";
+import axios from "axios";
 
 const PageContainer = styled.div`
-  display: flex; /* Changed to flex to align the form and the category list horizontally */
-  justify-content: center;
-  align-items: flex-start; /* Align to the top */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 40px;
-  margin-top: 150px;
-  max-width: 1200px;
-  height: 100vh; /* Ensures it takes full viewport height for vertical centering */
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #1e1e2f, #252545);
+  width: 100vw;
+  overflow-x: hidden;
+  color: white;
+`;
+
+const ContentContainer = styled.div`
+  margin-top: 100px;
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  width: 100%;
+  max-width: 1000px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
 `;
 
 const FormContainer = styled.div`
-  background-color: #2b2b2b;
-  padding: 40px;
+  background-color: #2c2c54;
+  padding: 30px;
   border-radius: 12px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
-  width: 400px; /* Fixed width for the form */
+  width: 350px;
   text-align: center;
-  margin-right: 20px; /* Space between the form and the separator */
+  flex-shrink: 0;
 `;
 
-const Separator = styled.div`
-  width: 1px; /* Thickness of the separator line */
-  background-color: #ccc; /* Light gray color for the separator */
-  margin: 0 30px; /* Space around the separator */
-  height: 100%; /* Makes the separator take up full height */
+const CategoryContainer = styled.div`
+  background-color: #2c2c54;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  flex-shrink: 0;
 `;
 
 const StyledInput = styled.input`
@@ -53,8 +71,8 @@ const StyledInput = styled.input`
 const StyledButton = styled.button`
   width: 100%;
   padding: 12px;
-  margin-top: 20px;
-  background-color: #555555;
+  margin-top: 10px;
+  background: linear-gradient(45deg, #ff6b6b, #c05656);
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -64,48 +82,39 @@ const StyledButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: #777777;
+    background: linear-gradient(45deg, #ff4d4d, #a83a3a);
   }
 `;
 
-const MessageText = styled.p`
-  color: ${(props) => (props.error ? '#ff4d4d' : '#4caf50')};
-  margin-top: 20px;
-  font-size: 14px;
-  font-family: Arial, sans-serif;
-`;
-
-const CategoryList = styled.ul`
-  list-style-type: none;
-  padding: 0;
-  width: 100%;
-  max-width: 700px;
+const CategoryList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
   margin-top: 20px;
 `;
 
-const CategoryItem = styled.li`
-  background: linear-gradient(to bottom, #d3d3d3, grey);
-  margin: 15px 0;
-  padding: 20px;
+const CategoryItem = styled.div`
+  background: linear-gradient(to bottom, #3a3a5a, #2c2c54);
+  padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: space-between;
   align-items: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
   }
 `;
 
 const RemoveButton = styled.button`
-  background-color: #dc3545;
+  background: linear-gradient(45deg, #ff6b6b, #c05656);
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
+  padding: 8px 12px;
+  border-radius: 50%;
   cursor: pointer;
   font-size: 14px;
   display: flex;
@@ -114,23 +123,21 @@ const RemoveButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #c82333;
+    background: linear-gradient(45deg, #ff4d4d, #a83a3a);
   }
 `;
 
 const AddCategoria = () => {
-  const [nome, setNome] = useState('');
-  const [mensagem, setMensagem] = useState('');
-  const [erro, setErro] = useState('');
+  const [nome, setNome] = useState("");
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:3001/getCategorias');
+        const response = await axios.get("http://127.0.0.1:3001/getCategorias");
         setCategorias(response.data);
       } catch (error) {
-        console.error('Erro ao procurar os generos:', error);
+        console.error("Erro ao buscar as categorias:", error);
       }
     };
 
@@ -139,31 +146,29 @@ const AddCategoria = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!nome) {
-      setErro('O nome do genero é obrigatório.');
-      return;
-    }
+    if (!nome) return;
 
     try {
-      const response = await axios.post('http://127.0.0.1:3001/addCategoria', { nome });
-      setNome('');
-      setMensagem(response.data.message);
-      setErro('');
-      setCategorias((prevCategorias) => [...prevCategorias, { nome }]);
+      const response = await axios.post("http://127.0.0.1:3001/addCategoria", {
+        nome,
+      });
+      setCategorias([...categorias, response.data]);
+      setNome("");
     } catch (error) {
-      setErro('Erro ao adicionar o genero. Tente novamente.');
-      setMensagem('');
-      console.error('Erro ao criar o genero:', error);
+      console.error("Erro ao adicionar categoria:", error);
     }
   };
 
   const handleRemoveCategoria = async (categoriaId) => {
     try {
-      await axios.delete(`http://127.0.0.1:3001/removeCategoria/${categoriaId}`);
-      setCategorias(categorias.filter((categoria) => categoria._id !== categoriaId));
+      await axios.delete(
+        `http://127.0.0.1:3001/removeCategoria/${categoriaId}`
+      );
+      setCategorias(
+        categorias.filter((categoria) => categoria._id !== categoriaId)
+      );
     } catch (error) {
-      console.error('Erro ao remover a categoria:', error);
+      console.error("Erro ao remover categoria:", error);
     }
   };
 
@@ -171,35 +176,36 @@ const AddCategoria = () => {
     <div>
       <Navbar3 />
       <PageContainer>
-        <FormContainer>
-          <form onSubmit={handleSubmit}>
-            <StyledInput
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              placeholder="Nome do genero"
-              required
-            />
-            <StyledButton type="submit">Adicionar Genero</StyledButton>
-          </form>
-          {mensagem && <MessageText>{mensagem}</MessageText>}
-          {erro && <MessageText error>{erro}</MessageText>}
-        </FormContainer>
-        
-        <Separator />
-        
-        <CategoryList>
-          {categorias.map((categoria) => (
-            <CategoryItem key={categoria._id}>
-              <div>
-                <h5>{categoria.nome}</h5>
-              </div>
-              <RemoveButton onClick={() => handleRemoveCategoria(categoria._id)}>
-                <i className="fas fa-trash-alt"></i>
-              </RemoveButton>
-            </CategoryItem>
-          ))}
-        </CategoryList>
+        <ContentContainer>
+          <FormContainer>
+            <h4>Adicionar Categoria</h4>
+            <form onSubmit={handleSubmit}>
+              <StyledInput
+                type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                placeholder="Nome da categoria"
+                required
+              />
+              <StyledButton type="submit">Adicionar</StyledButton>
+            </form>
+          </FormContainer>
+          <CategoryContainer>
+            <h4>Categorias</h4>
+            <CategoryList>
+              {categorias.map((categoria) => (
+                <CategoryItem key={categoria._id}>
+                  <span>{categoria.nome}</span>
+                  <RemoveButton
+                    onClick={() => handleRemoveCategoria(categoria._id)}
+                  >
+                    <i className="fas fa-trash-alt"></i>
+                  </RemoveButton>
+                </CategoryItem>
+              ))}
+            </CategoryList>
+          </CategoryContainer>
+        </ContentContainer>
       </PageContainer>
     </div>
   );

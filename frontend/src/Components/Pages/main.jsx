@@ -60,7 +60,7 @@ const SidebarContainer = styled.div`
 `;
 
 const RightSidebarContainer = styled.div`
-  width: 170px;
+  width: 110px;
   height: 100vh;
   background: linear-gradient(to bottom, #1e1e2e, #3a3a5a);
   color: white;
@@ -85,7 +85,7 @@ const RightSidebarContainer = styled.div`
 
 const MusicListContainer = styled.div`
   margin-left: 400px;
-  margin-right: 170px;
+  margin-right: 110px;
   padding: 20px;
   flex: 1;
   margin-top: 60px;
@@ -408,11 +408,14 @@ const SubmitButton = styled.button`
   background: linear-gradient(135deg, #ff7eb3, #ff758c);
   border: none;
   color: white;
+  width: 100%;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  text-align: center;
   transition: background 0.3s;
+  margin-left: auto;
 
   &:hover {
     background: linear-gradient(135deg, #ff568c, #ff3d6e);
@@ -425,7 +428,6 @@ const MessageText = styled.p`
   text-align: center;
 `;
 
-// Componente Principal
 const Main = () => {
   const [publishedSongs, setPublishedSongs] = useState([]);
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -537,17 +539,17 @@ const Main = () => {
   // Função para criar uma nova playlist
   const createPlaylist = async () => {
     if (!playlistName.trim() || !imageFile) {
-      alert("O nome da playlist e a imagem são obrigatórios.");
+      console.log("error");
       return;
     }
 
     if (selectedSongs.length === 0) {
-      alert("Selecione ao menos uma música para a playlist.");
+      console.log("error");
       return;
     }
 
     if (!userId) {
-      alert("Usuário não autenticado. Faça login para criar uma playlist.");
+      console.log("error");
       return;
     }
 
@@ -564,18 +566,17 @@ const Main = () => {
       });
 
       if (response.ok) {
-        alert("Playlist criada com sucesso!");
+        console.log("playlist criada com sucesso");
         setPlaylistName("");
         setSelectedSongs([]);
         setImageFile(null);
         setShowPlaylistPopup(false);
         fetchPlaylists(); // Atualiza a lista de playlists
       } else {
-        alert("Erro ao criar playlist.");
+        console.log("erro ao criar playlist");
       }
     } catch (error) {
       console.error("Erro ao criar playlist:", error.message);
-      alert("Erro ao criar playlist. Tente novamente mais tarde.");
     }
   };
 
@@ -634,14 +635,6 @@ const Main = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
-      if (response.data.musica && response.data.musica.status === "pendente") {
-        setSuccessMessage(
-          "Música publicada com sucesso e está pendente de aprovação!"
-        );
-      } else {
-        setSuccessMessage("Música publicada com sucesso!");
-      }
 
       setNomeMusica("");
       setFile(null);
@@ -813,20 +806,23 @@ const Main = () => {
             <RightSidebarContainer>
               <br />
               <SidebarLink href="/main/Perfil">
-                <FaUserCircle style={{ marginRight: "8px" }} />
-                Perfil
+                <FaUserCircle
+                  style={{ marginRight: "8px", fontSize: "30px" }}
+                />
               </SidebarLink>
               <SidebarLink href="/Sobrenos">
-                <FaInfoCircle style={{ marginRight: "8px" }} />
-                Contactar
+                <FaInfoCircle
+                  style={{ marginRight: "8px", fontSize: "30px" }}
+                />
               </SidebarLink>
             </RightSidebarContainer>
           ) : (
             <RightSidebarContainer>
               <br />
               <SidebarLink href="/Sobrenos">
-                <FaInfoCircle style={{ marginRight: "8px" }} />
-                Contactar
+                <FaInfoCircle
+                  style={{ marginRight: "8px", fontSize: "30px" }}
+                />
               </SidebarLink>
             </RightSidebarContainer>
           )}
@@ -846,6 +842,9 @@ const Main = () => {
               value={playlistName}
               onChange={(e) => setPlaylistName(e.target.value)}
             />
+            <p style={{ color: "white", marginBottom: "0" }}>
+              Selecione uma imagem:
+            </p>
             <ImageUploadInput
               type="file"
               accept="image/*"
@@ -901,6 +900,7 @@ const Main = () => {
                     required
                   />
                 </InputGroup>
+                <br />
                 <InputGroup>
                   <UploadButton htmlFor="file-upload">
                     <Icon />
@@ -915,6 +915,7 @@ const Main = () => {
                   />
                   {file && <FileName>{file.name}</FileName>}
                 </InputGroup>
+                <br />
                 <InputGroup>
                   <Select
                     value={categoriaId}
@@ -929,6 +930,7 @@ const Main = () => {
                     ))}
                   </Select>
                 </InputGroup>
+                <br />
                 <SubmitButton type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Submetendo..." : "Submeter"}
                 </SubmitButton>

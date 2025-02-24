@@ -31,8 +31,8 @@ const PlaylistContainer = styled.div`
 `;
 
 const PlaylistImage = styled.img`
-  width: 250px;
-  height: 250px;
+  width: 150px;
+  height: 150px;
   border-radius: 20px;
   object-fit: cover;
   margin-bottom: 20px;
@@ -49,7 +49,7 @@ const MusicList = styled.div`
   width: 100%; // Ocupa 100% da largura disponível
   margin-bottom: 200px;
   padding-left: 0; // Removido qualquer padding que possa estar centralizando o conteúdo
-  padding-right: 190px;
+  padding-right: 110px;
 `;
 
 const MusicItem = styled.div`
@@ -65,7 +65,7 @@ const MusicItem = styled.div`
 
   &:hover {
     background: #333373;
-    transform: scale(1.02);
+    transform: scale(1.01);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   }
 `;
@@ -113,7 +113,7 @@ const RemoveButton = styled.button`
 `;
 
 const AddMusicButton = styled.button`
-  background: linear-gradient(45deg, #ff6b6b, #c05656);
+  background: linear-gradient(45deg, green, green);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -124,7 +124,7 @@ const AddMusicButton = styled.button`
   transition: background 0.3s;
 
   &:hover {
-    background: darkred;
+    background: lightgreen;
   }
 `;
 
@@ -221,7 +221,7 @@ const AddButton = styled.button`
 `;
 
 const RightSidebarContainer = styled.div`
-  width: 170px;
+  width: 110px;
   height: 100vh;
   background: linear-gradient(to bottom, #1e1e2e, #3a3a5a);
   color: white;
@@ -388,11 +388,14 @@ const Playlist = () => {
           />
         )}
         <h2>{playlist?.nome || "Playlist"}</h2>
-        <AddMusicButton onClick={() => setIsPopupOpen(true)}>
-          <FaPlus style={{ marginRight: "8px" }} /> Adicionar Música
+        <AddMusicButton
+          onClick={() => setIsPopupOpen(true)}
+          style={{ marginRight: "10px" }}
+        >
+          <FaPlus style={{ marginRight: "0" }} />
         </AddMusicButton>
         <RemovePlaylistButton onClick={handleRemovePlaylist}>
-          <FaTrash style={{ marginRight: "8px" }} /> Remover Playlist
+          <FaTrash style={{ marginRight: "0" }} />
         </RemovePlaylistButton>
         <MusicList>
           {musicas.length === 0 ? (
@@ -443,6 +446,7 @@ const Playlist = () => {
                 <PopupMusicItem key={song._id}>
                   <div>
                     <MusicName>{song.nome}</MusicName>
+                    <br />
                     <MusicArtist>{song.artista}</MusicArtist>
                   </div>
                   <AddButton onClick={() => handleAddToPlaylist(song._id)}>
@@ -455,14 +459,22 @@ const Playlist = () => {
         </PopupOverlay>
       )}
 
-      {isLoggedIn && (
+      {isLoggedIn ? (
         <RightSidebarContainer>
           <br />
           <SidebarLink href="/main/Perfil">
-            <FaUserCircle style={{ marginRight: "8px" }} /> Perfil
+            <FaUserCircle style={{ marginRight: "8px", fontSize: "30px" }} />
           </SidebarLink>
           <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px" }} /> Contactar
+            <FaInfoCircle style={{ marginRight: "8px", fontSize: "30px" }} />
+          </SidebarLink>
+        </RightSidebarContainer>
+      ) : (
+        <RightSidebarContainer>
+          <br />
+          <SidebarLink href="/Sobrenos">
+            <FaInfoCircle style={{ marginRight: "8px" }} />
+            Contactar
           </SidebarLink>
         </RightSidebarContainer>
       )}

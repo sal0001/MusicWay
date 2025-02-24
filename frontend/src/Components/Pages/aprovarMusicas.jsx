@@ -83,6 +83,33 @@ const DownloadButton = styled.a`
   }
 `;
 
+const ActionButton = styled.button`
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+`;
+
+const ApproveButton = styled(ActionButton)`
+  background: linear-gradient(45deg, #007bff, #0056b3);
+
+  &:hover {
+    background: linear-gradient(45deg, #0069d9, #004085);
+  }
+`;
+
+const RejectButton = styled(ActionButton)`
+  background: linear-gradient(45deg, #dc3545, #a71d2a);
+
+  &:hover {
+    background: linear-gradient(45deg, #c82333, #8a1a1a);
+  }
+`;
+
 const AprovarMusicas = () => {
   const [pendingSongs, setPendingSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,6 +128,34 @@ const AprovarMusicas = () => {
 
     fetchPendingSongs();
   }, []);
+
+  const handleApprove = async (id) => {
+    try {
+      const response = await axios.patch(
+        `http://127.0.0.1:3001/aprovarMusica/${id}`
+      );
+      console.log(response.data.message);
+      // Atualizar a lista de músicas pendentes
+      setPendingSongs(pendingSongs.filter((song) => song._id !== id));
+    } catch (error) {
+      console.error("Erro ao aprovar música:", error);
+      console.log("Erro ao aprovar música");
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://127.0.0.1:3001/rejeitarMusica/${id}`
+      );
+      console.log(response.data.message);
+      // Atualizar a lista de músicas pendentes
+      setPendingSongs(pendingSongs.filter((song) => song._id !== id));
+    } catch (error) {
+      console.error("Erro ao rejeitar música:", error);
+      console.log("Erro ao rejeitar música");
+    }
+  };
 
   const filteredSongs = pendingSongs.filter(
     (song) =>
@@ -126,12 +181,20 @@ const AprovarMusicas = () => {
                   <h5>{song.nome}</h5>
                   <p>Artista: {song.artista}</p>
                 </div>
-                <DownloadButton
-                  href={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
-                  download
-                >
-                  ouvir
-                </DownloadButton>
+                <div>
+                  <DownloadButton
+                    href={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
+                    download
+                  >
+                    Ouvir
+                  </DownloadButton>
+                  <ApproveButton onClick={() => handleApprove(song._id)}>
+                    Aprovar
+                  </ApproveButton>
+                  <RejectButton onClick={() => handleReject(song._id)}>
+                    Rejeitar
+                  </RejectButton>
+                </div>
               </MusicItem>
             ))}
           </MusicList>

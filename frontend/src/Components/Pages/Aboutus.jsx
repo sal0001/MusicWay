@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import Navbar2 from "../navbar/navbar2";
+import { useNavigate } from "react-router-dom";
 import { FaMusic, FaInfoCircle, FaUserCircle } from "react-icons/fa";
 
 const BigContainer = styled.div`
@@ -62,7 +64,7 @@ const RandomImage = styled.img`
 `;
 
 const RightSidebarContainer = styled.div`
-  width: 170px;
+  width: 110px;
   height: 100vh;
   background: linear-gradient(to bottom, #1e1e2e, #3a3a5a);
   color: white;
@@ -104,11 +106,27 @@ const SidebarLink = styled.a`
 
 const Aboutus = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(Boolean(token));
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        "http://localhost:3001/logout",
+        {},
+        { withCredentials: true }
+      );
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/");
+    } catch (error) {
+      console.log("erro a fazer logout");
+    }
+  };
 
   return (
     <div>
@@ -133,16 +151,18 @@ const Aboutus = () => {
           </RightSide>
         </Container>
       </BigContainer>
-      {isLoggedIn && (
+      {isLoggedIn ? (
         <RightSidebarContainer>
           <br />
           <SidebarLink href="/main/Perfil">
-            <FaUserCircle style={{ marginRight: "8px" }} /> Perfil
+            <FaUserCircle style={{ marginRight: "8px", fontSize: "30px" }} />
           </SidebarLink>
           <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px" }} /> Contactar
+            <FaInfoCircle style={{ marginRight: "8px", fontSize: "30px" }} />
           </SidebarLink>
         </RightSidebarContainer>
+      ) : (
+        <RightSidebarContainer></RightSidebarContainer>
       )}
     </div>
   );

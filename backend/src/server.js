@@ -91,6 +91,64 @@ app.get("/auth", (req, res) => {
   }
 });
 
+app.put("/auth/editar-perfil", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+      return res.status(401).json({
+        authenticated: false,
+        message: "Cabeçalho de autorização ausente.",
+      });
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        authenticated: false,
+        message: "Token ausente no cabeçalho de autorização.",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
+
+    const { nome, email, password } = req.body;
+
+    if (!nome && !email && !password) {
+      return res
+        .status(400)
+        .json({
+          error: "Pelo menos um campo deve ser fornecido para atualização.",
+        });
+    }
+
+    const user = await Utilizadores.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "Utilizador não encontrado." });
+    }
+
+    if (nome) user.nome = nome;
+    if (email) {
+      const existingUser = await Utilizadores.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== userId) {
+        return res.status(400).json({ error: "Email já está em uso." });
+      }
+      user.email = email;
+    }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
+    res.status(200).json({ message: "Perfil atualizado com sucesso.", user });
+  } catch (err) {
+    console.error("Erro ao atualizar perfil:", err);
+    res.status(500).json({ error: "Erro ao atualizar perfil: " + err.message });
+  }
+});
+
 app.post("/home/registar", async (req, res) => {
   const { nome, email, password } = req.body;
 

@@ -152,7 +152,7 @@ const InputContainer = styled.div`
 
 const StyledInput = styled.input`
   flex: 1;
-  padding: 10px;
+  padding: 5px;
   font-size: 1em;
   border: none;
   background-color: transparent;

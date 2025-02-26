@@ -1,22 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const MusicasSchema = new Schema({
+const MusicasSchema = new Schema(
+  {
     nome: { type: String, required: true },
     artista: { type: String, required: true },
     ficheiro: { type: String, required: true },
     categoria: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Categoria',
-        required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Categoria",
+      required: true,
     },
     status: {
-        type: String,
-        enum: ['pendente', 'aprovado'],
-        default: 'pendente',
+      type: String,
+      enum: ["pendente", "aprovado"],
+      default: "pendente",
     },
-}, { timestamps: true });
+    imagem: {
+      type: String,
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-const Musicas = mongoose.model('Musicas', MusicasSchema);
+const Musicas = mongoose.model("Musicas", MusicasSchema);
 
 module.exports = Musicas;

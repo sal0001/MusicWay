@@ -9,6 +9,9 @@ import Musicas from "./Components/Pages/Musicas";
 import AprovarMusicas from "./Components/Pages/aprovarMusicas";
 import Playlist from "./Components/Pages/Playlist";
 import Sobrenos from "./Components/Pages/Aboutus";
+import RightSidebar from "./Components/Pages/Rightsidebar";
+import CreatePlaylistForm from "./Components/Pages/Createplaylist";
+import PublicarMusica from "./Components/Pages/Addmusic";
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
           <Route path="/aprovarMusicas" element={<AprovarMusicas />} />
           <Route path="playlist/:id" element={<Playlist />} />
           <Route path="/Sobrenos" element={<Sobrenos />} />
+          <Route path="/Rightsidebar" element={<RightSidebar />} />
+          <Route path="/createplaylist" element={<CreatePlaylistForm />} />
+          <Route path="/publicarmusica" element={<PublicarMusica />} />
         </Routes>
       </Router>
     </div>

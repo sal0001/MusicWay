@@ -7,16 +7,12 @@ const MiniPlayerContainer = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(
-    to right,
-    #1e1e2f,
-    #252545
-  ); /* Gradiente moderno */
+  background: linear-gradient(to right, #1e1e2f, #252545);
   padding: 15px 30px;
   display: flex;
   flex-direction: column;
   color: white;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5); /* Sombra mais suave */
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
 `;
 
@@ -24,6 +20,15 @@ const TrackInfo = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+`;
+
+const TrackImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  margin-right: 15px;
+  object-fit: cover;
+  background: #333; /* Cor de fundo caso a imagem não carregue */
 `;
 
 const TrackDetails = styled.div`
@@ -53,7 +58,7 @@ const ControlSection = styled.div`
 const ControlButtons = styled.div`
   display: flex;
   align-items: center;
-  gap: 20px; /* Espaçamento entre os botões */
+  gap: 20px;
 `;
 
 const ControlButton = styled.button`
@@ -65,12 +70,12 @@ const ControlButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    color: #ff6b6b; /* Cor de hover */
-    transform: scale(1.1); /* Efeito de escala */
+    color: #ff6b6b;
+    transform: scale(1.1);
   }
 
   &:active {
-    transform: scale(0.9); /* Efeito de clique */
+    transform: scale(0.9);
   }
 `;
 
@@ -89,7 +94,7 @@ const VolumeControl = styled.input`
     appearance: none;
     width: 14px;
     height: 14px;
-    background: #ff6b6b; /* Cor do controle */
+    background: #ff6b6b;
     border-radius: 50%;
     cursor: pointer;
     transition: background 0.3s;
@@ -99,7 +104,7 @@ const VolumeControl = styled.input`
     background: #777;
 
     &::-webkit-slider-thumb {
-      background: #ff4d4d; /* Cor do controle ao passar o mouse */
+      background: #ff4d4d;
     }
   }
 `;
@@ -120,7 +125,7 @@ const ProgressBar = styled.input`
     appearance: none;
     width: 14px;
     height: 14px;
-    background: #ff6b6b; /* Cor do controle */
+    background: #ff6b6b;
     border-radius: 50%;
     cursor: pointer;
     transition: background 0.3s;
@@ -130,7 +135,7 @@ const ProgressBar = styled.input`
     background: #777;
 
     &::-webkit-slider-thumb {
-      background: #ff4d4d; /* Cor do controle ao passar o mouse */
+      background: #ff4d4d;
     }
   }
 `;
@@ -217,6 +222,13 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
     currentTrack && (
       <MiniPlayerContainer>
         <TrackInfo>
+          <TrackImage
+            src={`http://127.0.0.1:3001/musicas/${currentTrack.imagem}`} // Caminho da imagem
+            alt={currentTrack.nome}
+            onError={(e) => {
+              e.target.src = "https://via.placeholder.com/50"; // Fallback em caso de erro
+            }}
+          />
           <TrackDetails>
             <TrackName>{currentTrack.nome}</TrackName>
             <TrackArtist>{currentTrack.artista}</TrackArtist>

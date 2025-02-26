@@ -115,11 +115,9 @@ app.put("/auth/editar-perfil", async (req, res) => {
     const { nome, email, password } = req.body;
 
     if (!nome && !email && !password) {
-      return res
-        .status(400)
-        .json({
-          error: "Pelo menos um campo deve ser fornecido para atualização.",
-        });
+      return res.status(400).json({
+        error: "Pelo menos um campo deve ser fornecido para atualização.",
+      });
     }
 
     const user = await Utilizadores.findById(userId);
@@ -255,45 +253,52 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post("/addMusicas", upload.single("file"), async (req, res) => {
-  try {
-    const { nome, artista, categoriaId } = req.body;
-    const file = req.file;
+app.post(
+  "/addMusicas",
+  upload.fields([{ name: "file" }, { name: "imagem" }]),
+  async (req, res) => {
+    try {
+      const { nome, artista, categoriaId } = req.body;
+      const file = req.files["file"][0];
+      const imagem = req.files["imagem"][0];
 
-    if (!nome || !artista || !file || !categoriaId) {
-      return res.status(400).json({
-        error:
-          "Por favor, preencha todos os campos: nome, artista, arquivo e categoria.",
+      if (!nome || !artista || !file || !categoriaId || !imagem) {
+        return res.status(400).json({
+          error:
+            "Por favor, preencha todos os campos: nome, artista, arquivo de música, imagem e categoria.",
+        });
+      }
+
+      const categoria = await Categoria.findById(categoriaId);
+      if (!categoria) {
+        return res.status(404).json({ error: "Categoria não encontrada." });
+      }
+
+      const ficheiroNome = path.basename(file.path);
+      const imagemNome = path.basename(imagem.path);
+
+      const musica = new Musicas({
+        nome,
+        artista,
+        categoria: categoriaId,
+        ficheiro: ficheiroNome,
+        imagem: imagemNome,
+        status: "pendente",
       });
+
+      await musica.save();
+
+      return res
+        .status(200)
+        .json({ message: "Música publicada com sucesso!", musica });
+    } catch (error) {
+      console.error("Erro ao adicionar música:", error);
+      return res
+        .status(500)
+        .json({ error: "Erro ao adicionar música. Tente novamente." });
     }
-
-    const categoria = await Categoria.findById(categoriaId);
-    if (!categoria) {
-      return res.status(404).json({ error: "Categoria não encontrada." });
-    }
-
-    const ficheiroNome = path.basename(file.path);
-
-    const musica = new Musicas({
-      nome,
-      artista,
-      categoria: categoriaId,
-      ficheiro: ficheiroNome,
-      status: "pendente",
-    });
-
-    await musica.save();
-
-    return res
-      .status(200)
-      .json({ message: "Música publicada com sucesso!", musica });
-  } catch (error) {
-    console.error("Erro ao adicionar música:", error);
-    return res
-      .status(500)
-      .json({ error: "Erro ao adicionar música. Tente novamente." });
   }
-});
+);
 
 app.get("/getMusicasPendentes", async (req, res) => {
   try {
@@ -426,7 +431,7 @@ app.delete("/utilizadores/:id", async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const result = await User.findByIdAndDelete(userId);
+    const result = await Utilizadores.findByIdAndDelete(userId);
 
     if (!result) {
       return res.status(404).json({ error: "Utilizador não encontrado." });
@@ -437,7 +442,6 @@ app.delete("/utilizadores/:id", async (req, res) => {
     res.status(500).json({ error: "Erro ao remover o utilizador." });
   }
 });
-
 app.get("/utilizadores/email", async (req, res) => {
   const { email } = req.query;
 

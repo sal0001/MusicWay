@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import Navbar2 from "../navbar/navbar2";
 import { useNavigate } from "react-router-dom";
-import { FaMusic, FaInfoCircle, FaUserCircle } from "react-icons/fa";
+import RightSidebar from "./Rightsidebar";
 
 const BigContainer = styled.div`
   min-height: 100vh;
@@ -95,11 +94,11 @@ const SidebarLink = styled.a`
   background: transparent;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 15px;
   transition: background-color 0.3s, padding-left 0.3s;
 
   &:hover {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    background: linear-gradient(135deg, #ff568c, #ff3d6e);
     padding-left: 20px;
   }
 `;
@@ -112,21 +111,6 @@ const Aboutus = () => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(Boolean(token));
   }, []);
-
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        "http://localhost:3001/logout",
-        {},
-        { withCredentials: true }
-      );
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigate("/");
-    } catch (error) {
-      console.log("erro a fazer logout");
-    }
-  };
 
   return (
     <div>
@@ -151,19 +135,7 @@ const Aboutus = () => {
           </RightSide>
         </Container>
       </BigContainer>
-      {isLoggedIn ? (
-        <RightSidebarContainer>
-          <br />
-          <SidebarLink href="/main/Perfil">
-            <FaUserCircle style={{ marginRight: "8px", fontSize: "30px" }} />
-          </SidebarLink>
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px", fontSize: "30px" }} />
-          </SidebarLink>
-        </RightSidebarContainer>
-      ) : (
-        <RightSidebarContainer></RightSidebarContainer>
-      )}
+      {isLoggedIn && <RightSidebar />}
     </div>
   );
 };

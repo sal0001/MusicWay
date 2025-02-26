@@ -89,8 +89,8 @@ const RemoveButton = styled.button`
 const Main = () => {
   const [users, setUsers] = useState([]);
   const [searchEmail, setSearchEmail] = useState("");
-  const [searchResult, setSearchResult] = useState(null);
 
+  // Buscar utilizadores ao carregar o componente
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -104,14 +104,25 @@ const Main = () => {
     fetchUsers();
   }, []);
 
+  // Função para remover um utilizador
   const handleRemoveUser = async (userId) => {
     try {
+      // Faz a requisição DELETE para a rota /utilizadores/:id
       await axios.delete(`http://127.0.0.1:3001/utilizadores/${userId}`);
+
+      // Atualiza a lista de utilizadores após a remoção
       setUsers(users.filter((user) => user._id !== userId));
+      console.log("Utilizador removido com sucesso!");
     } catch (error) {
       console.error("Erro ao remover o utilizador:", error);
+      console.log("Erro ao remover o utilizador.");
     }
   };
+
+  // Filtrar utilizadores com base no email pesquisado
+  const filteredUsers = users.filter((user) =>
+    user.email.toLowerCase().includes(searchEmail.toLowerCase())
+  );
 
   return (
     <div>
@@ -125,7 +136,7 @@ const Main = () => {
             onChange={(e) => setSearchEmail(e.target.value)}
           />
           <UserList>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <UserItem key={user._id}>
                 <div>
                   <h5>{user.nome}</h5>

@@ -1,9 +1,10 @@
+// Perfil.js
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar2 from "../navbar/navbar2";
-import { FaUserCircle, FaInfoCircle } from "react-icons/fa";
+import RightSidebar from "./Rightsidebar"; // Importe o componente RightSidebar
 
 const Perfil = () => {
   const [user, setUser] = useState(null);
@@ -12,7 +13,7 @@ const Perfil = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [message, setMessage] = useState(null); // Estado para a mensagem
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -60,7 +61,7 @@ const Perfil = () => {
       localStorage.removeItem("user");
       navigate("/");
     } catch (error) {
-      setMessage("Erro ao fazer logout. Tente novamente."); // Substituir alert por setMessage
+      setMessage("Erro ao fazer logout. Tente novamente.");
     }
   };
 
@@ -89,11 +90,11 @@ const Perfil = () => {
 
       setUser(response.data.user);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      setMessage("Perfil atualizado com sucesso!"); // Substituir alert por setMessage
+      setMessage("Perfil atualizado com sucesso!");
       setIsEditing(false);
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
-      setMessage(error.response?.data?.error || "Erro ao atualizar perfil."); // Substituir alert por setMessage
+      setMessage(error.response?.data?.error || "Erro ao atualizar perfil.");
     }
   };
 
@@ -101,6 +102,7 @@ const Perfil = () => {
     <div>
       <Navbar2 />
       <Container>
+        <Title>Bem vindo ao teu Perfil</Title>
         {loading ? (
           <p>Carregando...</p>
         ) : error ? (
@@ -111,12 +113,16 @@ const Perfil = () => {
               <Avatar
                 src={
                   user?.avatar ||
-                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.webp"
+                  "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"
                 }
                 alt="Avatar"
               />
               <UserName>{user?.nome || "Guest"}</UserName>
               <UserEmail>{user?.email || "No email available"}</UserEmail>
+              <AboutSection>
+                <h4>Sobre Mim</h4>
+                <p>{user?.bio || "Nenhuma informação adicional fornecida."}</p>
+              </AboutSection>
               <ButtonContainer>
                 <EditButton onClick={handleEditProfile}>Editar</EditButton>
                 <LogoutButton onClick={handleLogout}>Sair</LogoutButton>
@@ -124,22 +130,10 @@ const Perfil = () => {
             </LeftColumn>
           </ProfileWrapper>
         )}
-        {message && <Message>{message}</Message>}{" "}
+        {message && <Message>{message}</Message>}
       </Container>
 
-      {isLoggedIn ? (
-        <RightSidebarContainer>
-          <br />
-          <SidebarLink href="/main/Perfil">
-            <FaUserCircle style={{ marginRight: "8px", fontSize: "30px" }} />
-          </SidebarLink>
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px", fontSize: "30px" }} />
-          </SidebarLink>
-        </RightSidebarContainer>
-      ) : (
-        <RightSidebarContainer></RightSidebarContainer>
-      )}
+      {isLoggedIn && <RightSidebar />}
 
       {isEditing && (
         <PopupOverlay>
@@ -149,6 +143,12 @@ const Perfil = () => {
               type="text"
               value={user?.nome || ""}
               onChange={(e) => setUser({ ...user, nome: e.target.value })}
+            />
+
+            <label>Bio:</label>
+            <textarea
+              value={user?.bio || ""}
+              onChange={(e) => setUser({ ...user, bio: e.target.value })}
             />
 
             <ButtonContainer>
@@ -187,6 +187,12 @@ const Container = styled.div`
   padding: 20px;
 `;
 
+const Title = styled.h1`
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #ff3d6e;
+`;
+
 const ProfileWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -220,6 +226,22 @@ const UserEmail = styled.p`
   color: #ccc;
 `;
 
+const AboutSection = styled.div`
+  margin: 20px 0;
+  text-align: left;
+  max-width: 400px;
+
+  h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #ccc;
+  }
+`;
+
 const EditButton = styled.button`
   background: #007bff;
   color: white;
@@ -248,55 +270,17 @@ const LogoutButton = styled.button`
   }
 `;
 
-const RightSidebarContainer = styled.div`
-  width: 110px;
-  height: 100vh;
-  background: linear-gradient(to bottom, #1e1e2e, #3a3a5a);
-  color: white;
-  padding: 20px;
-  position: fixed;
-  top: 70px;
-  right: 0;
-  overflow-y: auto;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s ease;
-
-  @media (max-width: 768px) {
-    width: 120px;
-  }
-
-  @media (max-width: 480px) {
-    width: 100px;
-  }
-`;
-
-const SidebarLink = styled.a`
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  margin-bottom: 15px;
-  background: transparent;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background-color 0.3s, padding-left 0.3s;
-
-  &:hover {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
-    padding-left: 20px;
-  }
-`;
-const ErrorMessage = styled.p`
-  color: red;
-  font-weight: bold;
-`;
-
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
   margin-top: 20px;
+`;
+
+const ErrorMessage = styled.p`
+  color: #ff4d4d;
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: 10px;
 `;
 
 const SaveButton = styled.button`

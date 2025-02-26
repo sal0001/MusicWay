@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Navbar2 from "../navbar/navbar2";
 import MiniPlayer from "./MiniPlayer";
 import styled from "styled-components";
+import RightSidebar from "./Rightsidebar"; // Importe o componente RightSidebar
 import {
   FaMusic,
   FaInfoCircle,
@@ -252,11 +253,11 @@ const SidebarLink = styled.a`
   background: transparent;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 15px;
   transition: background-color 0.3s, padding-left 0.3s;
 
   &:hover {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    background: linear-gradient(135deg, #ff568c, #ff3d6e);
     padding-left: 20px;
   }
 `;
@@ -458,26 +459,7 @@ const Playlist = () => {
           </PopupContent>
         </PopupOverlay>
       )}
-
-      {isLoggedIn ? (
-        <RightSidebarContainer>
-          <br />
-          <SidebarLink href="/main/Perfil">
-            <FaUserCircle style={{ marginRight: "8px", fontSize: "30px" }} />
-          </SidebarLink>
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px", fontSize: "30px" }} />
-          </SidebarLink>
-        </RightSidebarContainer>
-      ) : (
-        <RightSidebarContainer>
-          <br />
-          <SidebarLink href="/Sobrenos">
-            <FaInfoCircle style={{ marginRight: "8px" }} />
-            Contactar
-          </SidebarLink>
-        </RightSidebarContainer>
-      )}
+      {isLoggedIn && <RightSidebar />}
       <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />
     </MainPage>
   );

@@ -8,11 +8,15 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.css";
+import RightSidebar from "./Rightsidebar"; // Importe o componente RightSidebar
+import RightSidebar2 from "./Rightsidebar2"; // Importe o componente RightSidebar
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Navbar2 from "../navbar/navbar2";
 import styled from "styled-components";
 import MiniPlayer from "./MiniPlayer";
 import axios from "axios";
+import CreatePlaylistForm from "./Createplaylist"; // Importe o componente CreatePlaylistForm
+import PublishMusicForm from "./Addmusic"; // Importe o componente PublishMusicForm
 
 // Estilos
 const AddPlaylistButton = styled.button`
@@ -59,30 +63,6 @@ const SidebarContainer = styled.div`
   }
 `;
 
-const RightSidebarContainer = styled.div`
-  width: 110px;
-  height: 100vh;
-  background: linear-gradient(to bottom, #1e1e2e, #3a3a5a);
-  color: white;
-  padding: 20px;
-  position: fixed;
-  top: 70px;
-  right: 0;
-  overflow-y: auto;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s ease;
-
-  @media (max-width: 768px) {
-    width: 120px;
-  }
-
-  @media (max-width: 480px) {
-    width: 100px;
-  }
-`;
-
 const MusicListContainer = styled.div`
   margin-left: 400px;
   margin-right: 110px;
@@ -124,11 +104,11 @@ const SidebarLink = styled.a`
   background: transparent;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 15px;
   transition: background-color 0.3s, padding-left 0.3s;
 
   &:hover {
-    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    background: linear-gradient(135deg, #ff568c, #ff3d6e);
     padding-left: 20px;
   }
 `;
@@ -452,6 +432,7 @@ const Main = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [searchQueryPopup, setSearchQueryPopup] = useState("");
+  const [imagem, setImagem] = useState(null);
 
   // Função para buscar músicas
   const fetchSongs = async () => {
@@ -625,6 +606,7 @@ const Main = () => {
     formData.append("nome", nomeMusica);
     formData.append("artista", artista);
     formData.append("categoriaId", categoriaId);
+    formData.append("imagem", imagem);
     formData.append("file", file);
 
     try {
@@ -802,150 +784,52 @@ const Main = () => {
             ))}
           </MusicListContainer>
 
-          {isLoggedIn ? (
-            <RightSidebarContainer>
-              <br />
-              <SidebarLink href="/main/Perfil">
-                <FaUserCircle
-                  style={{ marginRight: "8px", fontSize: "30px" }}
-                />
-              </SidebarLink>
-              <SidebarLink href="/Sobrenos">
-                <FaInfoCircle
-                  style={{ marginRight: "8px", fontSize: "30px" }}
-                />
-              </SidebarLink>
-            </RightSidebarContainer>
-          ) : (
-            <RightSidebarContainer>
-              <br />
-              <SidebarLink href="/Sobrenos">
-                <FaInfoCircle
-                  style={{ marginRight: "8px", fontSize: "30px" }}
-                />
-              </SidebarLink>
-            </RightSidebarContainer>
-          )}
+          {isLoggedIn ? <RightSidebar /> : <RightSidebar2 />}
         </div>
       </PageContainer>
 
       {showPlaylistPopup && (
-        <PopupOverlay>
-          <PopupContent>
-            <CloseButton onClick={() => setShowPlaylistPopup(false)}>
-              &times;
-            </CloseButton>
-            <PopupTitle>Criar Nova Playlist</PopupTitle>
-            <PlaylistNameInput
-              type="text"
-              placeholder="Nome da Playlist"
-              value={playlistName}
-              onChange={(e) => setPlaylistName(e.target.value)}
-            />
-            <p style={{ color: "white", marginBottom: "0" }}>
-              Selecione uma imagem:
-            </p>
-            <ImageUploadInput
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImageFile(e.target.files[0])}
-            />
-            <SearchContainer>
-              <FaSearch style={{ marginRight: "10px" }} />
-              <SearchInput
-                type="text"
-                placeholder="Procurar músicas"
-                value={searchQueryPopup}
-                onChange={(e) => setSearchQueryPopup(e.target.value)}
-              />
-            </SearchContainer>
-            <PopupMusicListContainer>
-              {filteredSongsPopup.map((song) => (
-                <PopupMusicItem key={song._id}>
-                  <div>
-                    <MusicName>{song.nome}</MusicName>
-                    <br />
-                    <MusicArtist>{song.artista}</MusicArtist>
-                  </div>
-                  <AddToPlaylistButton
-                    onClick={() => handleSongSelection(song._id)}
-                  >
-                    {selectedSongs.includes(song._id) ? "Remover" : "Adicionar"}
-                  </AddToPlaylistButton>
-                </PopupMusicItem>
-              ))}
-            </PopupMusicListContainer>
-            <CreatePlaylistButton onClick={createPlaylist}>
-              Criar Playlist
-            </CreatePlaylistButton>
-          </PopupContent>
-        </PopupOverlay>
+        <CreatePlaylistForm
+          showPlaylistPopup={showPlaylistPopup}
+          setShowPlaylistPopup={setShowPlaylistPopup}
+          playlistName={playlistName}
+          setPlaylistName={setPlaylistName}
+          imageFile={imageFile}
+          setImageFile={setImageFile}
+          searchQueryPopup={searchQueryPopup}
+          setSearchQueryPopup={setSearchQueryPopup}
+          filteredSongsPopup={filteredSongsPopup}
+          selectedSongs={selectedSongs}
+          handleSongSelection={handleSongSelection}
+          createPlaylist={createPlaylist}
+        />
       )}
 
+      {/* Substitua o popup de publicação de música pelo componente */}
       {showPublishPopup && (
-        <PopupOverlay>
-          <PopupContent>
-            <CloseButton onClick={() => setShowPublishPopup(false)}>
-              <FaTimes />
-            </CloseButton>
-            <FormWrapper>
-              <Title>Submeter Música</Title>
-              <form onSubmit={handlePublishSubmit}>
-                <InputGroup>
-                  <Input
-                    type="text"
-                    placeholder="Nome da música"
-                    value={nomeMusica}
-                    onChange={(e) => setNomeMusica(e.target.value)}
-                    required
-                  />
-                </InputGroup>
-                <br />
-                <InputGroup>
-                  <UploadButton htmlFor="file-upload">
-                    <Icon />
-                    Coloque uma música
-                  </UploadButton>
-                  <Input
-                    id="file-upload"
-                    type="file"
-                    onChange={(e) => setFile(e.target.files[0])}
-                    required
-                    style={{ display: "none" }}
-                  />
-                  {file && <FileName>{file.name}</FileName>}
-                </InputGroup>
-                <br />
-                <InputGroup>
-                  <Select
-                    value={categoriaId}
-                    onChange={(e) => setCategoriaId(e.target.value)}
-                    required
-                  >
-                    <option value="">Selecione uma categoria</option>
-                    {categories.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.nome}
-                      </option>
-                    ))}
-                  </Select>
-                </InputGroup>
-                <br />
-                <SubmitButton type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Submetendo..." : "Submeter"}
-                </SubmitButton>
-                {errorMessage && (
-                  <MessageText error={Boolean(errorMessage)}>
-                    {errorMessage}
-                  </MessageText>
-                )}
-                {successMessage && <MessageText>{successMessage}</MessageText>}
-              </form>
-            </FormWrapper>
-          </PopupContent>
-        </PopupOverlay>
+        <PublishMusicForm
+          showPublishPopup={showPublishPopup}
+          setShowPublishPopup={setShowPublishPopup}
+          nomeMusica={nomeMusica}
+          setNomeMusica={setNomeMusica}
+          artista={artista}
+          setArtista={setArtista}
+          file={file}
+          setFile={setFile}
+          categoriaId={categoriaId}
+          setCategoriaId={setCategoriaId}
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+          successMessage={successMessage}
+          setSuccessMessage={setSuccessMessage}
+          handlePublishSubmit={handlePublishSubmit}
+          imagem={imagem}
+          setImagem={setImagem}
+          categories={categories}
+        />
       )}
-
       <MiniPlayer
         currentTrack={currentTrack}
         audioRef={audioRef}

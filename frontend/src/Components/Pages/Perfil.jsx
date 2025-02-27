@@ -102,7 +102,6 @@ const Perfil = () => {
     <div>
       <Navbar2 />
       <Container>
-        <Title>Bem vindo ao teu Perfil</Title>
         {loading ? (
           <p>Carregando...</p>
         ) : error ? (
@@ -143,12 +142,6 @@ const Perfil = () => {
               type="text"
               value={user?.nome || ""}
               onChange={(e) => setUser({ ...user, nome: e.target.value })}
-            />
-
-            <label>Bio:</label>
-            <textarea
-              value={user?.bio || ""}
-              onChange={(e) => setUser({ ...user, bio: e.target.value })}
             />
 
             <ButtonContainer>

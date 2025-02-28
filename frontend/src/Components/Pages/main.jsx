@@ -20,7 +20,6 @@ import axios from "axios";
 import CreatePlaylistForm from "./Createplaylist";
 import PublishMusicForm from "./Addmusic";
 
-// Keyframes for animations
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -449,8 +448,8 @@ const ActionButton = styled.button`
   background: linear-gradient(135deg, #ff758c, #ff4d7d);
   border: none;
   color: white;
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -606,9 +605,8 @@ const Main = () => {
   const [imagem, setImagem] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [likedSongs, setLikedSongs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Adjust this value based on how many items you want per page
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const handleResize = () => {
@@ -759,14 +757,6 @@ const Main = () => {
 
   const handleSongSelection = (songId) => {
     setSelectedSongs((prev) =>
-      prev.includes(songId)
-        ? prev.filter((id) => id !== songId)
-        : [...prev, songId]
-    );
-  };
-
-  const handleLikeSong = (songId) => {
-    setLikedSongs((prev) =>
       prev.includes(songId)
         ? prev.filter((id) => id !== songId)
         : [...prev, songId]

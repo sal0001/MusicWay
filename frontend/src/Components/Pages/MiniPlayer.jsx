@@ -1,4 +1,3 @@
-// MiniPlayer.js
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaPlay, FaPause, FaBackward, FaForward } from "react-icons/fa";
@@ -388,57 +387,48 @@ const VolumeControl = styled.input`
   }
 `;
 
-const formatTime = (seconds) => {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-};
-
-const MiniPlayer = ({
-  currentTrack,
-  audioRef,
-  onPlayPause,
-  onTrackEnd,
-  isPlaying: parentIsPlaying,
-}) => {
+const MiniPlayer = ({ currentTrack, audioRef }) => {
   const [volume, setVolume] = useState(1);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (audioRef.current) {
+      const audio = audioRef.current;
+
       const handleTimeUpdate = () => {
-        setCurrentTime(audioRef.current.currentTime);
-        setProgress(
-          (audioRef.current.currentTime / audioRef.current.duration) * 100 || 0
-        );
+        setCurrentTime(audio.currentTime);
+        setProgress((audio.currentTime / audio.duration) * 100 || 0);
       };
 
       const handleLoadedMetadata = () => {
-        setDuration(audioRef.current.duration);
+        setDuration(audio.duration);
       };
 
-      audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-      audioRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
+      const handlePlay = () => setIsPlaying(true);
+      const handlePause = () => setIsPlaying(false);
+      const handleEnded = () => setIsPlaying(false);
+
+      audio.addEventListener("timeupdate", handleTimeUpdate);
+      audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.addEventListener("play", handlePlay);
+      audio.addEventListener("pause", handlePause);
+      audio.addEventListener("ended", handleEnded);
+
+      // Set initial state based on audio
+      setIsPlaying(!audio.paused);
 
       return () => {
-        if (audioRef.current) {
-          audioRef.current.removeEventListener("timeupdate", handleTimeUpdate);
-          audioRef.current.removeEventListener(
-            "loadedmetadata",
-            handleLoadedMetadata
-          );
-        }
+        audio.removeEventListener("timeupdate", handleTimeUpdate);
+        audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        audio.removeEventListener("play", handlePlay);
+        audio.removeEventListener("pause", handlePause);
+        audio.removeEventListener("ended", handleEnded);
       };
     }
-  }, [audioRef]);
-
-  useEffect(() => {
-    setProgress(
-      (audioRef.current?.currentTime / audioRef.current?.duration) * 100 || 0
-    );
-  }, [currentTrack, audioRef]);
+  }, [audioRef, currentTrack]);
 
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
@@ -474,59 +464,73 @@ const MiniPlayer = ({
     }
   };
 
+  const handlePlayPause = () => {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current
+          .play()
+          .catch((error) => console.error("Playback error:", error));
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  if (!currentTrack) return null;
+
   return (
-    currentTrack && (
-      <MiniPlayerContainer>
-        <TrackInfo>
-          <TrackImage
-            src={`http://127.0.0.1:3001/musicas/${currentTrack.imagem}`}
-            alt={currentTrack.nome}
-            onError={(e) => (e.target.src = "https://via.placeholder.com/50")}
-          />
-          <TrackDetails>
-            <TrackName>{currentTrack.nome}</TrackName>
-            <TrackArtist>{currentTrack.artista}</TrackArtist>
-          </TrackDetails>
-        </TrackInfo>
-        <ControlSection>
-          <TimeDisplay>{formatTime(currentTime)}</TimeDisplay>
-          <ProgressContainer>
-            <ProgressBar
-              type="range"
-              min="0"
-              max="100"
-              step="0.1"
-              value={progress}
-              onChange={handleProgressChange}
-            />
-          </ProgressContainer>
-          <TimeDisplay>{formatTime(duration)}</TimeDisplay>
-          <ControlButtons>
-            <ControlButton onClick={handleBackward}>
-              <FaBackward />
-            </ControlButton>
-            <PlayPauseButton onClick={() => onPlayPause(currentTrack)}>
-              {parentIsPlaying ? (
-                <FaPause />
-              ) : (
-                <FaPlay style={{ marginLeft: "2px" }} />
-              )}
-            </PlayPauseButton>
-            <ControlButton onClick={handleForward}>
-              <FaForward />
-            </ControlButton>
-          </ControlButtons>
-          <VolumeControl
+    <MiniPlayerContainer>
+      <TrackInfo>
+        <TrackImage
+          src={`http://127.0.0.1:3001/musicas/${currentTrack.imagem}`}
+          alt={currentTrack.nome}
+          onError={(e) => (e.target.src = "https://via.placeholder.com/50")}
+        />
+        <TrackDetails>
+          <TrackName>{currentTrack.nome}</TrackName>
+          <TrackArtist>{currentTrack.artista}</TrackArtist>
+        </TrackDetails>
+      </TrackInfo>
+      <ControlSection>
+        <TimeDisplay>{formatTime(currentTime)}</TimeDisplay>
+        <ProgressContainer>
+          <ProgressBar
             type="range"
             min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={handleVolumeChange}
+            max="100"
+            step="0.1"
+            value={progress}
+            onChange={handleProgressChange}
           />
-        </ControlSection>
-      </MiniPlayerContainer>
-    )
+        </ProgressContainer>
+        <TimeDisplay>{formatTime(duration)}</TimeDisplay>
+        <ControlButtons>
+          <ControlButton onClick={handleBackward}>
+            <FaBackward />
+          </ControlButton>
+          <PlayPauseButton onClick={handlePlayPause}>
+            {isPlaying ? <FaPause /> : <FaPlay style={{ marginLeft: "2px" }} />}
+          </PlayPauseButton>
+          <ControlButton onClick={handleForward}>
+            <FaForward />
+          </ControlButton>
+        </ControlButtons>
+        <VolumeControl
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={volume}
+          onChange={handleVolumeChange}
+        />
+      </ControlSection>
+    </MiniPlayerContainer>
   );
 };
 

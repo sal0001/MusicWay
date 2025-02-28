@@ -29,17 +29,29 @@ const MainPage = styled.div`
 const PlaylistContainer = styled.div`
   width: 90%;
   max-width: 1200px;
-  margin-top: 120px;
+  margin: 100px auto 0;
   padding: 40px;
   border-radius: 24px;
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(12px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 
+  @media (max-width: 1024px) {
+    width: 92%;
+    padding: 30px;
+    margin-top: 80px;
+  }
+
   @media (max-width: 768px) {
-    width: 95%;
-    padding: 25px;
-    margin-top: 90px;
+    width: 94%;
+    padding: 20px;
+    margin-top: 70px;
+  }
+
+  @media (max-width: 480px) {
+    width: 96%;
+    padding: 15px;
+    margin-top: 60px;
   }
 `;
 
@@ -52,7 +64,13 @@ const PlaylistHeader = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
-    gap: 25px;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 15px;
+    margin-bottom: 20px;
   }
 `;
 
@@ -70,9 +88,19 @@ const PlaylistImage = styled.img`
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
   }
 
+  @media (max-width: 1024px) {
+    width: 180px;
+    height: 180px;
+  }
+
   @media (max-width: 768px) {
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
+  }
+
+  @media (max-width: 480px) {
+    width: 120px;
+    height: 120px;
   }
 `;
 
@@ -89,8 +117,17 @@ const PlaylistTitle = styled.h2`
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
 
+  @media (max-width: 1024px) {
+    font-size: 2.4rem;
+  }
+
   @media (max-width: 768px) {
-    font-size: 2.2rem;
+    font-size: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
   }
 `;
 
@@ -101,6 +138,14 @@ const ButtonContainer = styled.div`
 
   @media (max-width: 768px) {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 10px;
+    margin-top: 15px;
   }
 `;
 
@@ -127,8 +172,15 @@ const ActionButton = styled.button`
     box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.5);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     padding: 12px 24px;
+    font-size: 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 20px;
+    font-size: 14px;
+    gap: 8px;
   }
 `;
 
@@ -156,6 +208,16 @@ const MusicList = styled.div`
   margin-top: 40px;
   width: 100%;
   margin-bottom: 160px;
+
+  @media (max-width: 768px) {
+    margin-top: 30px;
+    margin-bottom: 120px;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 20px;
+    margin-bottom: 100px;
+  }
 `;
 
 const MusicItem = styled.div`
@@ -176,6 +238,17 @@ const MusicItem = styled.div`
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     border-left-color: #a5b4fc;
   }
+
+  @media (max-width: 768px) {
+    padding: 14px 18px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 `;
 
 const MusicDetails = styled.div`
@@ -184,6 +257,10 @@ const MusicDetails = styled.div`
   gap: 6px;
   flex: 1;
   min-width: 0;
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const MusicName = styled.span`
@@ -193,6 +270,14 @@ const MusicName = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   color: #f1f5f9;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9375rem;
+  }
 `;
 
 const MusicArtist = styled.span`
@@ -201,12 +286,26 @@ const MusicArtist = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  @media (max-width: 768px) {
+    font-size: 0.8125rem;
+  }
 `;
 
 const ActionButtons = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 12px;
+  }
 `;
 
 const PlayButton = styled.button`
@@ -228,6 +327,18 @@ const PlayButton = styled.button`
     transform: scale(1.15);
     color: #a5b4fc;
   }
+
+  @media (max-width: 768px) {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 480px) {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
 `;
 
 const RemoveButton = styled.button`
@@ -248,6 +359,18 @@ const RemoveButton = styled.button`
     background: rgba(255, 107, 107, 0.2);
     transform: scale(1.15);
     color: #ef4444;
+  }
+
+  @media (max-width: 768px) {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  @media (max-width: 480px) {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
   }
 `;
 
@@ -288,9 +411,20 @@ const PopupContent = styled.div`
     }
   }
 
+  @media (max-width: 1024px) {
+    max-width: 550px;
+    padding: 30px;
+  }
+
   @media (max-width: 768px) {
+    width: 94%;
+    max-width: 500px;
     padding: 25px;
-    width: 95%;
+  }
+
+  @media (max-width: 480px) {
+    width: 96%;
+    padding: 20px;
   }
 `;
 
@@ -301,6 +435,16 @@ const PopupHeader = styled.div`
   margin-bottom: 30px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding-bottom: 20px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
 `;
 
 const PopupTitle = styled.h3`
@@ -309,6 +453,14 @@ const PopupTitle = styled.h3`
   font-weight: 700;
   color: #a5b4fc;
   letter-spacing: -0.2px;
+
+  @media (max-width: 768px) {
+    font-size: 1.375rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -329,6 +481,18 @@ const CloseButton = styled.button`
     background: rgba(248, 113, 113, 0.2);
     transform: rotate(90deg);
     color: #f87171;
+  }
+
+  @media (max-width: 768px) {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  @media (max-width: 480px) {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
   }
 `;
 
@@ -354,6 +518,15 @@ const PopupMusicList = styled.div`
   &::-webkit-scrollbar-thumb:hover {
     background: rgba(165, 180, 252, 0.9);
   }
+
+  @media (max-width: 768px) {
+    max-height: 350px;
+  }
+
+  @media (max-width: 480px) {
+    max-height: 300px;
+    padding-right: 5px;
+  }
 `;
 
 const PopupMusicItem = styled.div`
@@ -372,6 +545,17 @@ const PopupMusicItem = styled.div`
     background: rgba(71, 85, 105, 0.7);
     transform: translateX(6px);
     border-left-color: #a5b4fc;
+  }
+
+  @media (max-width: 768px) {
+    padding: 14px 18px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px 15px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 `;
 
@@ -393,6 +577,18 @@ const AddButton = styled.button`
     background: linear-gradient(45deg, #16a34a, #15803d);
     transform: scale(1.08);
   }
+
+  @media (max-width: 768px) {
+    padding: 8px 18px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 16px;
+    font-size: 12px;
+    width: 100%;
+    justify-content: center;
+  }
 `;
 
 const EmptyState = styled.div`
@@ -405,12 +601,32 @@ const EmptyState = styled.div`
   background: rgba(51, 65, 85, 0.3);
   border-radius: 16px;
   margin: 40px 0;
+
+  @media (max-width: 768px) {
+    padding: 40px 20px;
+    margin: 30px 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px 15px;
+    margin: 20px 0;
+  }
 `;
 
 const EmptyStateIcon = styled.div`
   font-size: 56px;
   margin-bottom: 25px;
   color: #a5b4fc;
+
+  @media (max-width: 768px) {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 40px;
+    margin-bottom: 15px;
+  }
 `;
 
 const EmptyStateText = styled.p`
@@ -418,6 +634,16 @@ const EmptyStateText = styled.p`
   color: #cbd5e1;
   margin: 0 0 25px 0;
   line-height: 1.5;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.875rem;
+    margin-bottom: 15px;
+  }
 `;
 
 const DeleteConfirmPopup = styled.div`
@@ -459,6 +685,12 @@ const DeleteConfirmContent = styled.div`
 
   @media (max-width: 768px) {
     padding: 25px;
+    max-width: 400px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 20px;
+    width: 94%;
   }
 `;
 
@@ -468,12 +700,31 @@ const DeleteMessage = styled.p`
   margin: 0 0 30px 0;
   line-height: 1.5;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 25px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9375rem;
+    margin-bottom: 20px;
+  }
 `;
 
 const DeleteButtonContainer = styled.div`
   display: flex;
   gap: 20px;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 10px;
+    flex-direction: column;
+  }
 `;
 
 const ConfirmButton = styled(ActionButton)`
@@ -484,6 +735,10 @@ const ConfirmButton = styled(ActionButton)`
     background: linear-gradient(45deg, #dc2626, #b91c1c);
     box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
   }
+
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const CancelButton = styled(ActionButton)`
@@ -493,6 +748,10 @@ const CancelButton = styled(ActionButton)`
   &:hover {
     background: linear-gradient(45deg, #475569, #334155);
     box-shadow: 0 8px 24px rgba(100, 116, 139, 0.4);
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
   }
 `;
 
@@ -576,33 +835,31 @@ const Playlist = () => {
     setAvailableSongs(filteredSongs);
   }, [allMusicas, musicas]);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    audio.addEventListener("play", () => setIsPlaying(true));
-    audio.addEventListener("pause", () => setIsPlaying(false));
-    audio.addEventListener("ended", () => setIsPlaying(false));
-
-    return () => {
-      audio.removeEventListener("play", () => setIsPlaying(true));
-      audio.removeEventListener("pause", () => setIsPlaying(false));
-      audio.removeEventListener("ended", () => setIsPlaying(false));
-    };
-  }, []);
-
   const handlePlayPause = (song) => {
     if (currentTrack && currentTrack.ficheiro === song.ficheiro) {
       if (audioRef.current.paused) {
-        audioRef.current.play();
+        audioRef.current
+          .play()
+          .catch((error) =>
+            console.error("Erro ao tentar retomar a música:", error)
+          );
+        setIsPlaying(true);
       } else {
         audioRef.current.pause();
+        setIsPlaying(false);
       }
     } else {
-      if (currentTrack) {
-        audioRef.current.pause();
-      }
       setCurrentTrack(song);
-      audioRef.current.src = song.url;
-      audioRef.current.play();
+      if (audioRef.current) {
+        audioRef.current.src = song.url;
+        audioRef.current.load();
+        audioRef.current
+          .play()
+          .catch((error) =>
+            console.error("Erro ao tentar tocar a nova música:", error)
+          );
+        setIsPlaying(true);
+      }
     }
   };
 
@@ -788,7 +1045,24 @@ const Playlist = () => {
         </DeleteConfirmPopup>
       )}
 
-      <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />
+      <MiniPlayer
+        currentTrack={currentTrack}
+        audioRef={audioRef}
+        onPlayPause={handlePlayPause}
+        onTrackEnd={() => {
+          setCurrentTrack(null);
+          setIsPlaying(false);
+        }}
+        isPlaying={isPlaying}
+      />
+
+      <audio
+        ref={audioRef}
+        onEnded={() => {
+          setCurrentTrack(null);
+          setIsPlaying(false);
+        }}
+      />
     </MainPage>
   );
 };

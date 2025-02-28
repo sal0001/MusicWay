@@ -168,7 +168,7 @@ const Button = styled.button`
   align-items: center;
   justify-content: center;
   padding: 10px 20px;
-  border-radius: 12px;
+  border-radius: 20px;
   border: none;
   color: #ffffff;
   font-size: 0.9rem;

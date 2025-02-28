@@ -1,3 +1,4 @@
+// MiniPlayer.js
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { FaPlay, FaPause, FaBackward, FaForward } from "react-icons/fa";
@@ -8,7 +9,7 @@ const MiniPlayerContainer = styled.div`
   left: 0;
   right: 0;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  padding: 20px 40px;
+  padding: 15px 20px;
   display: flex;
   flex-direction: column;
   color: #e0e0e0;
@@ -22,7 +23,11 @@ const MiniPlayerContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    padding: 10px 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 10px;
   }
 `;
 
@@ -31,6 +36,7 @@ const TrackInfo = styled.div`
   align-items: center;
   width: 100%;
   animation: fadeIn 0.5s ease-in;
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -41,16 +47,22 @@ const TrackInfo = styled.div`
   }
 
   @media (max-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 480px) {
     flex-direction: column;
     align-items: flex-start;
   }
 `;
 
 const TrackImage = styled.img`
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   border-radius: 8px;
-  margin-right: 20px;
+  margin-right: 15px;
   object-fit: cover;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   background: #2a2a3a;
@@ -63,21 +75,31 @@ const TrackImage = styled.img`
   @media (max-width: 768px) {
     width: 48px;
     height: 48px;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 480px) {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
     margin-right: 0;
-    margin-bottom: 10px;
   }
 `;
 
 const TrackDetails = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right: 25px;
-  overflow: hidden;
   flex: 1;
+  overflow: hidden;
 
   @media (max-width: 768px) {
-    margin-right: 0;
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 480px) {
     width: 100%;
+    margin-right: 0;
   }
 `;
 
@@ -95,6 +117,10 @@ const TrackName = styled.span`
   @media (max-width: 768px) {
     font-size: 16px;
   }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 const TrackArtist = styled.span`
@@ -108,6 +134,11 @@ const TrackArtist = styled.span`
   @media (max-width: 768px) {
     font-size: 12px;
   }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    margin-top: 2px;
+  }
 `;
 
 const ControlSection = styled.div`
@@ -115,13 +146,15 @@ const ControlSection = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 20px;
-  position: relative;
+  margin-top: 15px;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
     margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 8px;
   }
 `;
 
@@ -141,7 +174,12 @@ const TimeDisplay = styled.div`
 
   @media (max-width: 768px) {
     font-size: 12px;
-    margin-bottom: 10px;
+    min-width: 40px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 10px;
+    padding: 2px 6px;
   }
 `;
 
@@ -149,11 +187,14 @@ const ProgressContainer = styled.div`
   display: flex;
   align-items: center;
   flex: 1;
-  margin: 0 20px;
+  margin: 0 15px;
 
   @media (max-width: 768px) {
-    width: 100%;
-    margin: 10px 0;
+    margin: 0 10px;
+  }
+
+  @media (max-width: 480px) {
+    margin: 0 5px;
   }
 `;
 
@@ -196,7 +237,6 @@ const ProgressBar = styled.input`
 
   &:hover {
     background: rgba(255, 255, 255, 0.4);
-
     &::-webkit-slider-thumb {
       background: #ff4d4d;
       transform: scale(1.2);
@@ -204,27 +244,35 @@ const ProgressBar = styled.input`
   }
 
   @media (max-width: 768px) {
+    height: 5px;
+    &::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
     height: 4px;
+    &::-webkit-slider-thumb {
+      width: 10px;
+      height: 10px;
+    }
   }
 `;
 
 const ControlButtons = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
-  position: absolute;
-  left: 50%;
-  margin-bottom: 100px;
-  transform: translateX(-50%);
-  z-index: 1;
+  gap: 25px;
 
   @media (max-width: 768px) {
-    position: static;
-    transform: none;
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 10px;
     justify-content: center;
     width: 100%;
-    margin-top: 10px;
-    gap: 20px;
   }
 `;
 
@@ -238,7 +286,6 @@ const ControlButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 
   &:hover {
     color: #ffffff;
@@ -253,6 +300,10 @@ const ControlButton = styled.button`
   @media (max-width: 768px) {
     font-size: 18px;
   }
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
 `;
 
 const PlayPauseButton = styled(ControlButton)`
@@ -263,6 +314,7 @@ const PlayPauseButton = styled(ControlButton)`
   color: white;
   font-size: 20px;
   box-shadow: 0 4px 12px rgba(255, 107, 107, 0.5);
+
   &:hover {
     background: linear-gradient(45deg, #ff6b6b, #ff8787);
     transform: scale(1.1);
@@ -273,6 +325,12 @@ const PlayPauseButton = styled(ControlButton)`
     width: 40px;
     height: 40px;
     font-size: 18px;
+  }
+
+  @media (max-width: 480px) {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
   }
 `;
 
@@ -303,7 +361,6 @@ const VolumeControl = styled.input`
 
   &:hover {
     background: rgba(255, 255, 255, 0.4);
-
     &::-webkit-slider-thumb {
       background: #ff4d4d;
       transform: scale(1.2);
@@ -311,9 +368,23 @@ const VolumeControl = styled.input`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 10px;
+    width: 80px;
+    height: 5px;
+    margin-left: 10px;
+    &::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 60px;
+    height: 4px;
+    margin-left: 5px;
+    &::-webkit-slider-thumb {
+      width: 10px;
+      height: 10px;
+    }
   }
 `;
 
@@ -323,9 +394,14 @@ const formatTime = (seconds) => {
   return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 };
 
-const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
+const MiniPlayer = ({
+  currentTrack,
+  audioRef,
+  onPlayPause,
+  onTrackEnd,
+  isPlaying: parentIsPlaying,
+}) => {
   const [volume, setVolume] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -335,7 +411,7 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
       const handleTimeUpdate = () => {
         setCurrentTime(audioRef.current.currentTime);
         setProgress(
-          (audioRef.current.currentTime / audioRef.current.duration) * 100
+          (audioRef.current.currentTime / audioRef.current.duration) * 100 || 0
         );
       };
 
@@ -358,26 +434,17 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
     }
   }, [audioRef]);
 
+  useEffect(() => {
+    setProgress(
+      (audioRef.current?.currentTime / audioRef.current?.duration) * 100 || 0
+    );
+  }, [currentTrack, audioRef]);
+
   const handleVolumeChange = (e) => {
     const newVolume = parseFloat(e.target.value);
     if (!isNaN(newVolume) && newVolume >= 0 && newVolume <= 1) {
       setVolume(newVolume);
-      if (audioRef.current) {
-        audioRef.current.volume = newVolume;
-      }
-    }
-  };
-
-  const handlePlayPause = () => {
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
-      } else {
-        audioRef.current.pause();
-      }
-      setIsPlaying(!audioRef.current.paused);
+      if (audioRef.current) audioRef.current.volume = newVolume;
     }
   };
 
@@ -389,6 +456,24 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
     }
   };
 
+  const handleBackward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = Math.max(
+        0,
+        audioRef.current.currentTime - 10
+      );
+    }
+  };
+
+  const handleForward = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = Math.min(
+        audioRef.current.duration,
+        audioRef.current.currentTime + 10
+      );
+    }
+  };
+
   return (
     currentTrack && (
       <MiniPlayerContainer>
@@ -396,9 +481,7 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
           <TrackImage
             src={`http://127.0.0.1:3001/musicas/${currentTrack.imagem}`}
             alt={currentTrack.nome}
-            onError={(e) => {
-              e.target.src = "https://via.placeholder.com/50";
-            }}
+            onError={(e) => (e.target.src = "https://via.placeholder.com/50")}
           />
           <TrackDetails>
             <TrackName>{currentTrack.nome}</TrackName>
@@ -419,35 +502,17 @@ const MiniPlayer = ({ currentTrack, audioRef, onPlayPause, onTrackEnd }) => {
           </ProgressContainer>
           <TimeDisplay>{formatTime(duration)}</TimeDisplay>
           <ControlButtons>
-            <ControlButton
-              onClick={() => {
-                if (audioRef.current) {
-                  audioRef.current.currentTime = Math.max(
-                    0,
-                    audioRef.current.currentTime - 10
-                  );
-                }
-              }}
-            >
+            <ControlButton onClick={handleBackward}>
               <FaBackward />
             </ControlButton>
-            <PlayPauseButton onClick={handlePlayPause}>
-              {isPlaying ? (
+            <PlayPauseButton onClick={() => onPlayPause(currentTrack)}>
+              {parentIsPlaying ? (
                 <FaPause />
               ) : (
                 <FaPlay style={{ marginLeft: "2px" }} />
               )}
             </PlayPauseButton>
-            <ControlButton
-              onClick={() => {
-                if (audioRef.current) {
-                  audioRef.current.currentTime = Math.min(
-                    audioRef.current.duration,
-                    audioRef.current.currentTime + 10
-                  );
-                }
-              }}
-            >
+            <ControlButton onClick={handleForward}>
               <FaForward />
             </ControlButton>
           </ControlButtons>

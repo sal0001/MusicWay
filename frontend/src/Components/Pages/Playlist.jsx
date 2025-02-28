@@ -14,265 +14,256 @@ import {
   FaPause,
 } from "react-icons/fa";
 
-// Modern gradient background with improved color scheme
 const MainPage = styled.div`
-  background: linear-gradient(135deg, #1a1a2e, #16213e, #1a1a2e);
+  background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
   width: 100%;
   min-height: 100vh;
-  color: white;
+  color: #e2e8f0;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
 `;
 
-// Improved container with better spacing
 const PlaylistContainer = styled.div`
   width: 90%;
   max-width: 1200px;
-  margin-top: 100px;
-  padding: 30px;
-  border-radius: 20px;
-  background: rgba(30, 30, 60, 0.5);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  margin-top: 120px;
+  padding: 40px;
+  border-radius: 24px;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 
   @media (max-width: 768px) {
     width: 95%;
-    padding: 20px;
-    margin-top: 80px;
+    padding: 25px;
+    margin-top: 90px;
   }
 `;
 
-// Header section with playlist details
 const PlaylistHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 30px;
-  margin-bottom: 40px;
+  gap: 40px;
+  margin-bottom: 50px;
 
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
+    gap: 25px;
   }
 `;
 
-// Enhanced playlist image with better hover effects
 const PlaylistImage = styled.img`
-  width: 180px;
-  height: 180px;
-  border-radius: 20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
   object-fit: cover;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
 
   &:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(-8px) scale(1.04);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
   }
 
   @media (max-width: 768px) {
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
   }
 `;
 
-// Playlist info section
 const PlaylistInfo = styled.div`
   flex: 1;
 `;
 
 const PlaylistTitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 10px 0;
-  background: linear-gradient(90deg, #fff, #b3b3ff);
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  background: linear-gradient(90deg, #ffffff, #a5b4fc);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 `;
 
-// Improved button container with flex layout
 const ButtonContainer = styled.div`
   display: flex;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 20px;
+  margin-top: 25px;
 
   @media (max-width: 768px) {
     justify-content: center;
   }
 `;
 
-// Enhanced button styles with better hover effects
 const ActionButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
+  gap: 10px;
+  padding: 14px 28px;
   border-radius: 50px;
   font-size: 16px;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.5);
+  }
 
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    padding: 12px 24px;
   }
 `;
 
-// Add music button
 const AddMusicButton = styled(ActionButton)`
-  background: linear-gradient(45deg, #4caf50, #2e7d32);
+  background: linear-gradient(45deg, #22c55e, #16a34a);
   color: white;
 
   &:hover {
-    background: linear-gradient(45deg, #2e7d32, #1b5e20);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+    background: linear-gradient(45deg, #16a34a, #15803d);
+    box-shadow: 0 8px 24px rgba(22, 197, 94, 0.4);
   }
 `;
 
-// Delete playlist button
 const RemovePlaylistButton = styled(ActionButton)`
-  background: linear-gradient(45deg, #f44336, #d32f2f);
+  background: linear-gradient(45deg, #ef4444, #dc2626);
   color: white;
 
   &:hover {
-    background: linear-gradient(45deg, #d32f2f, #b71c1c);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(211, 47, 47, 0.4);
+    background: linear-gradient(45deg, #dc2626, #b91c1c);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
   }
 `;
 
-// Improved music list with better spacing
 const MusicList = styled.div`
-  margin-top: 30px;
+  margin-top: 40px;
   width: 100%;
-  margin-bottom: 150px; // Space for the mini player
+  margin-bottom: 160px;
 `;
 
-// Enhanced music item with better hover effects and transitions
 const MusicItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(44, 44, 84, 0.6);
-  padding: 16px 20px;
-  border-radius: 12px;
-  margin-bottom: 15px;
+  background: rgba(51, 65, 85, 0.6);
+  padding: 18px 24px;
+  border-radius: 16px;
+  margin-bottom: 12px;
   cursor: pointer;
-  transition: all 0.25s ease;
-  border-left: 4px solid transparent;
+  transition: all 0.3s ease-in-out;
+  border-left: 5px solid transparent;
 
   &:hover {
-    background: rgba(51, 51, 115, 0.8);
-    transform: translateX(5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-    border-left-color: #b3b3ff;
+    background: rgba(71, 85, 105, 0.8);
+    transform: translateX(8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    border-left-color: #a5b4fc;
   }
 `;
 
-// Music details section with improved spacing
 const MusicDetails = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   flex: 1;
-  min-width: 0; // Prevent text overflow
+  min-width: 0;
 `;
 
-// Music title with truncation for long text
 const MusicName = styled.span`
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #f1f5f9;
 `;
 
-// Artist name with better styling
 const MusicArtist = styled.span`
-  font-size: 14px;
-  color: #b3b3ff;
+  font-size: 0.875rem;
+  color: #a5b4fc;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
-// Action buttons container
 const ActionButtons = styled.div`
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 `;
 
-// Play button with improved styling
 const PlayButton = styled.button`
-  background: none;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: white;
-  font-size: 18px;
-  width: 40px;
-  height: 40px;
+  color: #e2e8f0;
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-    color: #b3b3ff;
+    background: rgba(165, 180, 252, 0.2);
+    transform: scale(1.15);
+    color: #a5b4fc;
   }
 `;
 
-// Remove button with improved styling
 const RemoveButton = styled.button`
-  background: none;
+  background: rgba(255, 107, 107, 0.1);
   border: none;
-  color: #ff6b6b;
-  font-size: 18px;
-  width: 40px;
-  height: 40px;
+  color: #f87171;
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255, 107, 107, 0.1);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 
   &:hover {
     background: rgba(255, 107, 107, 0.2);
-    transform: scale(1.1);
-    color: #ff4d4d;
+    transform: scale(1.15);
+    color: #ef4444;
   }
 `;
 
-// Improved modal overlay with animation
 const PopupOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   opacity: 0;
-  animation: fadeIn 0.3s forwards;
+  animation: fadeIn 0.4s ease forwards;
 
   @keyframes fadeIn {
     to {
@@ -281,16 +272,15 @@ const PopupOverlay = styled.div`
   }
 `;
 
-// Enhanced modal content with animation
 const PopupContent = styled.div`
-  background: linear-gradient(135deg, #2c2c54, #232350);
-  padding: 30px;
-  border-radius: 20px;
+  background: linear-gradient(135deg, #1e293b, #172554);
+  padding: 35px;
+  border-radius: 24px;
   width: 90%;
-  max-width: 550px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-  transform: translateY(20px);
-  animation: slideUp 0.3s forwards;
+  max-width: 600px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(30px);
+  animation: slideUp 0.4s ease forwards;
 
   @keyframes slideUp {
     to {
@@ -299,142 +289,211 @@ const PopupContent = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 25px;
     width: 95%;
   }
 `;
 
-// Modal header with better spacing
 const PopupHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 15px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 20px;
 `;
 
-// Modal title with better styling
 const PopupTitle = styled.h3`
   margin: 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #b3b3ff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #a5b4fc;
+  letter-spacing: -0.2px;
 `;
 
-// Close button with improved styling
 const CloseButton = styled.button`
-  background: none;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: white;
-  font-size: 20px;
-  width: 40px;
-  height: 40px;
+  color: #e2e8f0;
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(255, 107, 107, 0.2);
+    background: rgba(248, 113, 113, 0.2);
     transform: rotate(90deg);
-    color: #ff6b6b;
+    color: #f87171;
   }
 `;
 
-// Scrollable music list with custom scrollbar
 const PopupMusicList = styled.div`
-  max-height: 400px;
+  max-height: 450px;
   overflow-y: auto;
-  padding-right: 5px;
+  padding-right: 8px;
 
-  /* Custom scrollbar */
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(179, 179, 255, 0.5);
-    border-radius: 10px;
+    background: rgba(165, 180, 252, 0.6);
+    border-radius: 12px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(179, 179, 255, 0.8);
+    background: rgba(165, 180, 252, 0.9);
   }
 `;
 
-// Modal music item with improved styling
 const PopupMusicItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  background: rgba(61, 61, 61, 0.4);
+  padding: 16px 20px;
+  background: rgba(51, 65, 85, 0.5);
   border-radius: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   cursor: pointer;
-  transition: all 0.3s;
-  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
 
   &:hover {
-    background: rgba(77, 77, 77, 0.6);
-    transform: translateX(5px);
-    border-left-color: #b3b3ff;
+    background: rgba(71, 85, 105, 0.7);
+    transform: translateX(6px);
+    border-left-color: #a5b4fc;
   }
 `;
 
-// Add button with improved styling
 const AddButton = styled.button`
-  background: linear-gradient(45deg, #4caf50, #2e7d32);
+  background: linear-gradient(45deg, #22c55e, #16a34a);
   color: white;
   border: none;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 
   &:hover {
-    background: linear-gradient(45deg, #2e7d32, #1b5e20);
-    transform: scale(1.05);
+    background: linear-gradient(45deg, #16a34a, #15803d);
+    transform: scale(1.08);
   }
 `;
 
-// Empty state component
 const EmptyState = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 50px 25px;
   text-align: center;
-  background: rgba(44, 44, 84, 0.3);
-  border-radius: 12px;
-  margin: 30px 0;
+  background: rgba(51, 65, 85, 0.3);
+  border-radius: 16px;
+  margin: 40px 0;
 `;
 
 const EmptyStateIcon = styled.div`
-  font-size: 48px;
-  margin-bottom: 20px;
-  color: #b3b3ff;
+  font-size: 56px;
+  margin-bottom: 25px;
+  color: #a5b4fc;
 `;
 
 const EmptyStateText = styled.p`
-  font-size: 18px;
-  color: #ccccff;
-  margin: 0 0 20px 0;
+  font-size: 1.125rem;
+  color: #cbd5e1;
+  margin: 0 0 25px 0;
+  line-height: 1.5;
+`;
+
+const DeleteConfirmPopup = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+const DeleteConfirmContent = styled.div`
+  background: linear-gradient(135deg, #1e293b, #172554);
+  padding: 30px;
+  border-radius: 24px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  transform: translateY(30px);
+  animation: slideUp 0.4s ease forwards;
+
+  @keyframes slideUp {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 25px;
+  }
+`;
+
+const DeleteMessage = styled.p`
+  font-size: 1.125rem;
+  color: #e2e8f0;
+  margin: 0 0 30px 0;
+  line-height: 1.5;
+  text-align: center;
+`;
+
+const DeleteButtonContainer = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+`;
+
+const ConfirmButton = styled(ActionButton)`
+  background: linear-gradient(45deg, #ef4444, #dc2626);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(45deg, #dc2626, #b91c1c);
+    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+  }
+`;
+
+const CancelButton = styled(ActionButton)`
+  background: linear-gradient(45deg, #64748b, #475569);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(45deg, #475569, #334155);
+    box-shadow: 0 8px 24px rgba(100, 116, 139, 0.4);
+  }
 `;
 
 const Playlist = () => {
@@ -446,7 +505,8 @@ const Playlist = () => {
   const [allMusicas, setAllMusicas] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [availableSongs, setAvailableSongs] = useState([]); // New state for available songs
+  const [availableSongs, setAvailableSongs] = useState([]);
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const audioRef = useRef(new Audio());
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
@@ -471,20 +531,23 @@ const Playlist = () => {
   };
 
   const handleRemovePlaylist = async () => {
-    if (window.confirm("Tem certeza que deseja excluir esta playlist?")) {
-      try {
-        const response = await fetch(`http://127.0.0.1:3001/playlist/${id}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    setIsDeletePopupOpen(true);
+  };
 
-        if (!response.ok) throw new Error("Erro ao remover a playlist");
+  const confirmDeletePlaylist = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3001/playlist/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        navigate("/");
-      } catch (error) {
-        console.error("Erro ao remover a playlist:", error);
-      }
+      if (!response.ok) throw new Error("Erro ao remover a playlist");
+
+      navigate("/");
+    } catch (error) {
+      console.error("Erro ao remover a playlist:", error);
     }
+    setIsDeletePopupOpen(false);
   };
 
   const fetchAllMusicas = async () => {
@@ -505,7 +568,6 @@ const Playlist = () => {
     fetchAllMusicas();
   }, [id, token]);
 
-  // Update availableSongs whenever allMusicas or musicas changes
   useEffect(() => {
     const filteredSongs = allMusicas.filter(
       (song) =>
@@ -514,7 +576,6 @@ const Playlist = () => {
     setAvailableSongs(filteredSongs);
   }, [allMusicas, musicas]);
 
-  // Audio event listeners
   useEffect(() => {
     const audio = audioRef.current;
     audio.addEventListener("play", () => setIsPlaying(true));
@@ -546,7 +607,7 @@ const Playlist = () => {
   };
 
   const handleRemoveFromPlaylist = async (songId, event) => {
-    event.stopPropagation(); // Prevent triggering the parent onClick
+    event.stopPropagation();
 
     try {
       const response = await fetch(
@@ -559,7 +620,6 @@ const Playlist = () => {
 
       if (!response.ok) throw new Error("Erro ao remover música da playlist");
 
-      // If the current track is removed, stop playing
       if (currentTrack && currentTrack._id === songId) {
         audioRef.current.pause();
         setCurrentTrack(null);
@@ -602,7 +662,7 @@ const Playlist = () => {
             />
           ) : (
             <PlaylistImage
-              src="https://via.placeholder.com/180?text=Playlist"
+              src="https://via.placeholder.com/200?text=Playlist"
               alt="Playlist Default"
             />
           )}
@@ -616,7 +676,7 @@ const Playlist = () => {
                 <FaPlus /> Adicionar Músicas
               </AddMusicButton>
               <RemovePlaylistButton onClick={handleRemovePlaylist}>
-                <FaTrash /> Excluir Playlist
+                <FaTrash /> Eliminar Playlist
               </RemovePlaylistButton>
             </ButtonContainer>
           </PlaylistInfo>
@@ -628,7 +688,9 @@ const Playlist = () => {
               <EmptyStateIcon>
                 <FaMusic />
               </EmptyStateIcon>
-              <EmptyStateText>Não há músicas nesta playlist.</EmptyStateText>
+              <EmptyStateText>
+                Nenhuma música nesta playlist ainda.
+              </EmptyStateText>
               <AddMusicButton onClick={() => setIsPopupOpen(true)}>
                 <FaPlus /> Adicionar Músicas
               </AddMusicButton>
@@ -679,7 +741,7 @@ const Playlist = () => {
             {availableSongs.length === 0 ? (
               <EmptyState>
                 <EmptyStateText>
-                  Não há mais músicas disponíveis para adicionar.
+                  Não há músicas disponíveis para adicionar.
                 </EmptyStateText>
               </EmptyState>
             ) : (
@@ -699,6 +761,31 @@ const Playlist = () => {
             )}
           </PopupContent>
         </PopupOverlay>
+      )}
+
+      {isDeletePopupOpen && (
+        <DeleteConfirmPopup onClick={() => setIsDeletePopupOpen(false)}>
+          <DeleteConfirmContent onClick={(e) => e.stopPropagation()}>
+            <PopupHeader>
+              <PopupTitle>Confirmar Exclusão</PopupTitle>
+              <CloseButton onClick={() => setIsDeletePopupOpen(false)}>
+                <FaTimes />
+              </CloseButton>
+            </PopupHeader>
+            <DeleteMessage>
+              Tem certeza que deseja excluir a playlist "{playlist?.nome}"? Esta
+              ação não pode ser desfeita.
+            </DeleteMessage>
+            <DeleteButtonContainer>
+              <CancelButton onClick={() => setIsDeletePopupOpen(false)}>
+                Cancelar
+              </CancelButton>
+              <ConfirmButton onClick={confirmDeletePlaylist}>
+                <FaTrash /> Excluir
+              </ConfirmButton>
+            </DeleteButtonContainer>
+          </DeleteConfirmContent>
+        </DeleteConfirmPopup>
       )}
 
       <MiniPlayer currentTrack={currentTrack} audioRef={audioRef} />

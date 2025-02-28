@@ -75,7 +75,6 @@ const PageTitle = styled.h1`
   animation: ${fadeIn} 0.8s ease-out;
 `;
 
-// Enhanced container with glass morphism
 const Container = styled.div`
   max-width: 1200px;
   width: 95%;
@@ -258,7 +257,6 @@ const Form = styled.form`
   gap: 20px;
 `;
 
-// Enhanced form inputs with smoother animations
 const Input = styled.input`
   padding: 15px;
   border: none;
@@ -397,22 +395,12 @@ const SocialIcon = styled.div`
 
 const Aboutus = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(Boolean(token));
   }, []);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 5000);
-    // Logic to send the message to support
-  };
 
   return (
     <div>
@@ -461,20 +449,13 @@ const Aboutus = () => {
         <Container>
           <FormContainer>
             <FormTitle>Envie-nos uma mensagem</FormTitle>
-            <Form onSubmit={handleSubmit}>
+            <Form>
               <Input type="text" placeholder="O seu nome" required />
               <Input type="email" placeholder="O seu email" required />
               <Input type="text" placeholder="Assunto" required />
               <TextArea placeholder="A sua mensagem..." required />
               <SubmitButton type="submit">Enviar Mensagem</SubmitButton>
             </Form>
-
-            {showSuccess && (
-              <StatusMessage>
-                <SuccessIcon>✅</SuccessIcon>
-                Mensagem enviada com sucesso! Entraremos em contacto brevemente.
-              </StatusMessage>
-            )}
           </FormContainer>
         </Container>
       </BigContainer>

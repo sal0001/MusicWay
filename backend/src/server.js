@@ -660,7 +660,6 @@ app.delete(
         return res.status(404).json({ error: "Playlist não encontrada" });
       }
 
-      // Remove a música da lista de músicas da playlist
       playlist.musicas = playlist.musicas.filter(
         (id) => id.toString() !== musicaId
       );
@@ -678,28 +677,23 @@ app.post("/playlist/:playlistId/add-musica/:musicaId", async (req, res) => {
   const { playlistId, musicaId } = req.params;
 
   try {
-    // Verifica se o ID da playlist é válido
     if (!mongoose.Types.ObjectId.isValid(playlistId)) {
       return res.status(400).json({ error: "ID de playlist inválido" });
     }
 
-    // Verifica se o ID da música é válido
     if (!mongoose.Types.ObjectId.isValid(musicaId)) {
       return res.status(400).json({ error: "ID de música inválido" });
     }
 
-    // Busca a playlist pelo ID
     const playlist = await Playlist.findById(playlistId);
     if (!playlist) {
       return res.status(404).json({ error: "Playlist não encontrada" });
     }
 
-    // Verifica se a música já está na playlist
     if (playlist.musicas.includes(musicaId)) {
       return res.status(400).json({ error: "Música já está na playlist" });
     }
 
-    // Adiciona a música à playlist
     playlist.musicas.push(musicaId);
     await playlist.save();
 
@@ -716,12 +710,10 @@ app.delete("/playlist/:id", async (req, res) => {
   const playlistId = req.params.id;
 
   try {
-    // Verifica se o ID da playlist é válido
     if (!mongoose.Types.ObjectId.isValid(playlistId)) {
       return res.status(400).json({ error: "ID de playlist inválido" });
     }
 
-    // Remove a playlist
     const deletedPlaylist = await Playlist.findByIdAndDelete(playlistId);
     if (!deletedPlaylist) {
       return res.status(404).json({ error: "Playlist não encontrada" });

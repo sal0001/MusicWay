@@ -22,17 +22,24 @@ import PublishMusicForm from "./Addmusic";
 
 // Keyframes for animations
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+`;
+
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 `;
 
 // Styled Components
 const PageContainer = styled.div`
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, #0f0f23, #1a1a3b);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
+  font-family: "Poppins", sans-serif;
 `;
 
 const MainContent = styled.div`
@@ -41,6 +48,7 @@ const MainContent = styled.div`
   height: calc(100vh - 70px);
   margin-top: 70px;
   width: 100%;
+  overflow: hidden;
 
   @media (max-width: 768px) {
     overflow-x: hidden;
@@ -48,27 +56,26 @@ const MainContent = styled.div`
 `;
 
 const SidebarContainer = styled.div`
-  width: 300px;
+  width: 320px;
   height: 100%;
+  background: rgba(25, 25, 40, 0.95);
+  backdrop-filter: blur(15px);
+  color: #e0e0e0;
+  padding: 20px;
   margin-top: 13px;
-  background: rgba(30, 30, 46, 0.9);
-  backdrop-filter: blur(12px);
-  color: white;
-  padding: 15px;
   position: fixed;
   overflow-y: auto;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 2px 0 25px rgba(0, 0, 0, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
   z-index: 1000;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
   @media (max-width: 768px) {
-    width: 280px;
+    width: 300px;
     transform: ${({ isOpen }) =>
       isOpen ? "translateX(0)" : "translateX(-100%)"};
     height: calc(100% - 70px);
-    top: 70px;
-    left: 0;
+    top: 60px;
   }
 
   @media (max-width: 480px) {
@@ -77,21 +84,21 @@ const SidebarContainer = styled.div`
 `;
 
 const SidebarToggle = styled.button`
-  background: rgba(255, 118, 140, 0.9);
+  background: linear-gradient(45deg, #ff4d7d, #ff758c);
   border: none;
   color: white;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 75, 125, 0.4);
 
   &:hover {
-    background: rgba(255, 86, 140, 1);
-    transform: scale(1.1);
+    background: linear-gradient(45deg, #ff758c, #ff4d7d);
+    transform: scale(1.15);
   }
 
   @media (min-width: 769px) {
@@ -101,7 +108,7 @@ const SidebarToggle = styled.button`
   @media (max-width: 768px) {
     position: fixed;
     z-index: 1100;
-    left: 15px;
+    left: 20px;
     top: 90px;
   }
 `;
@@ -113,7 +120,7 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 900;
   transition: opacity 0.3s ease;
 
@@ -124,74 +131,86 @@ const Overlay = styled.div`
 
 const MusicListContainer = styled.div`
   flex: 1;
-  margin-top: 20px;
-  padding: 20px;
+  margin-top: 25px;
+  padding: 30px;
   overflow-y: auto;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, #0f0f23, #1a1a3b);
   height: calc(100vh - 70px);
-  margin-left: ${({ sidebarOpen }) => (sidebarOpen ? "300px" : "0")};
+  margin-left: ${({ sidebarOpen }) => (sidebarOpen ? "320px" : "0")};
   display: flex;
   flex-direction: column;
 
   @media (max-width: 768px) {
     margin-left: 0;
-    padding: 60px 15px 15px 15px;
+    padding: 70px 20px 20px 20px;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #ff4d7d;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
   }
 `;
 
 const SidebarTitle = styled.h2`
-  font-size: 1.6em;
-  color: white;
+  font-size: 1.8rem;
+  color: #fff;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(
-    135deg,
-    rgba(68, 68, 85, 0.7),
-    rgba(85, 85, 102, 0.7)
-  );
-  padding: 12px 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  margin-bottom: 15px;
-  margin-top: ${({ isOpen }) => (isOpen ? "20px" : "60px")};
+  background: linear-gradient(135deg, #343452, #2a2a47);
+  padding: 15px 25px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+  margin-top: ${({ isOpen }) => (isOpen ? "25px" : "60px")};
 `;
 
 const SidebarLink = styled.a`
   display: flex;
-  margin-top: 15px;
   align-items: center;
-  padding: 12px 15px;
-  background: rgba(58, 58, 90, 0.5);
-  color: white;
+  padding: 14px 20px;
+  background: rgba(40, 40, 65, 0.7);
+  color: #e0e0e0;
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: 12px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(255, 86, 140, 0.8),
-      rgba(255, 61, 110, 0.8)
-    );
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #ff4d7d, #ff758c);
+    transform: translateX(8px);
+    color: #fff;
+    box-shadow: 0 6px 15px rgba(255, 75, 125, 0.3);
   }
 `;
 
 const PlaylistImage = styled.img`
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
-  border-radius: 8px;
-  margin-right: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin-right: 15px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const PlaylistName = styled.span`
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -200,19 +219,19 @@ const PlaylistName = styled.span`
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
-  background: rgba(51, 51, 85, 0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(40, 40, 65, 0.85);
+  backdrop-filter: blur(10px);
   border-radius: 50px;
-  padding: 0 15px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   width: 100%;
   transition: all 0.3s ease;
 
   &:focus-within {
-    box-shadow: 0 0 0 2px rgba(255, 123, 179, 0.6);
-    background: rgba(51, 51, 85, 0.9);
+    box-shadow: 0 0 0 3px rgba(255, 75, 125, 0.5);
+    background: rgba(40, 40, 65, 0.95);
   }
 `;
 
@@ -222,23 +241,22 @@ const SearchInput = styled.input`
   border: none;
   border-radius: 50px;
   background-color: transparent;
-  color: white;
-  font-size: 15px;
+  color: #fff;
+  font-size: 1rem;
   outline: none;
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 400;
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
   }
 `;
 
 const FilterContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: 20px;
+  margin-bottom: 30px;
   flex-wrap: wrap;
 
   @media (max-width: 480px) {
@@ -248,36 +266,35 @@ const FilterContainer = styled.div`
 `;
 
 const CategorySelect = styled.select`
-  padding: 12px 15px;
-  background: rgba(51, 51, 85, 0.7);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 20px;
+  background: rgba(40, 40, 65, 0.85);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 50px;
-  font-size: 15px;
+  font-size: 1rem;
   outline: none;
-  min-width: 120px;
-  max-width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
+  min-width: 140px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba(255, 123, 179, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 75, 125, 0.5);
   }
 
   option {
-    background-color: #2a2a4a;
-    color: white;
+    background-color: #2a2a47;
+    color: #fff;
   }
 `;
 
 const MusicListWrapper = styled.div`
-  background: rgba(30, 30, 46, 0.9);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  animation: ${fadeIn} 0.3s ease-out;
+  background: rgba(25, 25, 40, 0.95);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  animation: ${fadeIn} 0.5s ease-out;
   flex: 1;
   overflow-y: auto;
 `;
@@ -285,26 +302,26 @@ const MusicListWrapper = styled.div`
 const MusicItem = styled.div`
   display: flex;
   align-items: center;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 15px;
   background: linear-gradient(
     145deg,
-    rgba(58, 58, 90, 0.6),
-    rgba(40, 40, 60, 0.6)
+    rgba(40, 40, 65, 0.8),
+    rgba(30, 30, 50, 0.8)
   );
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 
   &:hover {
     background: linear-gradient(
       145deg,
-      rgba(255, 86, 140, 0.4),
-      rgba(255, 61, 110, 0.4)
+      rgba(255, 75, 125, 0.5),
+      rgba(255, 50, 100, 0.5)
     );
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255, 75, 125, 0.3);
   }
 
   &:last-child {
@@ -314,22 +331,22 @@ const MusicItem = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
-    padding: 12px;
+    padding: 15px;
   }
 `;
 
 const MusicCover = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   background: ${(props) =>
     props.image
       ? `url(${props.image}) no-repeat center/cover`
-      : "linear-gradient(135deg, #5b6cd6, #ff758c)"};
-  border-radius: 8px;
-  margin-right: 20px;
+      : "linear-gradient(135deg, #6b48ff, #ff758c)"};
+  border-radius: 10px;
+  margin-right: 25px;
   flex-shrink: 0;
   position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
 
   &:after {
@@ -339,25 +356,30 @@ const MusicCover = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover:after {
+    opacity: 0;
   }
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
 
   @media (max-width: 768px) {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 12px;
+    width: 70px;
+    height: 70px;
+    margin-bottom: 15px;
   }
 `;
 
 const MusicInfo = styled.div`
   flex: 1;
   min-width: 0;
-  padding-right: 20px;
+  padding-right: 25px;
 
   @media (max-width: 768px) {
     padding-right: 0;
@@ -365,20 +387,20 @@ const MusicInfo = styled.div`
 `;
 
 const MusicTitle = styled.h3`
-  color: white;
+  color: #fff;
   font-weight: 600;
-  font-size: 18px;
+  font-size: 1.2rem;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 const MusicDetails = styled.p`
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  margin: 8px 0 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -387,72 +409,64 @@ const MusicDetails = styled.p`
 const MusicActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 
   @media (max-width: 768px) {
     width: 100%;
     justify-content: flex-end;
-    margin-top: 10px;
+    margin-top: 15px;
   }
 `;
 
 const PlayButton = styled.button`
-  background: linear-gradient(45deg, #ff6f61, #ff8779);
+  background: linear-gradient(45deg, #ff4d7d, #ff758c);
   border: none;
   color: white;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  margin-right: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(255, 75, 125, 0.4);
+  animation: ${({ isPlaying }) => (isPlaying ? pulse : "none")} 1.5s infinite;
 
   &:hover {
-    background: linear-gradient(45deg, #ff8779, #ff6f61);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(45deg, #ff758c, #ff4d7d);
+    transform: scale(1.15);
+    box-shadow: 0 6px 20px rgba(255, 75, 125, 0.5);
   }
 `;
 
 const ActionButtonGroup = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 15px;
 `;
 
 const ActionButton = styled.button`
-  background: linear-gradient(
-    135deg,
-    rgba(255, 126, 179, 0.9),
-    rgba(255, 117, 140, 0.9)
-  );
+  background: linear-gradient(135deg, #ff758c, #ff4d7d);
   border: none;
   color: white;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 
   &:hover {
-    transform: scale(1.1);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 86, 140, 1),
-      rgba(255, 61, 110, 1)
-    );
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: scale(1.15);
+    background: linear-gradient(135deg, #ff4d7d, #ff758c);
+    box-shadow: 0 6px 20px rgba(255, 75, 125, 0.4);
   }
 
   svg {
-    font-size: 16px;
+    font-size: 18px;
   }
 `;
 
@@ -460,19 +474,19 @@ const PaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
-  margin-top: 20px;
-  padding: 10px 0;
+  gap: 20px;
+  margin-top: 25px;
+  padding: 15px 0;
 `;
 
 const PageButton = styled.button`
   background: ${(props) =>
     props.active
-      ? "linear-gradient(45deg, #ff6f61, #ff8779)"
-      : "rgba(58, 58, 90, 0.6)"};
+      ? "linear-gradient(45deg, #ff4d7d, #ff758c)"
+      : "rgba(40, 40, 65, 0.7)"};
   color: white;
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   border: none;
   display: flex;
@@ -480,77 +494,82 @@ const PageButton = styled.button`
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
 
   &:hover {
     background: ${(props) =>
       props.active
-        ? "linear-gradient(45deg, #ff8779, #ff6f61)"
-        : "rgba(58, 58, 90, 0.8)"};
+        ? "linear-gradient(45deg, #ff758c, #ff4d7d)"
+        : "rgba(40, 40, 65, 0.9)"};
     transform: scale(1.1);
   }
 
   &:disabled {
-    background: rgba(58, 58, 90, 0.3);
+    background: rgba(40, 40, 65, 0.4);
     cursor: not-allowed;
     transform: none;
   }
 `;
 
 const PageNumber = styled.span`
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 500;
 `;
 
 const EmptyMessage = styled.div`
   text-align: center;
-  padding: 40px;
+  padding: 50px;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
+  font-size: 1.1rem;
+  font-style: italic;
 `;
 
 const NoResultsMessage = styled.div`
   text-align: center;
-  padding: 40px;
+  padding: 50px;
   color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
 `;
 
 const LoginPrompt = styled.div`
-  background: rgba(30, 30, 60, 0.8);
-  border-radius: 15px;
-  padding: 25px;
+  background: rgba(25, 25, 50, 0.9);
+  border-radius: 18px;
+  padding: 30px;
   text-align: center;
-  margin-top: 20px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 `;
 
 const LoginButton = styled.a`
   display: inline-block;
-  background: linear-gradient(135deg, #ff7eb3, #ff758c);
+  background: linear-gradient(135deg, #ff758c, #ff4d7d);
   color: white;
-  padding: 12px 25px;
+  padding: 14px 30px;
   border-radius: 50px;
-  margin-top: 15px;
+  margin-top: 20px;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 75, 125, 0.3);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 75, 125, 0.5);
+    color: #fff;
   }
 `;
 
 const LoadingSpinner = styled.div`
   display: inline-block;
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  width: 30px;
+  height: 30px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  border-top-color: #ff6f61;
+  border-top-color: #ff4d7d;
   animation: spin 1s ease-in-out infinite;
-  margin-right: 12px;
+  margin-right: 15px;
 
   @keyframes spin {
     to {

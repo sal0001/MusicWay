@@ -17,10 +17,6 @@ const MiniPlayerContainer = styled.div`
   z-index: 1000;
   transition: transform 0.3s ease;
 
-  &:hover {
-    transform: translateY(-2px);
-  }
-
   @media (max-width: 768px) {
     padding: 10px 15px;
   }

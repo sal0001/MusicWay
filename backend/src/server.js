@@ -726,6 +726,7 @@ app.delete("/playlist/:id", async (req, res) => {
   }
 });
 
+// Porta do servidor
 app.listen(PORT, () => {
   console.log(`Servidor a correr na porta http://127.0.0.1:${PORT}`);
 });

@@ -230,7 +230,7 @@ const Register = () => {
       <FormContainer>
         <WelcomeMessage>Crie a sua conta</WelcomeMessage>
         <Description>
-          Junte-se à nossa comunidade e comece a explorar músicas incríveis.
+          Junta-te à nossa comunidade e começa a explorar músicas incríveis.
         </Description>
         <StyledForm onSubmit={handleRegister}>
           <FormGroup>

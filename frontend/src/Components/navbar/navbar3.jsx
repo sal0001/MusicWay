@@ -4,7 +4,6 @@ import logo from "../Logo/MusicWayLogo.png";
 import styled from "styled-components";
 import { Home, Music, Tag, Users, CheckSquare, Menu, X } from "lucide-react";
 
-// Responsive breakpoints
 const BREAKPOINTS = {
   mobile: "768px",
   tablet: "1024px",
@@ -19,9 +18,11 @@ const Header = styled.header`
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(to right, #1e1e2f, #252545);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: rgba(30, 30, 47, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 const LogoContainer = styled.a`
@@ -43,6 +44,7 @@ const LogoContainer = styled.a`
 const Logo = styled.img`
   width: 150px;
   height: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 
   @media (max-width: ${BREAKPOINTS.mobile}) {
     width: 120px;
@@ -64,20 +66,21 @@ const NavbarContainer = styled.nav`
 const NavMenuRight = styled.div`
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 20px;
 
   @media (max-width: ${BREAKPOINTS.mobile}) {
     position: fixed;
     top: 0;
     right: ${({ isOpen }) => (isOpen ? "0" : "-100%")};
-    width: 250px;
+    width: 280px;
     height: 100vh;
     flex-direction: column;
-    background: linear-gradient(to bottom, #1e1e2f, #252545);
+    background: rgba(30, 30, 47, 0.95);
+    backdrop-filter: blur(10px);
     padding: 80px 20px 20px;
-    transition: right 0.3s ease-in-out;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: ${({ isOpen }) =>
-      isOpen ? "-2px 0 5px rgba(0, 0, 0, 0.3)" : "none"};
+      isOpen ? "-5px 0 15px rgba(0, 0, 0, 0.3)" : "none"};
     z-index: 999;
   }
 `;
@@ -86,62 +89,66 @@ const NavButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  background: transparent;
-  border: 1px dashed #ffffff;
+  font-weight: 600;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
-  padding: 10px;
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  padding: 12px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
   position: relative;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(138, 43, 226, 0.3);
-  }
-
-  &:active {
-    transform: translateY(0);
+    background: linear-gradient(
+      135deg,
+      rgba(138, 43, 226, 0.2),
+      rgba(138, 43, 226, 0.1)
+    );
+    border: 1px solid rgba(138, 43, 226, 0.5);
+    box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
   }
 
   ${({ active }) =>
     active &&
     `
-    border: 1px solid #ffffff;
-    box-shadow: 0 0 10px #8a2be2, 0 0 20px rgba(138, 43, 226, 0.5);
-    background: rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.15));
+    border: 1px solid #8a2be2;
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
   `}
 
   @media (max-width: ${BREAKPOINTS.mobile}) {
     width: 100%;
     justify-content: flex-start;
-    gap: 10px;
-    height: 50px;
-    padding: 10px 15px;
+    gap: 12px;
+    height: 55px;
+    padding: 12px 20px;
+    border-radius: 8px;
   }
 `;
 
 const TooltipText = styled.span`
   visibility: hidden;
-  background-color: #333;
+  background: rgba(51, 51, 51, 0.95);
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding: 5px 10px;
+  padding: 6px 12px;
   position: absolute;
   z-index: 1;
-  bottom: 125%;
+  bottom: 130%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 
   &::after {
     content: "";
@@ -151,7 +158,7 @@ const TooltipText = styled.span`
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #333 transparent transparent transparent;
+    border-color: rgba(51, 51, 51, 0.95) transparent transparent transparent;
   }
 
   ${NavButton}:hover & {
@@ -169,8 +176,8 @@ const ButtonText = styled.span`
 
   @media (max-width: ${BREAKPOINTS.mobile}) {
     display: block;
-    font-size: 14px;
-    margin-left: 8px;
+    font-size: 15px;
+    margin-left: 10px;
   }
 `;
 
@@ -180,8 +187,13 @@ const HamburgerButton = styled.button`
   border: none;
   color: white;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   z-index: 1001;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 
   @media (max-width: ${BREAKPOINTS.mobile}) {
     display: flex;
@@ -197,8 +209,13 @@ const CloseButton = styled.button`
   border: none;
   color: white;
   cursor: pointer;
-  padding: 5px;
+  padding: 8px;
   display: none;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: rotate(90deg);
+  }
 
   @media (max-width: ${BREAKPOINTS.mobile}) {
     display: ${({ isOpen }) => (isOpen ? "block" : "none")};
@@ -211,7 +228,7 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: ${({ isOpen }) => (isOpen ? "block" : "none")};
   z-index: 998;
   transition: opacity 0.3s ease;

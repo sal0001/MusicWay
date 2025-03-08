@@ -258,7 +258,7 @@ const Login = () => {
       <Navbar />
       <FormContainer>
         <WelcomeMessage>Bem-vindo de volta</WelcomeMessage>
-        <Description>Faça login e explore músicas incríveis.</Description>
+        <Description>Faz login e explora músicas incríveis.</Description>
         <StyledForm onSubmit={handleLogin}>
           <FormGroup>
             <InputContainer>

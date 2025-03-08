@@ -6,7 +6,6 @@ import styled from "styled-components";
 import {
   FaMusic,
   FaInfoCircle,
-  FaUserCircle,
   FaTimes,
   FaPlus,
   FaTrash,
@@ -201,6 +200,16 @@ const RemovePlaylistButton = styled(ActionButton)`
   &:hover {
     background: linear-gradient(45deg, #dc2626, #b91c1c);
     box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+  }
+`;
+
+const EditButton = styled(ActionButton)`
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(45deg, #2563eb, #1d4ed8);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
   }
 `;
 
@@ -428,6 +437,10 @@ const PopupContent = styled.div`
   }
 `;
 
+const EditPopupContent = styled(PopupContent)`
+  max-width: 500px;
+`;
+
 const PopupHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -493,6 +506,44 @@ const CloseButton = styled.button`
     width: 34px;
     height: 34px;
     font-size: 18px;
+  }
+`;
+
+const EditForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const EditInput = styled.input`
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(51, 65, 85, 0.6);
+  color: #e2e8f0;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #a5b4fc;
+    background: rgba(51, 65, 85, 0.8);
+    box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.3);
+  }
+
+  @media (max-width: 480px) {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+`;
+
+const SaveButton = styled(ActionButton)`
+  background: linear-gradient(45deg, #3b82f6, #2563eb);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(45deg, #2563eb, #1d4ed8);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
   }
 `;
 
@@ -766,6 +817,8 @@ const Playlist = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [availableSongs, setAvailableSongs] = useState([]);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [newPlaylistName, setNewPlaylistName] = useState("");
   const audioRef = useRef(new Audio());
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
@@ -819,6 +872,35 @@ const Playlist = () => {
       setAllMusicas(data);
     } catch (error) {
       console.error("Erro ao buscar músicas:", error);
+    }
+  };
+
+  const handleEditPlaylistName = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://127.0.0.1:3001/playlist/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nome: newPlaylistName }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Erro ao atualizar o nome da playlist"
+        );
+      }
+
+      const data = await response.json();
+      setPlaylist(data.playlist);
+      setIsEditPopupOpen(false);
+      setNewPlaylistName("");
+    } catch (error) {
+      console.error("Erro ao atualizar o nome:", error);
+      alert(error.message); // Simple error feedback to user
     }
   };
 
@@ -935,6 +1017,14 @@ const Playlist = () => {
               <RemovePlaylistButton onClick={handleRemovePlaylist}>
                 <FaTrash /> Eliminar Playlist
               </RemovePlaylistButton>
+              <EditButton
+                onClick={() => {
+                  setNewPlaylistName(playlist?.nome || "");
+                  setIsEditPopupOpen(true);
+                }}
+              >
+                <FaInfoCircle /> Editar Nome da Playlist
+              </EditButton>
             </ButtonContainer>
           </PlaylistInfo>
         </PlaylistHeader>
@@ -1024,25 +1114,50 @@ const Playlist = () => {
         <DeleteConfirmPopup onClick={() => setIsDeletePopupOpen(false)}>
           <DeleteConfirmContent onClick={(e) => e.stopPropagation()}>
             <PopupHeader>
-              <PopupTitle>Confirmar Exclusão</PopupTitle>
+              <PopupTitle>Confirmar Eliminação</PopupTitle>
               <CloseButton onClick={() => setIsDeletePopupOpen(false)}>
                 <FaTimes />
               </CloseButton>
             </PopupHeader>
             <DeleteMessage>
-              Tem certeza que deseja excluir a playlist "{playlist?.nome}"? Esta
-              ação não pode ser desfeita.
+              Tem certeza que deseja eliminar a playlist "{playlist?.nome}"?
+              Esta ação não pode ser desfeita.
             </DeleteMessage>
             <DeleteButtonContainer>
               <CancelButton onClick={() => setIsDeletePopupOpen(false)}>
                 Cancelar
               </CancelButton>
               <ConfirmButton onClick={confirmDeletePlaylist}>
-                <FaTrash /> Excluir
+                <FaTrash /> Eliminar
               </ConfirmButton>
             </DeleteButtonContainer>
           </DeleteConfirmContent>
         </DeleteConfirmPopup>
+      )}
+
+      {isEditPopupOpen && (
+        <PopupOverlay onClick={() => setIsEditPopupOpen(false)}>
+          <EditPopupContent onClick={(e) => e.stopPropagation()}>
+            <PopupHeader>
+              <PopupTitle>Editar Nome da Playlist</PopupTitle>
+              <CloseButton onClick={() => setIsEditPopupOpen(false)}>
+                <FaTimes />
+              </CloseButton>
+            </PopupHeader>
+            <EditForm onSubmit={handleEditPlaylistName}>
+              <EditInput
+                type="text"
+                value={newPlaylistName}
+                onChange={(e) => setNewPlaylistName(e.target.value)}
+                placeholder="Novo nome da playlist"
+                required
+              />
+              <SaveButton type="submit">
+                <FaInfoCircle /> Salvar
+              </SaveButton>
+            </EditForm>
+          </EditPopupContent>
+        </PopupOverlay>
       )}
 
       <MiniPlayer

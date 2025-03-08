@@ -591,6 +591,7 @@ app.post("/addPlaylist", imagens.single("imagem"), async (req, res) => {
   }
 });
 
+//Middleware para guardar as imagens
 app.use("/imagens", express.static(path.join(__dirname, "../imagens")));
 
 app.get("/playlists", async (req, res) => {
@@ -623,6 +624,7 @@ app.get("/playlists", async (req, res) => {
   }
 });
 
+//Receber dados da playlist apartir do ID
 app.get("/playlist/:id", async (req, res) => {
   const playlistId = req.params.id;
 
@@ -649,6 +651,7 @@ app.get("/playlist/:id", async (req, res) => {
   }
 });
 
+//remover musica da playlist apartir do ID da musica
 app.delete(
   "/playlist/:playlistId/remove-musica/:musicaId",
   async (req, res) => {
@@ -673,6 +676,7 @@ app.delete(
   }
 );
 
+//Criar playlist apartir do ID das musicas
 app.post("/playlist/:playlistId/add-musica/:musicaId", async (req, res) => {
   const { playlistId, musicaId } = req.params;
 
@@ -706,6 +710,7 @@ app.post("/playlist/:playlistId/add-musica/:musicaId", async (req, res) => {
   }
 });
 
+//remover musicas apartir do ID da musica
 app.delete("/playlist/:id", async (req, res) => {
   const playlistId = req.params.id;
 
@@ -723,6 +728,39 @@ app.delete("/playlist/:id", async (req, res) => {
   } catch (error) {
     console.error("Erro ao remover a playlist:", error);
     res.status(500).json({ error: "Erro ao remover a playlist" });
+  }
+});
+
+app.put("/playlist/:id", async (req, res) => {
+  const playlistId = req.params.id;
+  const { nome } = req.body;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(playlistId)) {
+      return res.status(400).json({ error: "ID de playlist inválido" });
+    }
+
+    if (!nome || typeof nome !== "string" || nome.trim() === "") {
+      return res.status(400).json({ error: "Nome da playlist é obrigatório" });
+    }
+
+    const updatedPlaylist = await Playlist.findByIdAndUpdate(
+      playlistId,
+      { nome: nome.trim() },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedPlaylist) {
+      return res.status(404).json({ error: "Playlist não encontrada" });
+    }
+
+    res.status(200).json({
+      message: "Nome da playlist atualizado com sucesso",
+      playlist: updatedPlaylist,
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar o nome da playlist:", error);
+    res.status(500).json({ error: "Erro ao atualizar o nome da playlist" });
   }
 });
 

@@ -325,23 +325,23 @@ const AddCategoria = () => {
       <Navbar3 />
       <ContentContainer>
         <FormContainer>
-          <Title>Adicionar Categoria</Title>
+          <Title>Adicionar Género</Title>
           <form onSubmit={handleSubmit}>
             <InputWrapper>
               <StyledInput
                 type="text"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
-                placeholder="Introduza o nome da categoria"
+                placeholder="Introduza o nome do género..."
                 required
               />
               <InputIcon className="fas fa-folder-plus" />
             </InputWrapper>
-            <StyledButton type="submit">Adicionar Categoria</StyledButton>
+            <StyledButton type="submit">Adicionar Género</StyledButton>
           </form>
         </FormContainer>
         <CategoryContainer>
-          <Title>Categorias</Title>
+          <Title>Géneros</Title>
           <InputWrapper>
             <StyledInput
               type="text"

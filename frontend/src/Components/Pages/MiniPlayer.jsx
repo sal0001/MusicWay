@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { FaPlay, FaPause, FaBackward, FaForward } from "react-icons/fa";
+import {
+  FaPlay,
+  FaPause,
+  FaBackward,
+  FaForward,
+  FaTimes,
+} from "react-icons/fa";
 
 const MiniPlayerContainer = styled.div`
   position: fixed;
@@ -16,6 +22,8 @@ const MiniPlayerContainer = styled.div`
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 1000;
   transition: transform 0.3s ease;
+  transform: ${(props) =>
+    props.isVisible ? "translateY(0)" : "translateY(100%)"};
 
   @media (max-width: 768px) {
     padding: 10px 15px;
@@ -23,6 +31,31 @@ const MiniPlayerContainer = styled.div`
 
   @media (max-width: 480px) {
     padding: 8px 10px;
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #c0c0d0;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #ff6b6b;
+    transform: scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
   }
 `;
 
@@ -389,6 +422,7 @@ const MiniPlayer = ({ currentTrack, audioRef }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isVisible, setIsVisible] = useState(false); // Changed default to false
 
   useEffect(() => {
     if (audioRef.current) {
@@ -401,9 +435,20 @@ const MiniPlayer = ({ currentTrack, audioRef }) => {
 
       const handleLoadedMetadata = () => {
         setDuration(audio.duration);
+        // Only show player on first load if it starts playing
+        if (!isVisible && !audio.paused) {
+          setIsVisible(true);
+        }
       };
 
-      const handlePlay = () => setIsPlaying(true);
+      const handlePlay = () => {
+        setIsPlaying(true);
+        // Show player when playback starts, unless explicitly closed
+        if (!isVisible) {
+          setIsVisible(true);
+        }
+      };
+
       const handlePause = () => setIsPlaying(false);
       const handleEnded = () => setIsPlaying(false);
 
@@ -415,6 +460,9 @@ const MiniPlayer = ({ currentTrack, audioRef }) => {
 
       // Set initial state based on audio
       setIsPlaying(!audio.paused);
+      if (!audio.paused && !isVisible) {
+        setIsVisible(true);
+      }
 
       return () => {
         audio.removeEventListener("timeupdate", handleTimeUpdate);
@@ -472,16 +520,27 @@ const MiniPlayer = ({ currentTrack, audioRef }) => {
     }
   };
 
+  const handleClose = () => {
+    setIsVisible(false);
+    if (audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
+    }
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  if (!currentTrack) return null;
+  // Only render if there's a track and the player is visible
+  if (!currentTrack || !isVisible) return null;
 
   return (
-    <MiniPlayerContainer>
+    <MiniPlayerContainer isVisible={isVisible}>
+      <CloseButton onClick={handleClose}>
+        <FaTimes />
+      </CloseButton>
       <TrackInfo>
         <TrackImage
           src={`http://127.0.0.1:3001/musicas/${currentTrack.imagem}`}

@@ -100,7 +100,7 @@ const Perfil = () => {
               <Avatar
                 src={
                   user?.avatar ||
-                  "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                  "https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Image-Background.png"
                 }
                 alt="Avatar"
               />

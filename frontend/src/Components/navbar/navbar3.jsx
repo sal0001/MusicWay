@@ -54,10 +54,10 @@ const NavButton = styled.button`
   gap: 8px;
 
   &:hover {
-    color: #8a2be2;
+    color: pink;
   }
 
-  ${({ active }) => active && "color: #8a2be2;"}
+  ${({ active }) => active && "color: rgb(216, 191, 216);"}
 
   @media (max-width: 768px) {
     justify-content: flex-start;

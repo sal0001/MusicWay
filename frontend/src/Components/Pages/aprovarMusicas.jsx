@@ -277,6 +277,68 @@ const Toast = styled.div`
   }
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: linear-gradient(
+    145deg,
+    rgba(40, 40, 70, 0.9),
+    rgba(30, 30, 60, 0.9)
+  );
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  color: #ffffff;
+  position: relative;
+  backdrop-filter: blur(12px);
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #00d4ff;
+  }
+`;
+
+const AudioPlayer = styled.audio`
+  width: 100%;
+  margin-top: 20px;
+  &::-webkit-media-controls-panel {
+    background: linear-gradient(45deg, #6b48ff, #00ddeb);
+  }
+`;
+
+const ModalTitle = styled.h3`
+  color: #ffffff;
+  margin-bottom: 20px;
+  text-align: center;
+  background: linear-gradient(90deg, #00d4ff, #ff4081);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+`;
+
 const AprovarMusicas = () => {
   const [pendingSongs, setPendingSongs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -286,6 +348,7 @@ const AprovarMusicas = () => {
     message: "",
     type: "success",
   });
+  const [selectedSong, setSelectedSong] = useState(null);
 
   useEffect(() => {
     const fetchPendingSongs = async () => {
@@ -316,6 +379,7 @@ const AprovarMusicas = () => {
       await axios.patch(`http://127.0.0.1:3001/aprovarMusica/${id}`);
       setPendingSongs(pendingSongs.filter((song) => song._id !== id));
       showToast("Música aprovada com sucesso", "success");
+      setSelectedSong(null); // Close modal if open song is approved
     } catch (error) {
       console.error("Erro ao aprovar música:", error);
       showToast("Erro ao aprovar música", "error");
@@ -327,10 +391,19 @@ const AprovarMusicas = () => {
       await axios.delete(`http://127.0.0.1:3001/rejeitarMusica/${id}`);
       setPendingSongs(pendingSongs.filter((song) => song._id !== id));
       showToast("Música rejeitada com sucesso", "success");
+      setSelectedSong(null); // Close modal if open song is rejected
     } catch (error) {
       console.error("Erro ao rejeitar música:", error);
       showToast("Erro ao rejeitar música", "error");
     }
+  };
+
+  const handlePlaySong = (song) => {
+    setSelectedSong(song);
+  };
+
+  const closeModal = () => {
+    setSelectedSong(null);
   };
 
   const filteredSongs = pendingSongs.filter(
@@ -370,12 +443,7 @@ const AprovarMusicas = () => {
                     </ArtistName>
                   </SongInfo>
                   <ButtonGroup>
-                    <DownloadButton
-                      as="a"
-                      href={`http://127.0.0.1:3001/musicas/${song.ficheiro}`}
-                      download
-                      target="_blank"
-                    >
+                    <DownloadButton onClick={() => handlePlaySong(song)}>
                       <i className="fas fa-headphones" /> Ouvir
                     </DownloadButton>
                     <ApproveButton onClick={() => handleApprove(song._id)}>
@@ -411,6 +479,29 @@ const AprovarMusicas = () => {
           )}
         </ContentContainer>
       </PageContainer>
+
+      {selectedSong && (
+        <ModalOverlay onClick={closeModal}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <CloseButton onClick={closeModal}>
+              <i className="fas fa-times" />
+            </CloseButton>
+            <ModalTitle>{selectedSong.nome}</ModalTitle>
+            <ArtistName
+              style={{ justifyContent: "center", marginBottom: "20px" }}
+            >
+              <i className="fas fa-user" /> {selectedSong.artista}
+            </ArtistName>
+            <AudioPlayer
+              controls
+              autoPlay
+              src={`http://127.0.0.1:3001/musicas/${selectedSong.ficheiro}`}
+            >
+              Your browser does not support the audio element.
+            </AudioPlayer>
+          </ModalContent>
+        </ModalOverlay>
+      )}
 
       <Toast show={toast.show} type={toast.type}>
         {toast.message}

@@ -369,6 +369,7 @@ const AprovarMusicas = () => {
     fetchPendingSongs();
   }, []);
 
+  // Mensagem temporária na tela (toast)
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ ...toast, show: false }), 3000);
@@ -379,7 +380,7 @@ const AprovarMusicas = () => {
       await axios.patch(`http://127.0.0.1:3001/aprovarMusica/${id}`);
       setPendingSongs(pendingSongs.filter((song) => song._id !== id));
       showToast("Música aprovada com sucesso", "success");
-      setSelectedSong(null); // Close modal if open song is approved
+      setSelectedSong(null);
     } catch (error) {
       console.error("Erro ao aprovar música:", error);
       showToast("Erro ao aprovar música", "error");
@@ -391,7 +392,7 @@ const AprovarMusicas = () => {
       await axios.delete(`http://127.0.0.1:3001/rejeitarMusica/${id}`);
       setPendingSongs(pendingSongs.filter((song) => song._id !== id));
       showToast("Música rejeitada com sucesso", "success");
-      setSelectedSong(null); // Close modal if open song is rejected
+      setSelectedSong(null);
     } catch (error) {
       console.error("Erro ao rejeitar música:", error);
       showToast("Erro ao rejeitar música", "error");
@@ -496,9 +497,7 @@ const AprovarMusicas = () => {
               controls
               autoPlay
               src={`http://127.0.0.1:3001/musicas/${selectedSong.ficheiro}`}
-            >
-              Your browser does not support the audio element.
-            </AudioPlayer>
+            ></AudioPlayer>
           </ModalContent>
         </ModalOverlay>
       )}

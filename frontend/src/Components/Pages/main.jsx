@@ -170,6 +170,7 @@ const SidebarTitle = styled.h2`
   border-radius: 15px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   margin-bottom: 20px;
+  margin-left: auto;
   margin-top: ${({ isOpen }) => (isOpen ? "25px" : "60px")};
 `;
 
@@ -440,6 +441,7 @@ const PlayButton = styled.button`
 `;
 
 const ActionButtonGroup = styled.div`
+  margin-left: auto;
   display: flex;
   gap: 15px;
 `;

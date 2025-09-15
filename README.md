@@ -1,14 +1,13 @@
 
-Required 
+##Required 
 - NodeJS(last version)
 - MongoDB 1.45.6 
 
 
-Setup DataBase
+##Setup DataBase
 
 use musicway;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 db.createCollection("categorias");
 db.categorias.createIndex({ "nome": 1 }, { unique: true });
@@ -27,9 +26,7 @@ db.utilizadores.createIndex({ "email": 1 }, { unique: true });
 db.utilizadores.createIndex({ "role_id": 1 });
 
 db.categorias.insertMany([
-  { nome: "Pop" },
-  { nome: "Rock" },
-  { nome: "Jazz" }
+  { nome: "" },
 ]);
 
 db.roles.insertMany([
@@ -40,17 +37,17 @@ db.roles.insertMany([
 const roleAdmin = db.roles.findOne({ nome: "Admin" });
 
 db.utilizadores.insertMany([
-   { nome: "admin", email: "admin@gmail.com", password: "123", role: roleAdmin._id },
+   { nome: "admin", email: "", password: "", role: roleAdmin._id },
 ]);
 
 db.musicas.insertMany([
-  { nome: "Música 1", artista: "Artista 1", categoria: ObjectId("categoria_id_example_1"), ficheiro: "file_1.mp3", status: "pendente" },
-  { nome: "Música 2", artista: "Artista 2", categoria: ObjectId("categoria_id_example_2"), ficheiro: "file_2.mp3", status: "aprovado" }
+  { nome: "", artista: "", categoria: ObjectId(""), ficheiro: "", status: "" },
+  { nome: "", artista: "", categoria: ObjectId(""), ficheiro: "", status: "" }
 ]);
 
 db.playlists.insertMany([
-  { nome: "Playlist 1", descricao: "Minha playlist favorita", utilizador: ObjectId("utilizador_id_example_1"), imagem: "image_1.jpg" },
-  { nome: "Playlist 2", descricao: "Playlist para relaxar", utilizador: ObjectId("utilizador_id_example_2"), imagem: "image_2.jpg" }
+  { nome: "", descricao: "", utilizador: ObjectId(""), imagem: "" },
+  { nome: "", descricao: "", utilizador: ObjectId(""), imagem: "" }
 ]);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

@@ -1,5 +1,5 @@
 ## Required 
-- NodeJS (last version)
+- NodeJS 22.17.1
 - MongoDB 1.45.6
 
 <p align="center">

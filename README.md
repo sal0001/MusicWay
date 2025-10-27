@@ -12,3 +12,8 @@
 ## Setup Mongo database
 
 Dowload "mongodb community server download" and wait until the compass is finished, then create a connection and run the script on the dbsetup.txt
+
+## How to run the project 
+
+- cd frontend / npm start
+- cd backend / npm run dev

@@ -11,4 +11,4 @@
 
 ## Setup Mongo database
 
-Dowload MongoDB Community Server Download and wait until the compass is finished, then create a connection and run the script on the dbsetup.txt
+Dowload mongodb community server download and wait until the compass is finished, then create a connection and run the script on the dbsetup.txt

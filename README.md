@@ -15,7 +15,7 @@ Dowload "mongodb community server download" and wait until the compass is finish
 
 ## How to run the project 
 
-# Windows:
+Windows:
 - cd frontend
   - npm start
 - cd backend

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../navbar/navbar";
+import Navbar from "../navbar/Navbar/index";
 import styled, { keyframes } from "styled-components";
 import { FaEnvelope, FaLock, FaArrowRight } from "react-icons/fa";
 

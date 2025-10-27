@@ -1,32 +1,19 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import logo from "../Logo/MusicWayLogo.png";
 import styled, { keyframes } from "styled-components";
-import {
-  FaUser,
-  FaInfoCircle,
-  FaBars,
-  FaTimes,
-  FaSignInAlt,
-  FaUserPlus,
-  FaShieldAlt,
-  FaMusic,
-} from "react-icons/fa";
 
 // Keyframes for animations
-const slideIn = keyframes`
+export const slideIn = keyframes`
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 `;
 
-const glow = keyframes`
+export const glow = keyframes`
   0% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.3); }
   50% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.7); }
   100% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.3); }
 `;
 
 // Styled Components
-const Header = styled.header`
+export const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,7 +32,7 @@ const Header = styled.header`
   }
 `;
 
-const LogoContainer = styled.a`
+export const LogoContainer = styled.a`
   display: flex;
   align-items: center;
   margin-left: 25px;
@@ -61,8 +48,8 @@ const LogoContainer = styled.a`
   }
 `;
 
-const Logo = styled.img`
-  width: 150px;
+export const Logo = styled.img`
+  width: 55px;
   height: auto;
   filter: drop-shadow(0 2px 4px rgba(255, 107, 107, 0.2));
 
@@ -71,7 +58,7 @@ const Logo = styled.img`
   }
 `;
 
-const NavbarContainer = styled.nav`
+export const NavbarContainer = styled.nav`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -83,7 +70,7 @@ const NavbarContainer = styled.nav`
   }
 `;
 
-const NavMenuRight = styled.div`
+export const NavMenuRight = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
@@ -105,7 +92,7 @@ const NavMenuRight = styled.div`
   }
 `;
 
-const NavButton = styled.button`
+export const NavButton = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -157,7 +144,7 @@ const NavButton = styled.button`
   }
 `;
 
-const Hamburger = styled.button`
+export const Hamburger = styled.button`
   display: none;
   background: none;
   border: none;
@@ -177,7 +164,7 @@ const Hamburger = styled.button`
   }
 `;
 
-const Overlay = styled.div`
+export const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -190,7 +177,7 @@ const Overlay = styled.div`
   transition: opacity 0.3s ease;
 `;
 
-const NavIcon = styled.span`
+export const NavIcon = styled.span`
   display: inline-flex;
   align-items: center;
   transition: transform 0.3s ease;
@@ -199,94 +186,3 @@ const NavIcon = styled.span`
     transform: scale(1.2);
   }
 `;
-
-const Navbar2 = () => {
-  const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const checkAuth = useCallback(() => {
-    const token = localStorage.getItem("token");
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-
-    setIsLoggedIn(!!token && !!user);
-    setIsAdmin(user?.email === "admin@gmail.com");
-  }, []);
-
-  useEffect(() => {
-    checkAuth();
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 768) setIsMobileMenuOpen(false);
-    });
-    return () => window.removeEventListener("resize", () => {});
-  }, [checkAuth]);
-
-  const handleNavigate = useCallback(
-    (path) => {
-      navigate(path);
-      setIsMobileMenuOpen(false);
-    },
-    [navigate]
-  );
-
-  const navItems = {
-    loggedIn: [
-      { path: "/main/Perfil", icon: <FaUser />, text: "Perfil" },
-      { path: "/Sobrenos", icon: <FaInfoCircle />, text: "Sobre Nós" },
-      ...(isAdmin
-        ? [{ path: "/admin", icon: <FaShieldAlt />, text: "Painel Admin" }]
-        : []),
-    ],
-    loggedOut: [
-      { path: "/registar", icon: <FaUserPlus />, text: "Registar" },
-      {
-        path: "/login",
-        icon: <FaSignInAlt />,
-        text: "Login",
-        variant: "outline",
-      },
-    ],
-  };
-
-  return (
-    <>
-      <Header>
-        <LogoContainer onClick={() => handleNavigate("/")}>
-          <Logo src={logo} alt="MusicWay Logo" />
-        </LogoContainer>
-
-        <NavbarContainer>
-          <Hamburger
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-          </Hamburger>
-
-          <NavMenuRight isOpen={isMobileMenuOpen}>
-            {(isLoggedIn ? navItems.loggedIn : navItems.loggedOut).map(
-              (item) => (
-                <NavButton
-                  key={item.path}
-                  variant={item.variant}
-                  onClick={() => handleNavigate(item.path)}
-                  aria-label={item.text}
-                >
-                  <NavIcon>{item.icon}</NavIcon>
-                  {item.text}
-                </NavButton>
-              )
-            )}
-          </NavMenuRight>
-        </NavbarContainer>
-      </Header>
-      <Overlay
-        isOpen={isMobileMenuOpen}
-        onClick={() => setIsMobileMenuOpen(false)}
-      />
-    </>
-  );
-};
-
-export default Navbar2;

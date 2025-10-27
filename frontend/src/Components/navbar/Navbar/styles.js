@@ -1,9 +1,6 @@
-import React from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import logo from "../Logo/MusicWayLogo.png";
 
-const Header = styled.header`
+export const Header = styled.header`
   display: flex;
   align-items: center;
   position: fixed;
@@ -14,20 +11,21 @@ const Header = styled.header`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
 `;
-const Container = styled.div`
+
+export const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centraliza o conteúdo horizontalmente */
+  justify-content: center;
 `;
 
-const Logo = styled.img`
+export const Logo = styled.img`
   width: 150px;
   cursor: pointer;
 `;
 
-const NavMenu = styled.nav`
+export const NavMenu = styled.nav`
   display: flex;
   align-items: center;
 
@@ -36,7 +34,7 @@ const NavMenu = styled.nav`
   }
 `;
 
-const NavButton = styled.button`
+export const NavButton = styled.button`
   font-weight: bold;
   border: 1px dashed #f0f0f0;
   background-color: transparent;
@@ -56,7 +54,7 @@ const NavButton = styled.button`
   }
 `;
 
-const MobileToggle = styled.i`
+export const MobileToggle = styled.i`
   display: none;
   font-size: 24px;
   color: #ffffff;
@@ -67,24 +65,3 @@ const MobileToggle = styled.i`
   }
 `;
 
-const Navbar1 = () => {
-  const navigate = useNavigate();
-
-  const clickIMG = () => {
-    navigate("/");
-  };
-
-  return (
-    <Header>
-      <Container>
-        <a onClick={clickIMG}>
-          <Logo src={logo} alt="MusicWave Logo" />
-        </a>
-
-        <MobileToggle className="bi bi-list" />
-      </Container>
-    </Header>
-  );
-};
-
-export default Navbar1;

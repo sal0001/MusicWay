@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Navbar2 from "../navbar/navbar2";
+import Navbar2 from "../navbar/Navbar2/index";
 import styled, { keyframes } from "styled-components";
 import MiniPlayer from "./MiniPlayer";
 import axios from "axios";

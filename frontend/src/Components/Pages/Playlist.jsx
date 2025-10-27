@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar2 from "../navbar/navbar2";
+import Navbar2 from "../navbar/Navbar2/index";
 import MiniPlayer from "./MiniPlayer";
 import styled from "styled-components";
 import {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import Navbar2 from "../navbar/navbar2";
+import Navbar2 from "../navbar/Navbar2/index";
 import { useNavigate } from "react-router-dom";
 
 // Animation keyframes

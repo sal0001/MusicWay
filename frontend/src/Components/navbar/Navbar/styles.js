@@ -21,8 +21,11 @@ export const Container = styled.div`
 `;
 
 export const Logo = styled.img`
-  width: 150px;
+  width: 70px;
   cursor: pointer;
+  @media (max-width: 768px) {
+    width: 70px;
+  }
 `;
 
 export const NavMenu = styled.nav`

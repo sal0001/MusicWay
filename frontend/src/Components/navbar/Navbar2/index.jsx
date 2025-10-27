@@ -54,14 +54,14 @@ const Navbar2 = () => {
 
   const navItems = {
     loggedIn: [
-      { path: "/main/Perfil", icon: <FaUser />, text: "Perfil" },
-      { path: "/Sobrenos", icon: <FaInfoCircle />, text: "Sobre N+�s" },
+      { path: "/main/Perfil", icon: <FaUser />, text: "Profile" },
+      { path: "/Sobrenos", icon: <FaInfoCircle />, text: "About us" },
       ...(isAdmin
-        ? [{ path: "/admin", icon: <FaShieldAlt />, text: "Painel Admin" }]
+        ? [{ path: "/admin", icon: <FaShieldAlt />, text: "Admin Panel" }]
         : []),
     ],
     loggedOut: [
-      { path: "/registar", icon: <FaUserPlus />, text: "Registar" },
+      { path: "/registar", icon: <FaUserPlus />, text: "Register" },
       {
         path: "/login",
         icon: <FaSignInAlt />,

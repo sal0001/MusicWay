@@ -61,7 +61,7 @@ const SidebarContainer = styled.div`
   backdrop-filter: blur(15px);
   color: #e0e0e0;
   padding: 20px;
-  margin-top: 13px;
+  margin-top: 23px;
   position: fixed;
   overflow-y: auto;
   box-shadow: 2px 0 25px rgba(0, 0, 0, 0.4);
@@ -74,7 +74,7 @@ const SidebarContainer = styled.div`
     transform: ${({ isOpen }) =>
       isOpen ? "translateX(0)" : "translateX(-100%)"};
     height: calc(100% - 70px);
-    top: 60px;
+    top: 70px;
   }
 
   @media (max-width: 480px) {

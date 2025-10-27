@@ -17,9 +17,12 @@ export const Header = styled.header`
 `;
 
 export const Logo = styled.img`
-  width: 120px;
+  width: 70px;
   height: auto;
   cursor: pointer;
+  @media (max-width: 768px) {
+    width: 70px;
+  }
 `;
 
 export const NavMenu = styled.nav`

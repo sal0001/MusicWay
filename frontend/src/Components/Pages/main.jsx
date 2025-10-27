@@ -6,8 +6,6 @@ import {
   FaTimes,
   FaPlay,
   FaPause,
-  FaImage,
-  FaHeart,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";

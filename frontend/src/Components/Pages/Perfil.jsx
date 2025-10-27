@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components"; // Add 'css' import
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Navbar2 from "../navbar/navbar2";
+import Navbar2 from "../navbar/Navbar2/index";
 
 const Perfil = () => {
   const [user, setUser] = useState(null);

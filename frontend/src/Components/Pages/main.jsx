@@ -6,14 +6,12 @@ import {
   FaTimes,
   FaPlay,
   FaPause,
-  FaImage,
-  FaHeart,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Navbar2 from "../navbar/navbar2";
+import Navbar2 from "../navbar/Navbar2/index";
 import styled, { keyframes } from "styled-components";
 import MiniPlayer from "./MiniPlayer";
 import axios from "axios";
@@ -61,7 +59,7 @@ const SidebarContainer = styled.div`
   backdrop-filter: blur(15px);
   color: #e0e0e0;
   padding: 20px;
-  margin-top: 13px;
+  margin-top: 23px;
   position: fixed;
   overflow-y: auto;
   box-shadow: 2px 0 25px rgba(0, 0, 0, 0.4);
@@ -74,7 +72,7 @@ const SidebarContainer = styled.div`
     transform: ${({ isOpen }) =>
       isOpen ? "translateX(0)" : "translateX(-100%)"};
     height: calc(100% - 70px);
-    top: 60px;
+    top: 70px;
   }
 
   @media (max-width: 480px) {

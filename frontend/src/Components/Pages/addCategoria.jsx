@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Navbar3 from "../navbar/navbar3";
+import Navbar3 from "../navbar/Navbar3/index";
 import styled, { keyframes } from "styled-components"; // Added keyframes for animations
 import axios from "axios";
 

@@ -9,6 +9,7 @@
 use musicway;
 
 // Coleções e índices
+
 db.createCollection("categorias");
 db.categorias.createIndex({ nome: 1 }, { unique: true });
 
@@ -26,6 +27,7 @@ db.utilizadores.createIndex({ email: 1 }, { unique: true });
 db.utilizadores.createIndex({ role_id: 1 });
 
 // Inserção de dados iniciais
+
 db.categorias.insertMany([{ nome: "" }]);
 
 db.roles.insertMany([
